@@ -1,48 +1,32 @@
 # -*- mode: ruby -*-
 #################################################################################
 # Configurable Parameters
-VM_MEMORY_MB = 5120 # minimum is 4096 MB
-# vagrant image is ~2 GB, load image from internal server first
-#BOX_URL = "http://127.0.0.1:8000/package.box"
-BOX_URL = "http://104.236.159.226:18000/package.box"
+VM_MEMORY_MB = 2048 # TODO change later, 5120
 
 VM_HOSTNAME_NAME = "mdmsandbox.totvs.com"
 
-#################################################################################
-# Run commands on host machine
-# Download key for vagrant, if wget exists
-system("[ -f ~/vagrant_private_key ] || ! which wget || wget -O ~/vagrant_private_key https://raw.githubusercontent.com/DennyZhang/data/master/work/insecure_key")
-
-# If wget doesn't exit, use curl to download the file
-system("[ -f ~/vagrant_private_key ] || [ -f /usr/bin/curl ] && /usr/bin/curl -k -o ~/vagrant_private_key https://raw.githubusercontent.com/DennyZhang/data/master/work/insecure_key")
-
-system("[ -d ~/vagrant/code ] || mkdir -p ~/vagrant/code")
-system("chmod 777 ~/vagrant/code")
-
-# Hack /etc/hosts
-# we may need password of current user, in order to have enough privilege to change  /etc/hosts
-system("grep '192.168.50.10   sandbox' /etc/hosts || echo '192.168.50.10   sandbox' | sudo tee -a /etc/hosts")
 #################################################################################
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "totvslabs/mdm" # The OS is Ubuntu 14.04 64 bits
-  config.vm.box_url = BOX_URL
+  config.vm.box = "ubuntu/trusty64" # The OS is Ubuntu 14.04 64 bits
   config.vm.provider :virtualbox do |vb|
     vb.name = "vagrant-mdm-sandbox"
     vb.customize ["modifyvm", :id, "--memory", VM_MEMORY_MB, "--cpus", "2"]
   end
 
   config.vm.hostname = VM_HOSTNAME_NAME
-  config.ssh.username = "root"
-  config.ssh.private_key_path = "~/vagrant_private_key"
+  # config.ssh.username = "root"
+  # config.ssh.private_key_path = "~/vagrant_private_key"
 
   # host-only network
   config.vm.network :private_network, ip: "192.168.50.10"
 
-  config.vm.synced_folder "~/vagrant", "/root/vagrant", owner: "root", group: "root"
+  # config.vm.synced_folder "~/vagrant", "/root/vagrant", owner: "root", group: "root"
 
-  config.vm.provision "shell", inline: "/root/mdmdevops/misc/update_sandbox.sh"
+  config.vm.provision "shell", inline: <<-SHELL
+      curl -L https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/bootstrap_mdm_sandbox.sh | bash -e
+  SHELL
 end
