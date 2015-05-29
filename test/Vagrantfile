@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 #################################################################################
 # Configurable Parameters
-VM_MEMORY_MB = 2048 # TODO change later, 5120
+VM_MEMORY_MB = 5120
 
 VM_HOSTNAME_NAME = "mdmsandbox.totvs.com"
 
@@ -27,6 +27,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.synced_folder "~/vagrant", "/root/vagrant", owner: "root", group: "root"
 
   config.vm.provision "shell", inline: <<-SHELL
+      which curl 1>/dev/null 2>/dev/null || sudo apt-get install -y curl
       curl -L https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/bootstrap_mdm_sandbox.sh | bash -e
   SHELL
 end
