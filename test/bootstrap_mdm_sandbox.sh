@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-05-29 00:01:56>
+## Updated: Time-stamp: <2015-05-29 00:23:10>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -97,7 +97,8 @@ if ! service docker status 1>/dev/null 2>/dev/null; then
 fi
 
 log "prepare docker directory for couchbase"
-rm -rf /root/tmp/couchbase && mkdir -p /root/tmp/couchbase
+rm -rf /root/docker/couchbase && mkdir -p /root/docker/couchbase
+rm -rf /root/docker/code && mkdir -p /root/docker/code
 
 # Start docker of mdm-jenkins
 image_name="totvslabs/mdm:latest"
@@ -105,13 +106,13 @@ container_name="mdm-jenkins"
 docker_update_image $image_name $container_name
 container_status=$(is_container_running $container_name)
 if [ $container_status == "none" ]; then
-    docker run -d -t --privileged --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
 elif [ $container_status == "dead" ]; then 
     docker start $container_name    
 fi
 
 # when docker start, make sure jenkins autostart
-docker exec mdm-jenkins service jenkins start
+docker exec $container_name service jenkins start
 
 # Start docker of mdm-all-in-one
 image_name="totvslabs/mdm:latest"
@@ -119,7 +120,7 @@ container_name="mdm-all-in-one"
 docker_update_image $image_name $container_name
 container_status=$(is_container_running $container_name)
 if [ $container_status == "none" ]; then
-    docker run -d -t --privileged -v /root/tmp/couchbase/:/opt/couchbase/ --name $container_name -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 6022:22 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/docker/couchbase/:/opt/couchbase/ --name $container_name -p 8080:8080 -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 6022:22 totvslabs/mdm:latest /usr/sbin/sshd -D
 elif [ $container_status == "dead" ]; then 
     docker start $container_name    
 fi
