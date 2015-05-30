@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-05-29 00:23:10>
+## Updated: Time-stamp: <2015-05-30 10:59:27>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -113,6 +113,7 @@ fi
 
 # when docker start, make sure jenkins autostart
 docker exec $container_name service jenkins start
+docker exec $container_name service apache2 start
 
 # Start docker of mdm-all-in-one
 image_name="totvslabs/mdm:latest"
