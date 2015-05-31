@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-05-30 10:59:27>
+## Updated: Time-stamp: <2015-05-30 23:25:43>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -88,6 +88,12 @@ function docker_update_image() {
 ################################################################################################
 ensure_is_root
 
+log "Install autostart script for /etc/init.d/mdm_sandbox"
+curl -o /etc/init.d/mdm_sandbox.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/mdm_sandbox.sh
+update-rc.d mdm_sandbox defaults
+update-rc.d mdm_sandbox enable
+
+mdm_sandbox.sh
 install_docker
 
 create_enough_loop_device
