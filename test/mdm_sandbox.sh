@@ -12,8 +12,8 @@
 case "$1" in
     start)
         . /etc/profile
-        docker start mdm-all-in-one
         docker start mdm-jenkins
+        docker start mdm-all-in-one
         docker exec mdm-jenkins service jenkins start
         docker exec mdm-jenkins service apache2 start
         ;;

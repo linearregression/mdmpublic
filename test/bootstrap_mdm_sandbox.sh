@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-05-30 23:25:43>
+## Updated: Time-stamp: <2015-05-31 09:49:37>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -127,7 +127,7 @@ container_name="mdm-all-in-one"
 docker_update_image $image_name $container_name
 container_status=$(is_container_running $container_name)
 if [ $container_status == "none" ]; then
-    docker run -d -t --privileged -v /root/docker/couchbase/:/opt/couchbase/ --name $container_name -p 8080:8080 -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 6022:22 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/docker/couchbase/:/opt/couchbase/ --name $container_name -p 8080:8080 -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 8081:8081 -p 6022:22 totvslabs/mdm:latest /usr/sbin/sshd -D
 elif [ $container_status == "dead" ]; then 
     docker start $container_name    
 fi
