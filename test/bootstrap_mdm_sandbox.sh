@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-05-31 10:37:18>
+## Updated: Time-stamp: <2015-05-31 10:40:38>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -93,7 +93,7 @@ curl -o /etc/init.d/mdm_sandbox https://raw.githubusercontent.com/TOTVS/mdmpubli
 update-rc.d mdm_sandbox defaults
 update-rc.d mdm_sandbox enable
 
-mdm_sandbox.sh
+log "Install docker"
 install_docker
 
 create_enough_loop_device
