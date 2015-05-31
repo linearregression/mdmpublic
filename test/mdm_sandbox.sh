@@ -9,9 +9,12 @@
 # Description:
 ### END INIT INFO
 
+LOG_FILE="/var/log/mdm_sandbox.log"
+
 case "$1" in
     start)
         . /etc/profile
+        echo -ne `date +['%Y-%m-%d %H:%M:%S']`" run mdm_sandbox.sh\n" >> $LOG_FILE
         docker start mdm-jenkins
         docker start mdm-all-in-one
         docker exec mdm-jenkins service jenkins start
