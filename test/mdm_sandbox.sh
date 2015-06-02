@@ -17,6 +17,8 @@ case "$1" in
         echo -ne `date +['%Y-%m-%d %H:%M:%S']`" run mdm_sandbox.sh\n" >> $LOG_FILE
         docker start mdm-jenkins
         docker start mdm-all-in-one
+        docker exec mdm-all-in-one /opt/mdm/bin/mdm_start_all.sh
+
         docker exec mdm-jenkins service jenkins start
         docker exec mdm-jenkins service apache2 start
         ;;
