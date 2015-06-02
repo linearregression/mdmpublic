@@ -1,28 +1,26 @@
 # -*- mode: ruby -*-
 #################################################################################
 # Configurable Parameters
-VM_MEMORY_MB = 5120 #5120, 2048
+VM_MEMORY_MB = 5120 #MB
 VM_CPU_CORES = 3
-VM_HOSTNAME_NAME = "mdmsandbox.totvs.com"
-
+# When empty, disable folder share.
+FOLDER_SHARE=""
 #################################################################################
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64" # The OS is Ubuntu 14.04 64 bits
+  config.vm.hostname = "mdmsandbox.totvs.com"
   config.vm.provider "virtualbox" do |vb|
     vb.name = "vagrant-sandbox"
     vb.customize ["modifyvm", :id, "--memory", VM_MEMORY_MB, "--cpus", VM_CPU_CORES]
   end
 
-  config.vm.hostname = VM_HOSTNAME_NAME
-  # config.ssh.username = "root"
-  # config.ssh.private_key_path = "~/vagrant_private_key"
-
   # host-only network
   config.vm.network :private_network, ip: "192.168.50.10"
 
-  # TODO: code security
-  #config.vm.synced_folder "code", "/root/docker/code", owner: "root", group: "root"
+  if FOLDER_SHARE != ""
+    config.vm.synced_folder FOLDER_SHARE, "/root/docker/" + FOLDER_SHARE, owner: "root", group: "root"
+  end
 
   config.vm.provision "shell", inline: <<-SHELL
       which curl 1>/dev/null 2>/dev/null || sudo apt-get install -y curl
