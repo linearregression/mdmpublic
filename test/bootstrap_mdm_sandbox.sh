@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-05-31 13:45:45>
+## Updated: Time-stamp: <2015-06-01 23:37:46>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -105,7 +105,7 @@ fi
 
 log "prepare docker directory for couchbase"
 rm -rf /root/docker/couchbase && mkdir -p /root/docker/couchbase
-rm -rf /root/docker/code && mkdir -p /root/docker/code
+rm -rf /root/docker/code && mkdir -p /root/docker/code && chmod 777 -R /root/docker/code
 
 # Start docker of mdm-jenkins
 image_name="totvslabs/mdm:latest"
@@ -113,7 +113,7 @@ container_name="mdm-jenkins"
 docker_update_image $image_name $container_name
 container_status=$(is_container_running $container_name)
 if [ $container_status == "none" ]; then
-    docker run -d -t --privileged -v /root/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/docker/code/:/var/lib/jenkins/code/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
 elif [ $container_status == "dead" ]; then 
     docker start $container_name    
 fi
