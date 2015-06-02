@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-01 23:37:46>
+## Updated: Time-stamp: <2015-06-02 00:54:30>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -59,7 +59,7 @@ function docker_pull_image() {
 
 function is_container_running(){
     local container_name=${1?}
-    if docker inspect $container_name 1>/dev/null 2>/dev/null; then
+    if docker ps -a | grep $container_name 1>/dev/null 2>/dev/null; then
         if docker ps | grep $container_name  1>/dev/null 2>/dev/null; then
             echo "running"
         else
@@ -103,7 +103,7 @@ if ! service docker status 1>/dev/null 2>/dev/null; then
     service docker start
 fi
 
-log "prepare docker directory for couchbase"
+log "prepare shared directory for docker"
 rm -rf /root/docker/couchbase && mkdir -p /root/docker/couchbase
 rm -rf /root/docker/code && mkdir -p /root/docker/code && chmod 777 -R /root/docker/code
 
