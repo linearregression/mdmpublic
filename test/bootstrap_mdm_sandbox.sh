@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-02 00:54:30>
+## Updated: Time-stamp: <2015-06-03 07:59:14>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -107,7 +107,7 @@ log "prepare shared directory for docker"
 rm -rf /root/docker/couchbase && mkdir -p /root/docker/couchbase
 rm -rf /root/docker/code && mkdir -p /root/docker/code && chmod 777 -R /root/docker/code
 
-# Start docker of mdm-jenkins
+log "Start docker of mdm-jenkins"
 image_name="totvslabs/mdm:latest"
 container_name="mdm-jenkins"
 docker_update_image $image_name $container_name
@@ -122,7 +122,7 @@ fi
 docker exec $container_name service jenkins start
 docker exec $container_name service apache2 start
 
-# Start docker of mdm-all-in-one
+log "Start docker of mdm-all-in-one"
 image_name="totvslabs/mdm:latest"
 container_name="mdm-all-in-one"
 docker_update_image $image_name $container_name
