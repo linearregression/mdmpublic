@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-05 00:41:36>
+## Updated: Time-stamp: <2015-06-05 08:10:11>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -80,8 +80,23 @@ function is_container_running(){
     fi
 }
 
+function shell_exit() {
+    exit_code=$?
+    END=$(date +%s)
+    DIFF=$(echo "$END - $START" | bc)
+    log "Track time spent: $DIFF seconds"
+    if [ $exit_code -eq 0 ]; then
+        log "All set. Let's try Jenkins now: http://sandbox:18080"
+    else
+        log "ERROR: the procedure failed"
+    fi
+    exit $exit_code
+}
+
 ################################################################################################
+START=$(date +%s)
 ensure_is_root
+trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 log "Install autostart script for /etc/init.d/mdm_sandbox"
 curl -o /etc/init.d/mdm_sandbox https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/mdm_sandbox.sh
@@ -154,5 +169,4 @@ fi
 log "Check docker containers: docker ps" 
 docker ps
 
-log "All set. Let's try Jenkins now: http://sandbox:18080"
 ## File : bootstrap_mdm_sandbox.sh ends
