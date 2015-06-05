@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-04 21:07:42>
+## Updated: Time-stamp: <2015-06-04 21:13:23>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -123,7 +123,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
     log "$image_name has new version, stop old running container: $container_name"
     docker stop $container_name
     docker rm $container_name
-    container_status=$(is_container_running $container_name)
+    container_status="none"
 fi
 
 if [ $container_status = "none" ]; then
@@ -143,7 +143,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
     log "$image_name has new version, stop old running container: $container_name"
     docker stop $container_name
     docker rm $container_name
-    container_status=$(is_container_running $container_name)
+    container_status="none"
 fi
 
 if [ $container_status = "none" ]; then
