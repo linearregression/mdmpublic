@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-04 22:36:59>
+## Updated: Time-stamp: <2015-06-04 22:50:19>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -85,7 +85,7 @@ function is_container_running(){
 ensure_is_root
 
 # Update env first
-rm /var/lib/apt/lists/* -vf
+rm -rf /var/lib/apt/lists/*
 # apt-get -y update # TODO: temporarily disable this, because it's too much traffic
 
 log "Install autostart script for /etc/init.d/mdm_sandbox"
