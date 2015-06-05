@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-04 22:52:29>
+## Updated: Time-stamp: <2015-06-05 00:41:36>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -27,9 +27,8 @@ function ensure_is_root() {
 ################################################################################################
 function install_docker() {
     if ! which docker 1>/dev/null 2>/dev/null; then
-        log "Install docker: $command"
-        command="wget -qO- https://get.docker.com/ | sh"
-        eval $command
+        log "Install docker: wget -qO- https://get.docker.com/ | sh"
+        wget -qO- https://get.docker.com/ | sh
     else
         log "docker service exists, skip installation"
     fi
