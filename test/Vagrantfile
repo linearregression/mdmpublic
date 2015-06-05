@@ -25,6 +25,8 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "shell", inline: <<-SHELL
+      rm -rf /var/lib/apt/lists/*
+      apt-get -y update
       which curl 1>/dev/null 2>/dev/null || sudo apt-get install -y curl
       curl -L https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/bootstrap_mdm_sandbox.sh | bash -e
   SHELL
