@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-04 13:59:22>
+## Updated: Time-stamp: <2015-06-04 20:53:42>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -46,14 +46,25 @@ function create_enough_loop_device() {
 }
 
 function docker_pull_image() {
-    local image_name=${1?}
+    local image_repo_name=${1?}    
+    local image_name=${2?}
+    local flag_file=${3?}
     command="docker pull $image_name"
 
-    output=$(eval $command)
-    if echo "$output" | grep "Status: Image is up to date" 1>/dev/null 2>/dev/null; then
-        echo "no"
+    old_image_id=""
+    if docker images | grep $image_repo_name; then
+        old_image_id=$(docker images | grep $image_repo_name | awk -F' ' '{print $3}')
+    fi
+
+    log "docker pull $image_name, this steps may take tens of minutes."
+    docker pull $image_name
+
+    new_image_id=$(docker images | grep $image_repo_name | awk -F' ' '{print $3}')
+
+    if [ "$old_image_id" = "$new_image_id" ]; then
+        echo "no" > $flag_file
     else
-        echo "yes"
+        echo "yes" > $flag_file
     fi
 }
 
@@ -70,21 +81,6 @@ function is_container_running(){
     fi
 }
 
-function docker_update_image() {
-    local image_name=${1?}
-    local container_name=${2?}
-
-    log "docker pull $image_name. This steps may take tens of minutes"
-    has_new_version=$(docker_pull_image $image_name)
-    if [ "$has_new_version" = "yes" ]; then
-        if [ $(is_container_running $container_name) = "running" ]; then
-            log "Stop container($container_name), since image($image_name) has a new version"
-            docker stop $container_name
-        fi
-    else
-        log "image($image_name) has no newer version"
-    fi
-}
 ################################################################################################
 ensure_is_root
 
@@ -114,13 +110,24 @@ fi
 chmod 777 -R /root/docker/code
 
 log "Start docker of mdm-jenkins"
-image_name="totvslabs/mdm:latest"
+image_repo_name="totvslabs/mdm"
+image_name="${image_repo_name}:latest"
+flag_file="image.txt"
+
+docker_pull_image $image_repo_name $image_name $flag_file
+image_has_new_version=`cat $flag_file`
+
 container_name="mdm-jenkins"
-docker_update_image $image_name $container_name
 container_status=$(is_container_running $container_name)
-if [ $container_status == "none" ]; then
+if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; then
+    log "$image_name has new version, stop old running container: $container_name"
+    docker stop $container_name
+    container_status=$(is_container_running $container_name)
+fi
+
+if [ $container_status = "none" ]; then
     docker run -d -t --privileged -v /root/docker/code/:/var/lib/jenkins/code/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
-elif [ $container_status == "dead" ]; then 
+elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
 
@@ -129,13 +136,17 @@ docker exec $container_name service jenkins start
 docker exec $container_name service apache2 start
 
 log "Start docker of mdm-all-in-one"
-image_name="totvslabs/mdm:latest"
 container_name="mdm-all-in-one"
-docker_update_image $image_name $container_name
 container_status=$(is_container_running $container_name)
-if [ $container_status == "none" ]; then
+if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; then
+    log "$image_name has new version, stop old running container: $container_name"
+    docker stop $container_name
+    container_status=$(is_container_running $container_name)
+fi
+
+if [ $container_status = "none" ]; then
     docker run -d -t --privileged -v /root/docker/couchbase/:/opt/couchbase/ --name $container_name -p 8080:8080 -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 8081:8081 -p 6022:22 totvslabs/mdm:latest /usr/sbin/sshd -D
-elif [ $container_status == "dead" ]; then 
+elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
 
