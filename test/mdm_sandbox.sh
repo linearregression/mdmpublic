@@ -38,8 +38,8 @@ case "$1" in
 
         # mdm may not be started yet
         log "start services inside the mdm-aio"
-        docker exec mdm-all-in-one /opt/mdm/bin/mdm_start_all.sh || true        
-        echo -ne `date +['%Y-%m-%d %H:%M:%S']`" Finish to run mdm_sandbox.sh\n" >> $LOG_FILE
+        docker exec mdm-all-in-one /opt/mdm/bin/mdm_start_all.sh || true
+        log "Finish run mdm_sandbox.sh"
         ;;
     *)
         echo "Usage: $0 {start}" >&2
