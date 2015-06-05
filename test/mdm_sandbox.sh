@@ -19,10 +19,12 @@ case "$1" in
         docker start mdm-all-in-one
 
         sleep 5
-        docker exec mdm-all-in-one /opt/mdm/bin/mdm_start_all.sh
 
         docker exec mdm-jenkins service jenkins start
         docker exec mdm-jenkins service apache2 start
+
+        # mdm may not be started yet
+        docker exec mdm-all-in-one /opt/mdm/bin/mdm_start_all.sh || true        
         echo -ne `date +['%Y-%m-%d %H:%M:%S']`" Finish to run mdm_sandbox.sh\n" >> $LOG_FILE
         ;;
     *)
