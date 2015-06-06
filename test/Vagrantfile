@@ -1,10 +1,10 @@
 # -*- mode: ruby -*-
 #################################################################################
 # Configurable Parameters
-VM_MEMORY_MB = 5120 # Default is 5120MB 
+VM_MEMORY_MB = 2048 # Default is 5120MB 
 VM_CPU_CORES = 3
 # When empty, disable folder share.
-FOLDER_SHARE=""
+FOLDER_SHARE="denny"
 #################################################################################
 
 Vagrant.configure(2) do |config|
