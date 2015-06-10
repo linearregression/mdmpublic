@@ -3,8 +3,6 @@
 # Configurable Parameters
 VM_MEMORY_MB = 5120 # Default is 5120MB 
 VM_CPU_CORES = 3
-# When empty, disable folder share.
-FOLDER_SHARE=""
 #################################################################################
 
 Vagrant.configure(2) do |config|
@@ -17,12 +15,6 @@ Vagrant.configure(2) do |config|
 
   # host-only network
   config.vm.network :private_network, ip: "192.168.50.10"
-
-  if FOLDER_SHARE != ""
-    config.vm.synced_folder FOLDER_SHARE, "/root/docker/" + FOLDER_SHARE, \
-                            owner: "root", group: "root", create: "true", \
-                            mount_options: ['dmode=777', 'fmode=777']
-  end
 
   config.vm.provision "shell", inline: <<-SHELL
       rm -rf /var/lib/apt/lists/*
