@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-05 22:26:43>
+## Updated: Time-stamp: <2015-06-11 01:42:10>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -104,6 +104,8 @@ chmod 755 /etc/init.d/mdm_sandbox
 update-rc.d mdm_sandbox defaults
 update-rc.d mdm_sandbox enable
 
+rm -rf /etc/sudoers.d/vagrant
+
 log "Install docker"
 install_docker
 
@@ -112,16 +114,6 @@ create_enough_loop_device
 if ! service docker status 1>/dev/null 2>/dev/null; then
     service docker start
 fi
-
-log "prepare shared directory for docker"
-rm -rf /root/couchbase && mkdir -p /root/couchbase
-if [ -d /root/docker/code ]; then
-    rm -rf /root/docker/code/*
-else
-    mkdir -p /root/docker/code/
-fi
-
-chmod 777 -R /root/docker/
 
 log "Start docker of mdm-jenkins"
 image_repo_name="totvslabs/mdm"
@@ -141,7 +133,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
