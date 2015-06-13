@@ -38,7 +38,7 @@ case "$1" in
 
         # mdm may not be started yet
         log "start services inside the mdm-aio"
-        docker exec mdm-all-in-one /opt/mdm/bin/mdm_start_all.sh || true
+        docker exec mdm-all-in-one [ ! -f /opt/mdm/bin/mdm_start_all.sh ] ||  /opt/mdm/bin/mdm_start_all.sh || true
         docker exec mdm-all-in-one service apache2 start || true
         docker exec mdm-all-in-one service nagios3 start || true
         docker exec mdm-all-in-one service nagios-nrpe-server start || true
