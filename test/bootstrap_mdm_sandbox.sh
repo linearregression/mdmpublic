@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-12 22:04:18>
+## Updated: Time-stamp: <2015-06-12 23:48:39>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -149,10 +149,6 @@ elif [ $container_status = "dead" ]; then
     docker start $container_name    
 fi
 
-# when docker start, make sure jenkins autostart
-docker exec $container_name service jenkins start
-docker exec $container_name service apache2 start
-
 log "Start docker of mdm-all-in-one"
 container_name="mdm-all-in-one"
 container_status=$(is_container_running $container_name)
@@ -168,6 +164,9 @@ if [ $container_status = "none" ]; then
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
+
+log "Start services inside docker"
+service mdm_sandbox start
 
 log "Check docker containers: docker ps" 
 docker ps
