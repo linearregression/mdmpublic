@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-11 15:25:30>
+## Updated: Time-stamp: <2015-06-12 21:13:37>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -97,6 +97,9 @@ function shell_exit() {
 START=$(date +%s)
 ensure_is_root
 trap shell_exit SIGHUP SIGINT SIGTERM 0
+
+# set PATH, just in case binary like chmod can't be found
+PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 log "Install autostart script for /etc/init.d/mdm_sandbox"
 curl -o /etc/init.d/mdm_sandbox https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/mdm_sandbox.sh
