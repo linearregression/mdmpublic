@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-13 09:24:09>
+## Updated: Time-stamp: <2015-06-13 09:43:56>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -117,7 +117,7 @@ if ! service docker status 1>/dev/null 2>/dev/null; then
 fi
 
 log "prepare shared directory for docker"
-rm -rf /root/couchbase && mkdir -p /root/couchbase
+rm -rf /root/couchbase/* && mkdir -p /root/couchbase
 if [ -d /root/docker/code ]; then
     rm -rf /root/docker/code/*
 else
