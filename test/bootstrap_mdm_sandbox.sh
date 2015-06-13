@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-13 09:43:56>
+## Updated: Time-stamp: <2015-06-13 10:55:45>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -96,6 +96,9 @@ function shell_exit() {
 ################################################################################################
 START=$(date +%s)
 ensure_is_root
+
+apt-get -y install bc
+
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 # set PATH, just in case binary like chmod can't be found
