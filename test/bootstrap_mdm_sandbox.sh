@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-12 21:13:37>
+## Updated: Time-stamp: <2015-06-12 22:04:18>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -124,8 +124,8 @@ else
     mkdir -p /root/docker/code/
 fi
 
--chmod 777 -R /root/docker/
--
+chmod 777 -R /root/docker/
+
 log "Start docker of mdm-jenkins"
 image_repo_name="totvslabs/mdm"
 image_name="${image_repo_name}:latest"
