@@ -1,0 +1,12 @@
+# -*- mode: ruby -*-
+Vagrant.configure(2) do |config|
+    config.vm.box = "totvslabs/mdm"
+    config.vm.box = "package.box"
+    config.vm.hostname = "mdmsandbox.totvs.com"
+    config.vm.provider "virtualbox" do |vb|
+        vb.name = "vagrant-sandbox"
+        vb.customize ["modifyvm", :id, "--memory", 5120, "--cpus", 3]
+    end
+    # host-only network
+    config.vm.network :private_network, ip: "192.168.50.10"
+end

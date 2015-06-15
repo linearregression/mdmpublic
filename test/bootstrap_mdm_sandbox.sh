@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-14 22:45:07>
+## Updated: Time-stamp: <2015-06-15 16:25:50>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -133,7 +133,7 @@ mkdir -p /root/docker/ && chmod 777 -R /root/docker/
 remove_vagrant_user_from_root
 
 log "Start docker of mdm-jenkins"
-image_repo_name="totvslabs/mdm"
+image_repo_name=${1?"docker image repo name"}
 image_name="${image_repo_name}:latest"
 flag_file="image.txt"
 
@@ -150,7 +150,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
@@ -166,7 +166,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ --name $container_name -p 8080:8080 -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 8081:8081 -p 6022:22 totvslabs/mdm:latest /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ --name $container_name -p 8080:8080 -p 8443:8443 -p 8091:8091 -p 9200:9200 -p 80:80 -p 8081:8081 -p 6022:22 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
