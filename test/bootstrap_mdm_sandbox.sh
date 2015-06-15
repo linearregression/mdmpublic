@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-14 18:07:37>
+## Updated: Time-stamp: <2015-06-14 22:23:56>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -128,10 +128,10 @@ fi
 
 log "prepare shared directory for docker"
 rm -rf /root/couchbase/* && mkdir -p /root/couchbase
-if [ -d /root/docker/code ]; then
-    rm -rf /root/docker/code/*
+if [ -d /root/docker/ ]; then
+    rm -rf /root/docker/*
 else
-    mkdir -p /root/docker/code/
+    mkdir -p /root/docker/
 fi
 
 chmod 777 -R /root/docker/
