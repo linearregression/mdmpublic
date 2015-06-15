@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-14 16:39:42>
+## Updated: Time-stamp: <2015-06-14 18:07:37>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -84,6 +84,7 @@ function remove_vagrant_user_from_root() {
     echo 'root:TOTVSFoobar1!' | chpasswd
     sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
     [ ! -f /etc/sudoers.d/vagrant ] || rm -rf /etc/sudoers.d/vagrant
+    service ssh restart
 }
 
 function shell_exit() {
@@ -135,7 +136,7 @@ fi
 
 chmod 777 -R /root/docker/
 
-#remove_vagrant_user_from_root
+remove_vagrant_user_from_root
 
 log "Start docker of mdm-jenkins"
 image_repo_name="totvslabs/mdm"
