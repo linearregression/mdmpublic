@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-17 11:35:31>
+## Updated: Time-stamp: <2015-06-18 06:54:07>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -110,12 +110,6 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 # set PATH, just in case binary like chmod can't be found
 PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-log "Install autostart script for /etc/init.d/mdm_sandbox"
-curl -o /etc/init.d/mdm_sandbox https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/mdm_sandbox.sh
-chmod 755 /etc/init.d/mdm_sandbox
-update-rc.d mdm_sandbox defaults
-update-rc.d mdm_sandbox enable
-
 log "Install docker"
 install_docker
 
@@ -130,6 +124,12 @@ rm -rf /root/couchbase/* && mkdir -p /root/couchbase
 mkdir -p /root/docker/
 
 remove_vagrant_user_from_root
+
+log "Install autostart script for /etc/init.d/mdm_sandbox"
+curl -o /etc/init.d/mdm_sandbox https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/mdm_sandbox.sh
+chmod 755 /etc/init.d/mdm_sandbox
+update-rc.d mdm_sandbox defaults
+update-rc.d mdm_sandbox enable
 
 log "Start docker of mdm-jenkins"
 image_repo_name=${1?"docker image repo name"}
