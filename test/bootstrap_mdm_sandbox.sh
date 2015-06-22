@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-18 06:54:07>
+## Updated: Time-stamp: <2015-06-22 08:46:22>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -56,7 +56,13 @@ function docker_pull_image() {
     fi
 
     log "docker pull $image_name, this steps may take tens of minutes."
+    set +e
     docker pull $image_name
+    if [ $? -ne 0 ]; then
+        log "Retry: docker pull $image_name, in case doggy internet issue."
+        docker pull $image_name
+    fi
+    set -e
 
     new_image_id=$(docker images | grep $image_repo_name | awk -F' ' '{print $3}')
 
