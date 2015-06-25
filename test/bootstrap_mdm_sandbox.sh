@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-22 08:59:54>
+## Updated: Time-stamp: <2015-06-25 14:02:19>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -139,7 +139,8 @@ update-rc.d mdm_sandbox enable
 
 log "Start docker of mdm-jenkins"
 image_repo_name=${1?"docker image repo name"}
-image_name="${image_repo_name}:latest"
+tag_name=${2:-"latest"}
+image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
 docker_pull_image $image_repo_name $image_name $flag_file
