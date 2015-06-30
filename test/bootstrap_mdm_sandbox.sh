@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-25 14:02:19>
+## Updated: Time-stamp: <2015-06-30 16:06:37>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -98,7 +98,7 @@ function shell_exit() {
     DIFF=$(echo "$END - $START" | bc)
     log "Track time spent: $DIFF seconds"
     if [ $exit_code -eq 0 ]; then
-        log "All set. Let's try Jenkins now: http://sandbox:18080"
+        log "All set. Let's try Jenkins now: http://YOUR_SERVER_IP:18080"
     else
         log "ERROR: the procedure failed"
     fi
