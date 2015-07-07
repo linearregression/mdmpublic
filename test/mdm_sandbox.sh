@@ -34,7 +34,8 @@ case "$1" in
 
         log "start services inside the mdm-jenkins"
         docker exec mdm-jenkins service jenkins start
-        docker exec mdm-jenkins service apache2 start
+        docker exec mdm-jenkins service apache2 stop || true
+        docker exec mdm-jenkins service apache2 start || true
 
         # mdm may not be started yet
         log "start services inside the mdm-aio"
