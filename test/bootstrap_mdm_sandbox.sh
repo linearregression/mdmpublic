@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-06-30 16:06:37>
+## Updated: Time-stamp: <2015-07-13 07:41:56>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -89,7 +89,7 @@ function is_container_running(){
 function remove_vagrant_user_from_root() {
     [ ! -f /etc/sudoers.d/vagrant ] || rm -rf /etc/sudoers.d/vagrant
     mkdir -p /root/.ssh/
-    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGVkT4Ka/Pt6M/xREwYWatYyBqaBgDVS1bCy7CViZ5VGr1z+sNwI2cBoRwWxqHwvOgfAm+Wbzwqs+WNvXW6GDZ1kjayh2YnBN5UBYZjpNQK9tmO8KHQwX29UvOaOJ6HIEWOJB9ylyUoWL+WwNf71arpXULBW6skx9fp9F5rHuB0UmQ+omhJGs6+PRSLAEzWaQvtxmm7CuZ7LgslNKskkqx/6CHlQPq2qchRVN5xvnZPuFWgF6cvWvK7kylAQsv8hQtFGsE9Rw1itjisCBVILzEC2mAjg5SqeEB0i7QwdlRr4jgxaxO5jR9wdKo7PaEl9+bibuZrCIhp6V4Y4eaIzAP denny.zhang@totvs.com" >> /root/.ssh/authorized_keys
+    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBFs/3IWqXacrS+uq2bshz5CROPvIoZTFtxArD17Vvl3RNd6IQR513GAULriF4JrXPNqy+D4B6SCGVCAsyl29zHspyFBSmBtP45Rp7oS1jX0FaS3hP1kFAgcUfmcVKTSaDmEe5YSLY0OTrRpHDKPigXGpHOxeJi8fY6X+wnIPqS1taORJu0qoQ0jisZtiw1Hl6GgpcJXjuWs2/uiOE8ieY1uvYGAtHnyrxWabYJriZESQObRQYvixaTeOzL6RxROgl1yo69G6M/qxr0lcyfGJAuOzrZLBa6TDuTM3vTmoJPQA4gHdJoOlrsFUKDf5HEsgjd8i/C3JRRpNn/ut+HLXT ssh.login@totvs.com" >> /root/.ssh/authorized_keys
 }
 
 function shell_exit() {
