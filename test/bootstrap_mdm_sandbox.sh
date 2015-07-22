@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-07-13 07:41:56>
+## Updated: Time-stamp: <2015-07-22 09:30:43>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -36,7 +36,7 @@ function install_docker() {
 
 function create_enough_loop_device() {
     # Docker start may fail, due to "There are no more loopback devices available."
-    for i in {0..20}
+    for i in {0..500}
     do
         if [ ! -b /dev/loop$i ]; then
             mknod -m0660 /dev/loop$i b 7 $i
