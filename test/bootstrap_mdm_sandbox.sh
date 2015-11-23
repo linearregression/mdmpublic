@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-11-06 10:26:23>
+## Updated: Time-stamp: <2015-11-23 12:17:14>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -147,6 +147,7 @@ docker_pull_image $image_repo_name $image_name $flag_file
 image_has_new_version=`cat $flag_file`
 
 container_name="mdm-jenkins"
+container_hostname="jenkins"
 container_status=$(is_container_running $container_name)
 if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; then
     log "$image_name has new version, stop old running container: $container_name"
@@ -156,13 +157,14 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 $image_name /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ -h $container_hostname --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
 
 log "Start docker of mdm-all-in-one"
 container_name="mdm-all-in-one"
+container_hostname="aio"
 container_status=$(is_container_running $container_name)
 if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; then
     log "$image_name has new version, stop old running container: $container_name"
@@ -172,7 +174,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ --name $container_name -p 8080-8092:8080-8092 -p 8443:8443 -p 9200:9200 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8080-8092:8080-8092 -p 8443:8443 -p 9200:9200 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
