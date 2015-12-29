@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-11-23 12:17:14>
+## Updated: Time-stamp: <2015-12-29 16:27:44>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -143,8 +143,12 @@ tag_name=${2:-"latest"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
-docker_pull_image $image_repo_name $image_name $flag_file
-image_has_new_version=`cat $flag_file`
+if [ -n "SKIP_DOCKER_PULL" ]; then
+    image_has_new_version="no"
+else
+    docker_pull_image $image_repo_name $image_name $flag_file
+    image_has_new_version=`cat $flag_file`
+fi
 
 container_name="mdm-jenkins"
 container_hostname="jenkins"
