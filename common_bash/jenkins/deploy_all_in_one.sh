@@ -1,0 +1,150 @@
+#!/bin/bash -ex
+##-------------------------------------------------------------------
+## @copyright 2015 DennyZhang.com
+## File : deploy_all_in_one.sh
+## Author : Denny <denny.zhang001@gmail.com>
+## Description :
+## --
+## Created : <2015-08-05>
+## Updated: Time-stamp: <2016-01-20 15:33:49>
+##-------------------------------------------------------------------
+
+################################################################################################
+## env variables:
+##       ssh_server_ip: 123.57.240.189
+##       ssh_port: 6022
+##       project_name: all-in-one-auth
+##       chef_json:
+##             {
+##               "run_list": ["recipe[all-in-one-auth]"],
+##               "os_basic_auth":{"repo_server":"123.57.240.189:28000"},
+##               "all_in_one_auth":{"branch_name":"dev",
+##               "install_audit":"1"}
+##             }
+##       check_command: enforce_all_nagios_check.sh "check_.*_log|check_.*_cpu"
+##       devops_branch_name: master
+##       env_parameters:
+##             export STOP_CONTAINER=false
+##             export KILL_RUNNING_CHEF_UPDATE=false
+##             export START_COMMAND="docker start osc-aio"
+##             export STOP_COMMAND="docker stop osc-aio"
+##             export CODE_SH=""
+################################################################################################
+function remove_hardline() {
+    local str=$*
+    echo "$str" | tr -d '\r'
+}
+function log() {
+    local msg=$*
+    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
+}
+
+function ensure_variable_isset() {
+    message=${1?"parameter name should be given"}    
+    var=${2:-''}
+    # TODO support sudo, without source
+    if [ -z "$var" ]; then
+        echo "Error: Certain variable($message) is not set"
+        exit 1
+    fi
+}
+
+function shell_exit() {
+    errcode=$?
+    rm -rf $env_file
+
+    if [ -n "$SSH_SERVER_PORT" ]; then
+        ssh_options="$common_ssh_options -p $SSH_SERVER_PORT "
+    else
+        ssh_options="$common_ssh_options"
+    fi
+
+    if $STOP_CONTAINER; then
+        log "stop container."
+        stop_instance_command="ssh $ssh_options root@$ssh_server_ip $STOP_COMMAND"
+        log $stop_instance_command
+        eval $stop_instance_command
+    fi
+
+    exit $errcode
+}
+
+trap shell_exit SIGHUP SIGINT SIGTERM 0
+
+########################################################################
+echo "Deploy to ${ssh_server_ip}:${ssh_port}"
+env_dir="/tmp/env/"
+env_file="$env_dir/$$"
+env_parameters=$(remove_hardline "$env_parameters")
+if [ -n "$env_parameters" ]; then
+    mkdir -p $env_dir
+    log "env file: $env_file. Set env parameters:"
+    log "$env_parameters"
+    cat > $env_file <<EOF
+$env_parameters
+EOF
+    . $env_file
+fi
+
+if $STOP_CONTAINER; then
+    ensure_variable_isset "STOP_COMMAND" "$STOP_COMMAND"
+fi
+
+log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
+
+working_dir="/root/"
+ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+kill_chef_command="killall -9 chef-solo || true"
+
+if [ -n "$CODE_SH" ] && [ -z "$git_repo_url" ]; then
+    echo "Error: when CODE_SH is not empty, git_repo_url can't be empty"
+fi
+
+if [ -z "$code_dir" ]; then
+    code_dir="/root/test"
+fi
+
+if [ -n "$git_repo_url" ]; then
+    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+fi
+
+common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
+
+if [ -n "$START_COMMAND" ]; then
+    if [ -z "$SSH_SERVER_PORT" ]; then
+        start_instance_command="ssh $common_ssh_options root@$ssh_server_ip $START_COMMAND"
+    else
+        start_instance_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip $START_COMMAND"
+    fi
+
+    log $start_instance_command
+    eval $start_instance_command
+    sleep 5
+fi
+
+if $KILL_RUNNING_CHEF_UPDATE; then
+    log $kill_chef_command
+    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $kill_chef_command
+fi
+
+if [ -n "$CODE_SH" ]; then
+    log "Update git codes"
+    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name $project_name
+fi
+
+log "Prepare chef configuration"
+echo "cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]" > /tmp/client.rb
+echo "$chef_json" > /tmp/client.json
+
+scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no /tmp/client.rb root@$ssh_server_ip:/root/client.rb
+scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no /tmp/client.json root@$ssh_server_ip:/root/client.json
+
+log "Apply chef update"
+ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip chef-solo --config /root/client.rb -j /root/client.json
+
+if [ -n "$check_command" ]; then
+    log "$check_command"
+    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip "$check_command"
+fi
+
+## File : deploy_all_in_one.sh ends
