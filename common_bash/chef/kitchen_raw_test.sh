@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-21 09:49:01>
+## Updated: Time-stamp: <2016-01-23 00:06:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -24,6 +24,12 @@ function log() {
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`"========== $msg ==========\n"
 }
 
+function exit_if_error() {
+    if [ $? -ne 0 ];then
+        exit 1
+    fi
+}
+
 function exec_kitchen_cmd() {
     hooks_dir="$1/.kitchen.hooks"
     shift
@@ -33,18 +39,19 @@ function exec_kitchen_cmd() {
 
     if [ -a "${hooks_dir}/pre-$cmd" ];then
         log "start to exec kitchen hook: pre-$cmd"
-        bash -e "${hooks_dir}/pre-$cmd"
-        log "kitchen hook: pre-$cmd exec done!"
+        bash -e "${hooks_dir}/pre-$cmd" && log "kitchen hook: pre-$cmd exec done!"
+        exit_if_error
     fi
 
     command="kitchen $cmd $options"
     log "exec kitchen command: $command"
     eval "$command"
+    exit_if_error
     
     if [ -a "${hooks_dir}/post-$cmd" ];then
         log "start to exec kitchen hook: post-$cmd"
-        bash -e "${hooks_dir}/post-$cmd"
-        log "kitchen hook: post-$cmd exec done!"
+        bash -e "${hooks_dir}/post-$cmd" && log "kitchen hook: post-$cmd exec done!"
+        exit_if_error        
     fi
 }
 
@@ -62,6 +69,8 @@ function shell_exit() {
         log "keep instance as demanded."
     else
         if [ -n "$KEEP_FAILED_INSTANCE" ] && $KEEP_FAILED_INSTANCE && [ $errcode -ne 0 ];then
+            log "keep instance"
+        else
             exec_kitchen_cmd ${kitchen_dir} destroy $show_log
         fi
     fi
@@ -91,13 +100,19 @@ fi
 kitchen_dir=`pwd`
 if [ -z "$SKIP_KITCHEN_DESTROY" ] || ! $SKIP_KITCHEN_DESTROY; then
     exec_kitchen_cmd ${kitchen_dir} destroy "$show_log"
+else
+    log "skip kitchen destroy"
 fi
 if [ -z "$SKIP_KITCHEN_CREATE" ] || ! $SKIP_KITCHEN_CREATE; then
     exec_kitchen_cmd ${kitchen_dir} create "$show_log"
+else
+    log "skip kitchen create"
 fi
 
 if [ -z "$SKIP_KITCHEN_CONVERGE" ] || ! $SKIP_KITCHEN_CONVERGE; then
     exec_kitchen_cmd ${kitchen_dir} converge  "$show_log"
+else
+    log "skip kitchen converge"
 fi
 
 if [ -z "$SKIP_KITCHEN_VERIFY" ] || ! $SKIP_KITCHEN_VERIFY; then
@@ -106,6 +121,7 @@ if [ -z "$SKIP_KITCHEN_VERIFY" ] || ! $SKIP_KITCHEN_VERIFY; then
     else
         exec_kitchen_cmd ${kitchen_dir} verify "$show_log"
     fi
+else
+    log "skip kitchen verify"
 fi
-
 ## File : kitchen_raw_test.sh ends

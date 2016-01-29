@@ -4,11 +4,26 @@
 ##  Download docker image: docker pull denny/elk:latest
 ##  Boot docker container:
 ##     container_name="elk-aio"
-##     docker run -t -d -h mytest --name my-test --privileged -v /root/ -p 5022:22 -p 5601:5601 -p 9200:9200 -p 5000:5000 denny/elk:latest /usr/sbin/sshd -D
+##     docker run -t -d -h mytest --name my-test --privileged -p 5022:22 -p 5601:5601 denny/elk:latest /usr/sbin/sshd -D
 ##  Start services:
 ##     docker start $container_name
-##     docker exec $container_name /opt/logstash/bin/logstash -e 'input { stdin { } } output { elasticsearch { host => localhost } }'
 ##
+##  service elasticsearch start
+##  service kibana4 start
+##  service nginx start
+##  /opt/logstash/bin/logstash -e 'input { stdin { } } output { elasticsearch { host => localhost } }'
+##
+##  service logstash status
+##  lsof -i tcp:9301
+##
+##  service elasticsearch status
+##  lsof -i tcp:9200
+##
+##  service kibana4 status
+##  lsof -i tcp:5601
+##
+##  service nginx status
+##  curl http://localhost:80
 ##################################################
 
 FROM elk:v1

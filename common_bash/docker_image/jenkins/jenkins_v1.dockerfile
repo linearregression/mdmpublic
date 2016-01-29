@@ -16,6 +16,7 @@
 ##     service apache2 start
 ##      curl -v http://localhost:28000/README.txt
 ##
+##     source /etc/profile
 ##     sudo $SONARQUBE_HOME/bin/linux-x86-64/sonar.sh start
 ##       ps -ef | grep sonar
 ##       curl -v http://localhost:9000

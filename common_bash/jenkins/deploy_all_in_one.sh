@@ -6,14 +6,15 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-01-20 15:33:49>
+## Updated: Time-stamp: <2016-01-22 19:01:52>
 ##-------------------------------------------------------------------
 
 ################################################################################################
+## Purpose: General function to deploy all-in-one env by chef
+##
 ## env variables:
 ##       ssh_server_ip: 123.57.240.189
 ##       ssh_port: 6022
-##       project_name: all-in-one-auth
 ##       chef_json:
 ##             {
 ##               "run_list": ["recipe[all-in-one-auth]"],
@@ -21,6 +22,7 @@
 ##               "all_in_one_auth":{"branch_name":"dev",
 ##               "install_audit":"1"}
 ##             }
+##       chef_client_rb: cookbook_path ["/root/test/dev/iamdevops/cookbooks","/root/test/dev/iamdevops/community_cookbooks"]
 ##       check_command: enforce_all_nagios_check.sh "check_.*_log|check_.*_cpu"
 ##       devops_branch_name: master
 ##       env_parameters:
@@ -29,11 +31,13 @@
 ##             export START_COMMAND="docker start osc-aio"
 ##             export STOP_COMMAND="docker stop osc-aio"
 ##             export CODE_SH=""
+##             export SSH_SERVER_PORT=22
 ################################################################################################
 function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
 }
+
 function log() {
     local msg=$*
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
@@ -42,22 +46,15 @@ function log() {
 function ensure_variable_isset() {
     message=${1?"parameter name should be given"}    
     var=${2:-''}
-    # TODO support sudo, without source
     if [ -z "$var" ]; then
-        echo "Error: Certain variable($message) is not set"
+        echo $message
         exit 1
     fi
 }
 
 function shell_exit() {
     errcode=$?
-    rm -rf $env_file
-
-    if [ -n "$SSH_SERVER_PORT" ]; then
-        ssh_options="$common_ssh_options -p $SSH_SERVER_PORT "
-    else
-        ssh_options="$common_ssh_options"
-    fi
+    ssh_options="$common_ssh_options -p $SSH_SERVER_PORT "
 
     if $STOP_CONTAINER; then
         log "stop container."
@@ -69,53 +66,49 @@ function shell_exit() {
     exit $errcode
 }
 
+########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
-########################################################################
 echo "Deploy to ${ssh_server_ip}:${ssh_port}"
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
 env_parameters=$(remove_hardline "$env_parameters")
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    log "env file: $env_file. Set env parameters:"
-    log "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+IFS=$'\n';
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
-if $STOP_CONTAINER; then
-    ensure_variable_isset "STOP_COMMAND" "$STOP_COMMAND"
+if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
+    ensure_variable_isset "When STOP_CONTAINER is set, STOP_COMMAND must be given " "$STOP_COMMAND"
 fi
 
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
-working_dir="/root/"
 ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 kill_chef_command="killall -9 chef-solo || true"
 
-if [ -n "$CODE_SH" ] && [ -z "$git_repo_url" ]; then
-    echo "Error: when CODE_SH is not empty, git_repo_url can't be empty"
+if [ -n "$CODE_SH" ]; then
+    ensure_variable_isset "Error: when CODE_SH is not empty, git_repo_url can't be empty" "$git_repo_url"
 fi
 
 if [ -z "$code_dir" ]; then
     code_dir="/root/test"
 fi
 
-if [ -n "$git_repo_url" ]; then
-    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+# TODO: remove this section later
+if [ -z "$chef_client_rb" ]; then
+    git_repo="iamdevops"
+    chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 fi
 
+if [ -z "$SSH_SERVER_PORT" ]; then
+    SSH_SERVER_PORT=22
+fi
+
+# TODO: ensure_variable_isset "chef_client_rb must be set" "$chef_client_rb"
 common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
 if [ -n "$START_COMMAND" ]; then
-    if [ -z "$SSH_SERVER_PORT" ]; then
-        start_instance_command="ssh $common_ssh_options root@$ssh_server_ip $START_COMMAND"
-    else
-        start_instance_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip $START_COMMAND"
-    fi
+    start_instance_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip $START_COMMAND"
 
     log $start_instance_command
     eval $start_instance_command
@@ -129,11 +122,14 @@ fi
 
 if [ -n "$CODE_SH" ]; then
     log "Update git codes"
-    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name $project_name
+    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+    # ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name
+    # TODO: remove this line and replace to above
+    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name "remove_this"
 fi
 
 log "Prepare chef configuration"
-echo "cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]" > /tmp/client.rb
+echo "$chef_client_rb" > /tmp/client.rb
 echo "$chef_json" > /tmp/client.json
 
 scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no /tmp/client.rb root@$ssh_server_ip:/root/client.rb
@@ -146,5 +142,4 @@ if [ -n "$check_command" ]; then
     log "$check_command"
     ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip "$check_command"
 fi
-
 ## File : deploy_all_in_one.sh ends

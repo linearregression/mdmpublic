@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-20 15:34:39>
+## Updated: Time-stamp: <2016-01-22 10:23:12>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -105,8 +105,8 @@ function copy_to_reposerver() {
 
 function pack_files(){
     # Pack war package.
-    local file_dir="${1?}"
-    local git_repo=${1?}
+    local file_dir=${1?}
+    local git_repo=${2?}
     local base_name=$(basename $repo_dir)  
     local package_name="${base_name}_${git_repo}.tar.gz"
     local sha1sum_name="${base_name}_${git_repo}.sha1"

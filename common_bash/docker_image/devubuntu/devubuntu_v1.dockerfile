@@ -16,7 +16,7 @@ MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
 
 ########################################################################################
 apt-get update
-apt-get install -y lsof vim strace tmux curl tar telnet
+apt-get install -y lsof vim strace ltrace tmux curl tar telnet
 apt-get install -y software-properties-common python-software-properties tree inotify-tools
 apt-get install -y build-essential openssl git-core python-pip
 
@@ -51,6 +51,11 @@ service docker stop
 
 # install chef
 curl -L https://www.opscode.com/chef/install.sh | bash
+
+# change ruby gem sources
+gem sources -a https://ruby.taobao.org/ && \
+gem sources -r https://rubygems.org/ && \
+gem sources -r http://rubygems.org/
 
 rm -rf /var/cache/*
 ########################################################################################

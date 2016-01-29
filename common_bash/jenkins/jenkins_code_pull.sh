@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-20 15:34:42>
+## Updated: Time-stamp: <2016-01-21 13:11:50>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -82,6 +82,6 @@ for git_pull in `echo $git_pull_list`; do
     git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
     branch_name=${item[2]}
     log "git pull in working_dir"
-    git_update_code $git_repo $git_repo_url $branch_name $working_dir "yes"
+    git_update_code $git_repo $git_repo_url $branch_name $working_dir "no"
 done
 ## File : jenkins_code_pull.sh ends

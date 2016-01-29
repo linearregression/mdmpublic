@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-20 15:33:22>
+## Updated: Time-stamp: <2016-01-27 08:48:52>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -22,6 +22,7 @@
 ##         export KEEP_INSTANCE=false
 ##         export REMOVE_BERKSFILE_LOCK=false
 ##         export CLEAN_START=false
+##         export TEST_KITCHEN_YAML=
 ##         export TEST_KITCHEN_YAML_BLACKLIST=".kitchen.vagrant.yml,.kitchen.digitalocean.yml"
 ################################################################################################
 function remove_hardline() {

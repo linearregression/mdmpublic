@@ -6,11 +6,12 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-01-20 15:35:28>
+## Updated: Time-stamp: <2016-01-21 17:31:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
+##      working_dir: /var/lib/jenkins/serverspec
 ##      test_spec:
 ##          describe service('apache2') do
 ##           it { should be_running }
@@ -87,7 +88,9 @@ function shell_exit() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 #####################################################
-working_dir="/var/lib/jenkins/serverspec"
+if [ -z "$working_dir" ]; then
+    working_dir="/var/lib/jenkins/serverspec"
+fi
 mkdir -p $working_dir/spec/localhost
 cd $working_dir
 
@@ -116,4 +119,29 @@ EOF
 
 echo "Perform serverspec check"
 sudo rake spec
+
+################################### remote excute start ##########################
+#$remote_list
+# 0 remote server ip
+# 1 remote server ssh port
+# 2 remote server ssh key
+# 3 command 1: "get cpu loadavg" < 20
+# 4 command 2: "get docker container number" < 15
+remote_list=(${remote_list// / })
+
+ssh_connect="ssh -p ${remote_list[1]} -i ${remote_list[2]} -o StrictHostKeyChecking=no root@${remote_list[0]}"
+loadavg_va=$($ssh_connect "cat /proc/loadavg | awk '{print \$1}'")
+container_num=$($ssh_connect "docker ps | sed '1d' | wc -l")
+
+# Compare loadavg value
+if [ `echo "$loadavg_va > ${remote_list[3]}" | bc` -eq 1 ]; then
+    exit 1
+fi
+
+# Compare the number of containers
+if [ $container_num -gt ${remote_list[4]} ]; then
+    exit 1
+fi
+################################### remote excute end ##########################
+
 ## File : serverspec_check.sh ends

@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-20 15:33:29>
+## Updated: Time-stamp: <2016-01-21 21:47:04>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -71,7 +71,7 @@ function start_sonar_server() {
         log "Start SonarQube server: sonar.sh start" 
         sudo $SONARQUBE_HOME/bin/linux-x86-64/sonar.sh start
         log "Wait several seconds for SonarQube server to be up"
-        sleep 10
+        sleep 30
     fi
 }
 
