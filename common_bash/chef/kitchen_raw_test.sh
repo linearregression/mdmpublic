@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-23 00:06:38>
+## Updated: Time-stamp: <2016-01-29 11:36:04>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -71,6 +71,7 @@ function shell_exit() {
         if [ -n "$KEEP_FAILED_INSTANCE" ] && $KEEP_FAILED_INSTANCE && [ $errcode -ne 0 ];then
             log "keep instance"
         else
+            log "destroy instance."
             exec_kitchen_cmd ${kitchen_dir} destroy $show_log
         fi
     fi
