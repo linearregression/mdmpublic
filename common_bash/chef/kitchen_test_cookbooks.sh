@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-01-27 08:48:52>
+## Updated: Time-stamp: <2016-02-15 10:35:20>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -18,6 +18,7 @@
 ##      skip_cookbook_list: sandbox-test
 ##      must_cookbook_list: gateway-auth
 ##      env_parameters:
+##         export SKIP_CODE_UPDATE=false
 ##         export KEEP_FAILED_INSTANCE=true
 ##         export KEEP_INSTANCE=false
 ##         export REMOVE_BERKSFILE_LOCK=false
@@ -25,6 +26,7 @@
 ##         export TEST_KITCHEN_YAML=
 ##         export TEST_KITCHEN_YAML_BLACKLIST=".kitchen.vagrant.yml,.kitchen.digitalocean.yml"
 ################################################################################################
+source /etc/profile
 function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
@@ -105,14 +107,15 @@ function test_cookbook() {
     coobook=${3?}
     
     cd ${cookbook_dir}/${cookbook}
-    
+
+    MY_BUILD_ID=$(echo $BUILD_ID | tr '_' '-')
     export CURRENT_COOKBOOK=$cookbook    
     if [ -z "$INSTANCE_NAME" ]; then
         if [ -z "$BUILD_USER" ]; then
-            export INSTANCE_NAME="${cookbook}-${JOB_NAME}-${BUILD_ID}"
+            export INSTANCE_NAME="${cookbook}-${JOB_NAME}-${MY_BUILD_ID}"
         else
             BUILD_USER=$(echo $BUILD_USER | sed 's/ /-/g')
-            export INSTANCE_NAME="${cookbook}-${JOB_NAME}-${BUILD_ID}-${BUILD_USER}"
+            export INSTANCE_NAME="${cookbook}-${JOB_NAME}-${MY_BUILD_ID}-${BUILD_USER}"
         fi
     fi
 
@@ -188,10 +191,12 @@ if [ -d $code_dir ]; then
     fi
 fi
 
-git_update_code $git_repo $branch_name $working_dir $git_repo_url
-cd $working_dir/$branch_name/$git_repo
-# add retry for network turbulence
-git pull origin $branch_name || (sleep 2 && git pull origin $branch_name)
+if [ -z "$SKIP_CODE_UPDATE" ] || [ ! $SKIP_CODE_UPDATE ]; then
+    git_update_code $git_repo $branch_name $working_dir $git_repo_url
+    cd $working_dir/$branch_name/$git_repo
+    # add retry for network turbulence
+    git pull origin $branch_name || (sleep 2 && git pull origin $branch_name)
+fi
 
 cookbook_dir="$code_dir/cookbooks"
 cd $cookbook_dir

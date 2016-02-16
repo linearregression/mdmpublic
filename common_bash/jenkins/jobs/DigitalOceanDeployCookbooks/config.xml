@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>50</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>git_repo_url</name>
+          <description>Repo url for chef source code.
+</description>
+          <defaultValue>git@github.com:TOTVS/mdmdevops.git</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>branch_name</name>
+          <description>branch name for the chef cookbook code.</description>
+          <defaultValue>dev</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>working_dir</name>
+          <description></description>
+          <defaultValue>/var/lib/jenkins/code/digitialocean/mdmdevops/</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>test_command</name>
+          <description></description>
+          <defaultValue>bash /var/lib/jenkins/code/bash_dir/master/devops-knowledgebase/code/chef/kitchen_raw_test.sh</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>cookbook_list</name>
+          <description>What cookbooks to test. Separated by comma.
+
+If &quot;ALL&quot;, all cookbooks under the given directory will be tested. Otherwise perform tests for given cookbooks.</description>
+          <defaultValue>all-in-one</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>skip_cookbook_list</name>
+          <description>What cookbooks to skip test. Separated by whitespace.</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>must_cookbook_list</name>
+          <description>What cookbooks to must test, no matter what. Separated by whitespace.</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>env_parameters</name>
+          <description></description>
+          <defaultValue>export SKIP_CODE_UPDATE=true
+
+export KEEP_INSTANCE=false
+export KEEP_FAILED_INSTANCE=false
+export TEST_KITCHEN_YAML=.kitchen.digitalocean.yml.tmp
+export DIGITALOCEAN_ACCESS_TOKEN=&quot;d535bf5bf949b8c785d2f4d54aa5e0397967f675b766ff944b3e4ed673a5148a&quot;
+export DIGITALOCEAN_SSH_KEY_IDS=&quot;776681,979830,812123&quot;
+export DIGITALOCEAN_FLAVOR=8gb</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>devops_library_branch_name</name>
+          <description></description>
+          <defaultValue>dev</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -ex
+bash -xe /var/lib/jenkins/code/bash_dir/$devops_library_branch_name/devops-knowledgebase/code/jenkins/pre_check.sh
+bash -xe /var/lib/jenkins/code/bash_dir/$devops_library_branch_name/devops-knowledgebase/code/chef/kitchen_test_cookbooks.sh
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.6.2"/>
+    <org.jenkinsci.plugins.builduser.BuildUser plugin="build-user-vars-plugin@1.4"/>
+  </buildWrappers>
+</project>

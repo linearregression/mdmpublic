@@ -8,6 +8,13 @@
 ##  Start services:
 ##     docker start $container_name
 ##     docker exec $container_name /opt/logstash/bin/logstash -e 'input { stdin { } } output { elasticsearch { host => localhost } }'
+##     service elasticsearch status
+##     service kibana4 status
+##     service nginx status
+##
+##     service logstash status
+##     ls -lth /etc/logstash/conf.d
+##     tail -f /var/log/logstash/logstash.log
 ##
 ##################################################
 
@@ -26,4 +33,3 @@ MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
 
 ########################################################################################
 ########################################################################################
-

@@ -9,6 +9,7 @@
 ##     python --version
 ##     java -version
 ##     chef-solo --version
+##     nc -l 80
 ##################################################
 
 FROM denny/sshd:v1
@@ -17,8 +18,11 @@ MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
 ########################################################################################
 apt-get update
 apt-get install -y lsof vim strace ltrace tmux curl tar telnet
-apt-get install -y software-properties-common python-software-properties tree inotify-tools
-apt-get install -y build-essential openssl git-core python-pip
+apt-get install -y software-properties-common python-software-properties tree
+apt-get install -y build-essential openssl git-core
+apt-get install python-pip python-dev
+# http://xmodulo.com/record-replay-terminal-session-linux.html
+pip install TermRecord
 
 # install ruby
 apt-get -yqq install python-software-properties && \
@@ -57,5 +61,16 @@ gem sources -a https://ruby.taobao.org/ && \
 gem sources -r https://rubygems.org/ && \
 gem sources -r http://rubygems.org/
 
+# install nc and tcpdump
+apt-get install netcat
+apt-get install tcpdump
+
+# install inotify
+apt-get install inotify-tools
 rm -rf /var/cache/*
+
+# http://justniffer.sourceforge.net/#!/install
+sudo add-apt-repository ppa:oreste-notelli/ppa 
+sudo apt-get update
+sudo apt-get install justniffer
 ########################################################################################

@@ -1,15 +1,24 @@
-#!/bin/bash -e
+#!/bin/bash -x
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
-## File : denny_chef_provision.sh
+## File : chef_kitchen_provision.sh
 ## Author : Denny <denny.zhang001@gmail.com>
 ## Description :
 ## --
-## Created : <2015-05-13>
-## Updated: Time-stamp: <2016-01-20 15:38:01>
+## Created : <2015-11-30>
+## Updated: Time-stamp: <2016-02-12 22:28:02>
 ##-------------------------------------------------------------------
-echo "Inject ssh key to kitchen user and root user"
+# pre-cache Chef Omnibus installation
+mkdir -p /tmp/install.sh.14
+if [ ! -f /tmp/install.sh.14/metadata.txt ]; then
+    wget -O /tmp/install.sh.14/metadata.txt "https://omnitruck-direct.chef.io/stable/chef/metadata?v=&p=ubuntu&pv=14.04&m=x86_64"
+fi
 
+if [ ! -f /tmp/install.sh.14/chef_12.7.2-1_amd64.deb ]; then
+    wget -O /tmp/install.sh.14/chef_12.7.2-1_amd64.deb https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/14.04/x86_64/chef_12.7.2-1_amd64.deb
+fi
+
+echo "Inject ssh key to kitchen user and root user"
 wget -O inject_ssh_key.sh  https://raw.githubusercontent.com/DennyZhang/inject_ssh_key/master/inject_ssh_key.sh
 
 user_home_list='kitchen:/home/kitchen,root:/root'
@@ -23,10 +32,16 @@ ssh_key='AAAAB3NzaC1yc2EAAAADAQABAAABAQDGVkT4Ka/Pt6M/xREwYWatYyBqaBgDVS1bCy7CViZ
 sudo bash ./inject_ssh_key.sh $user_home_list $ssh_email $ssh_key
 
 echo "enable chef"
-curl -L https://www.opscode.com/chef/install.sh | bash
+if ! which chef-solo; then
+    curl -L https://www.opscode.com/chef/install.sh | bash
+fi
 
 echo "configure no_proxy"
 eth0_ip=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 local_ip="${eth0_ip%.*}.*"
 echo no_proxy="localhost,127.0.0.1,$local_ip" > /etc/profile.d/no_proxy.sh
-## File : denny_chef_provision.sh ends
+
+# bypass kitchen verify hang
+wget -O /tmp/preinstall_kitchen_verify.sh http://git.jinganiam.com/dennyzhang/devops-knowledgebase/raw/master/code/chef/preinstall_kitchen_verify.sh
+bash -e /tmp/preinstall_kitchen_verify.sh
+## File : chef_kitchen_provision.sh ends

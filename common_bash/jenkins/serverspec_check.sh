@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-01-31 14:03:23>
+## Updated: Time-stamp: <2016-02-13 20:44:20>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,14 +18,38 @@
 ##          end
 ##
 ################################################################################################
-
+function os_release() {
+    set -e
+    distributor_id=$(lsb_release -a 2>/dev/null | grep 'Distributor ID' | awk -F":\t" '{print $2}')
+    if [ "$distributor_id" == "RedHatEnterpriseServer" ]; then
+        echo "redhat"
+    elif [ "$distributor_id" == "Ubuntu" ]; then
+        echo "ubuntu"
+    else
+        if grep CentOS /etc/issue 1>/dev/null 2>/dev/null; then
+            echo "centos"
+        else
+            if uname -a | grep '^Darwin' 1>/dev/null 2>/dev/null; then
+                echo "osx"
+            else
+                echo "ERROR: Not supported OS"
+            fi
+        fi
+    fi
+}
+################################################################################################
 function install_serverspec() {
     if ! sudo gem list | grep serverspec 2>/dev/null 1>/dev/null; then
         sudo gem install serverspec
     fi
 
-    if ! sudo dpkg -l rake 2>/dev/null 1>/dev/null; then
-        sudo apt-get install -y rake
+    os_version=$(os_release)
+    if [ "$os_version" == "ubuntu" ]; then
+        if ! sudo dpkg -l rake 2>/dev/null 1>/dev/null; then
+            sudo apt-get install -y rake
+        fi
+    else
+        echo "Warning: not implemented supported for OS: $os_version"
     fi
 }
 
@@ -94,7 +118,7 @@ fi
 mkdir -p $working_dir/spec/localhost
 cd $working_dir
 
-sudo /usr/sbin/locale-gen --lang en_US.UTF-8
+# sudo /usr/sbin/locale-gen --lang en_US.UTF-8
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
@@ -105,12 +129,7 @@ cat > spec/localhost/sample_spec.rb <<EOF
 require 'spec_helper'
 
 # Check at least 3 GB free disk
-describe command("[ `df -h -B 1G / | tail -n1 | awk -F' ' '{print $4}'` -gt 3 ]") do
-  its(:exit_status) { should eq 0 }
-end
-
-# Check at least 1 GB free memory
-describe command("[ `free -ml | grep 'buffers/cache' | awk -F' ' '{print $4}'` -gt 1024 ]") do
+describe command("[ `df -h / | tail -n1 |awk -F' ' '{print $4}' | awk -F'G' '{print $1}' | awk -F'.' '{print $1}'` -gt 3 ]") do
   its(:exit_status) { should eq 0 }
 end
 

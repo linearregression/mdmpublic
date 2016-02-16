@@ -127,13 +127,13 @@ file_path="/tmp"
 
 # Jenkins parameter judge
 if [ -z "$server_list" ]; then
-    log "Error: Please refer to the correct parameters for the prompt configuration"
+    log "ERROR wrong parameter: server_list can't be empty"
     exit 1
 fi
 
 # Judge files list exist
 if [ -z "$files_list" ]; then
-    log "Error: Please refer to the correct parameters for the prompt configuration"
+    log "ERROR wrong parameter: files_list can't be empty"
     exit 1
 fi
 

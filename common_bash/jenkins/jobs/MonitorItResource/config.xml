@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>50</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>test_spec</name>
+          <description></description>
+          <defaultValue># Check tcp ports in jenkins container
+[&quot;8080&quot;, # jenkins
+].each do |port|
+    describe port(port) do
+        it { should be_listening }
+    end
+end
+
+# Check remote tcp port
+[&quot;127.0.0.1:8080&quot;,
+ ].each do |ip_port|
+    (ip, port) = ip_port.split(&apos;:&apos;)
+    describe command(&apos;nc -z -v -w5 %s %s 2&gt;&amp;1&apos; %[ip, port]) do
+      its(:stdout) { should match /Connection to.*succeeded/ }
+    end
+end
+
+# Check anonymous http links
+[&quot;http://localhost:8080&quot;,
+].each do |url|
+    describe command(&apos;curl -I -k %s 2&gt;&amp;1&apos; %[url]) do
+      its(:stdout) { should match /HTTP\/1.1 200 OK/ }
+    end
+end
+</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>working_dir</name>
+          <description></description>
+          <defaultValue>/var/lib/jenkins/monitoritresource</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>devops_library_branch_name</name>
+          <description></description>
+          <defaultValue>dev</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.TimerTrigger>
+      <spec>H * * * *</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -ex
+bash -xe /var/lib/jenkins/code/bash_dir/$devops_library_branch_name/devops-knowledgebase/code/jenkins/serverspec_check.sh
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

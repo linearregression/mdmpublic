@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-11-30>
-## Updated: Time-stamp: <2016-01-20 15:33:24>
+## Updated: Time-stamp: <2016-02-14 18:35:49>
 ##-------------------------------------------------------------------
 LOG_FILE="/var/log/preinstall_kitchen_verify.log"
 function log() {
@@ -24,6 +24,8 @@ export BUSSER_ROOT="/tmp/verifier"
 export BUSSER_ROOT GEM_HOME="/tmp/verifier/gems"; 
 export GEM_HOME GEM_PATH="/tmp/verifier/gems"; 
 export GEM_PATH GEM_CACHE="/tmp/verifier/gems/cache"; 
+# export GEM_CACHE ruby="/opt/chefdk/embedded/bin/ruby"
+# export gem="/opt/chefdk/embedded/bin/gem"
 export GEM_CACHE ruby="/opt/chef/embedded/bin/ruby"
 export gem="/opt/chef/embedded/bin/gem"
 export version="busser"
@@ -60,5 +62,5 @@ $busser test
 
 rm -rf $BUSSER_ROOT/bin/busser
 
-chown -R kitchen:kitchen /tmp/verifier
+chmod 777 -R /tmp/verifier
 ## File : preinstall_kitchen_verify.sh ends
