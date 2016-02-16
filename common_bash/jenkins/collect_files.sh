@@ -76,7 +76,7 @@ function collect_files() {
             local file_pathname=${file_parent_dir#*/}
             local file_name=${files##*/}
 
-            $ssh_connect "[ ! -d $work_path/$file_pathname ] && mkdir -p $work_path/$file_pathname"
+            $ssh_connect "[ -d $work_path/$file_pathname ] || mkdir -p $work_path/$file_pathname"
             if [ $tail_line -gt 0 ]; then
                 log "Collect the tail $tail_line line of the log file"
                 $ssh_connect "tail -n $tail_line $files > $work_path/$file_pathname/$file_name"
@@ -121,8 +121,9 @@ function print_info() {
 
 ############################## Shell Start #####################################################
 # Parameter for current time
-
-ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+if [ -z "$ssh_key_file" ]; then
+    ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+fi
 file_path="/tmp"
 
 # Jenkins parameter judge
