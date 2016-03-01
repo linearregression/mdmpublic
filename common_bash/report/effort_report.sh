@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-01-20 15:35:39>
+## Updated: Time-stamp: <2016-02-29 09:46:24>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -60,7 +60,11 @@ function get_effort_summary() {
     end_pattern=${3?}
     result=""
     for f in `find $git_dir -name "effort.md"`; do
-        content="`awk "/$start_pattern/,/$end_pattern/" $f | grep -v "^$start_pattern" | grep -v '^=======' | grep -v "^$end_pattern"`"
+        if ! grep $end_pattern $f; then
+            end_pattern="`date +'%Y'`-"
+            echo "Warning: Failed to find $end_pattern in $f. Choose another pattern: $end_pattern"
+        fi 
+        content="`awk "/$start_pattern/,/$end_pattern/" $f | grep -v "^$start_pattern" | grep -v '^=======' | grep -v "^$end_pattern"`"   
         name=$(dirname $f)
         name=${name##*/}
         result="${result}Member - ${name}:\n${content}\n---------------------------------\n\n"

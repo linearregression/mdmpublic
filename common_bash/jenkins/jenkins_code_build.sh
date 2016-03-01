@@ -92,11 +92,14 @@ function copy_to_reposerver() {
     local dst_dir="$repo_dir/${branch_name}_code_${revision_sha}"
 
     [ -d $dst_dir ] || mkdir -p $dst_dir
+    [ -d $repo_link ] || mkdir -p $repo_link
+
     for f in ${files_to_copy[*]};do
         cp $f $dst_dir/
+        file_name=`basename $f`
+        rm -rf $repo_link/$file_name
+        ln -s $dst_dir/$file_name $repo_link/$file_name
     done
-    rm -rf $repo_link
-    ln -s $dst_dir $repo_link
 
     log "Just keep $leave_old_count old builds for $repo_dir/$branch_name_code"
     ls -d -t $repo_dir/* | grep ${branch_name}_code | head -n $leave_old_count | xargs touch
@@ -107,18 +110,18 @@ function pack_files(){
     # Pack war package.
     local file_dir=${1?}
     local git_repo=${2?}
-    local base_name=$(basename $repo_dir)  
+    local base_name=$(basename $repo_dir)
     local package_name="${base_name}_${git_repo}.tar.gz"
     local sha1sum_name="${base_name}_${git_repo}.sha1"
-    
+
     log "Packing the file ${package_name},please wait for a moment..."
     cd $file_dir
     rm -f ${package_name}
     rm -f ${sha1sum_name}
-    tar zcf ${package_name} * 
-    
+    tar zcf ${package_name} *
+
     if [ -n "$IS_GENERATE_SHA1SUM" ] && $IS_GENERATE_SHA1SUM ;then
-        log "Generate the sha1 check file ${sha1sum_name}" 
+        log "Generate the sha1 check file ${sha1sum_name}"
         sha1sum ${package_name} > ${sha1sum_name}
         mv ${sha1sum_name} ${repo_dir}
     fi
@@ -238,7 +241,7 @@ if [ -n "$files_to_copy" ] && ! $SKIP_COPY; then
 
     log "================= Generate checksum ================="
     generate_checksum "${repo_dir}/${branch_name}_code_${new_sha}"
-    
+
     if [ -n "$IS_PACK_FILE" ] && $IS_PACK_FILE ;then
         log "================= Pack war file =================="
         pack_files "${repo_dir}/${branch_name}_code_${new_sha}" "$git_repo"

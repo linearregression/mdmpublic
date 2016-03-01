@@ -10,6 +10,7 @@
 ##     java -version
 ##     chef-solo --version
 ##     nc -l 80
+##     which pidstat
 ##################################################
 
 FROM denny/sshd:v1
@@ -20,7 +21,8 @@ apt-get update
 apt-get install -y lsof vim strace ltrace tmux curl tar telnet
 apt-get install -y software-properties-common python-software-properties tree
 apt-get install -y build-essential openssl git-core
-apt-get install python-pip python-dev
+apt-get install -y python-pip python-dev
+apt-get install -y sysstat
 # http://xmodulo.com/record-replay-terminal-session-linux.html
 pip install TermRecord
 
