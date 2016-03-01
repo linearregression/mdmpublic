@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-01 10:33:46>
+## Updated: Time-stamp: <2016-03-01 11:05:19>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -70,7 +70,7 @@ function collect_files() {
 
         # Use currrent time for collect every server
         local collect_time=$(date +'%Y%m%d-%H%M%S')
-        local work_path="$save_path/$JOB_NAME-$server_hostname-$server_ip-$server_port/$JOB_NAME-$server_ip-$server_port-$collect_time"
+        local work_path="$save_path/$JOB_NAME-$server_hostname-$server_ip-$server_port/$JOB_NAME-$server_ip-$collect_time"
 
         $ssh_connect "[ -d $work_path ] || mkdir -p $work_path && cd $work_path"
 
