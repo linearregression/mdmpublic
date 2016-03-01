@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-01 11:05:19>
+## Updated: Time-stamp: <2016-03-01 11:11:55>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -131,7 +131,7 @@ function print_info() {
 
     # Print unexist and unread files list
     if [ ${#unexist_unread_list[@]} -gt 0 ]; then
-        log "Non-existent and unread log file list:${unexist_unread_list[@]}"
+        log "Files don't exist or not found:${unexist_unread_list[@]}"
     fi
 
     # Print collect log list
@@ -177,7 +177,8 @@ fi
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY=7
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/CollectFiles/workspace"
-    
+[ -n "$transfer_dst_keep_day" ] || transfer_dst_keep_day="7"
+
 # Connect server and collect files
 collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY $TAIL_LINE
 
@@ -185,7 +186,6 @@ collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY $TAIL_LINE
 print_info
 
 # Print download link
-[ -n "$transfer_dst_keep_day" ] || transfer_dst_keep_day="7"
 if [ -n $jenkins_baseurl ]; then
     log "Download link:\n${jenkins_baseurl}/job/${JOB_NAME}/ws/"
 fi
