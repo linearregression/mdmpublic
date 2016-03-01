@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-01 10:03:41>
+## Updated: Time-stamp: <2016-03-01 10:11:37>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -14,7 +14,6 @@
 ##      server_list: The list of servers to collect
 ##      files_list : Collected on each server file list
 ##      env_parameters:
-##          export transfer_dst_path="/var/lib/jenkins/jobs/CollectFile/Workspace"
 ##          export jenkins_baseurl="http://123.57.240.189:58080"
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##
@@ -177,7 +176,8 @@ fi
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY=7
-
+[ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/CollectFile/Workspace"
+    
 # Connect server and collect files
 collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY $TAIL_LINE
 
