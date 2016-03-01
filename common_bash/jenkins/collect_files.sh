@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-01 11:11:55>
+## Updated: Time-stamp: <2016-03-01 17:01:07>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -16,6 +16,7 @@
 ##      env_parameters:
 ##          export jenkins_baseurl="http://123.57.240.189:58080"
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+##          export REMOVE_PREVIOUS_DOWNLOAD=false
 ##
 ############################## Function Start ##################################################
 function log() {
@@ -176,9 +177,12 @@ fi
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY=7
-[ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/CollectFiles/workspace"
+[ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
 [ -n "$transfer_dst_keep_day" ] || transfer_dst_keep_day="7"
 
+if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
+    rm -rf $transfer_dst_path/*
+fi
 # Connect server and collect files
 collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY $TAIL_LINE
 
@@ -190,6 +194,6 @@ if [ -n $jenkins_baseurl ]; then
     log "Download link:\n${jenkins_baseurl}/job/${JOB_NAME}/ws/"
 fi
 
-echo "rm obselete files under $dst_server_file_path older than $KEEP_DAY"
-find $dst_server_file_path -name "*.tar.gz*" -mtime +$KEEP_DAY -and -not -type d -delete 
+echo "rm obselete files under $transfer_dst_path older than $KEEP_DAY"
+find $transfer_dst_path -name "*.tar.gz*" -mtime +$KEEP_DAY -and -not -type d -delete 
 ############################## Shell End #######################################################
