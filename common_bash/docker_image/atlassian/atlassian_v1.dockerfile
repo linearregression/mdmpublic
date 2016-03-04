@@ -6,6 +6,32 @@
 ##  Start container:
 ##       docker run -t -d --privileged -h myatlassian --name my-atlassian -p 6123:22 -p 18080:8080 -p 18090:8090 -p 18000:8000 denny/atlassian:v1 /usr/sbin/sshd -D
 ##       docker exec -it my-atlassian bash
+##       service mysql start
+##       cd /opt/atlassian/jira/bin; ./shutdown.sh
+##       cd /opt/atlassian/jira/bin; ./startup.sh
+##       tail -f /opt/atlassian/jira/logs/catalina.out
+##       lsof -i tcp:8080
+##       JIRA: curl -v http://127.0.0.1:8080/
+##
+##       cd /opt/atlassian/confluence/bin; ./shutdown.sh
+##       cd /opt/atlassian/confluence/bin; ./startup.sh
+##       tail -f /opt/atlassian/confluence/logs/catalina.out
+##       lsof -i tcp:8090
+##       Confluence: curl -v http://127.0.0.1:8090/
+##
+##       Reconfigure url
+##         JIRA: System --> Settings --> Application title, Base URL
+##         Confluence: General Configuration --> Site Title, Server Base URL
+##
+##       Reconfigure application url
+##         Confluence: Application Links
+##         JIRA: Application Navigator
+##
+##       Reconfigure smtp email for JIRA and Confluence
+##
+##       Remove existing users and projects
+##       Reset password
+=======
 ##
 ##         service mysql start
 ##         service mysql status

@@ -7,7 +7,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-15>
-## Updated: Time-stamp: <2016-01-20 15:36:05>
+## Updated: Time-stamp: <2016-03-02 17:03:50>
 ##-------------------------------------------------------------------
 import os
 import re
@@ -86,25 +86,14 @@ def show_report(sqlite_file, top_count):
     all_rows = c.fetchall()
     for row in all_rows:
         print "%s seconds: %s %s" % (row[0], row[1], row[2])
-    #print('1):', all_rows)
     conn.close()
-    
-def show_context(sqlite_file, top_count, context_count):
-    if context_count == "0":
-        print "skip showing context, since CONTEXT_COUNT is 0"
-        return
-
-    print "\n=================================\n"    
-    print "Context with detail:"
 
 # Usage: python ./diagnostic_jenkinsjob_slow.py
 if __name__=='__main__':
     console_file = os.environ.get('CONSOLE_FILE')
     sqlite_file = os.environ.get('SQLITE_FILE')
     top_count = os.environ.get('TOP_COUNT')
-    context_count = os.environ.get('CONTEXT_COUNT')
 
     load_job_console_output(sqlite_file, console_file)
     show_report(sqlite_file, top_count)
-    show_context(sqlite_file, top_count, context_count)
 ## File : diagnostic_jenkinsjob_slow.py ends

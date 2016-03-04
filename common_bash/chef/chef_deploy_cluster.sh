@@ -3,7 +3,7 @@
 ## @copyright 2015 DennyZhang.com
 ## Description :
 ## --
-### #Time-stamp: <2016-01-20 15:47:45>
+### #Time-stamp: <2016-03-03 14:21:52>
 ###-------------------------------------------------------------
 
 ################################################################################################
@@ -211,7 +211,7 @@ do
 
     if [ -n "${CODE_SH}" ]; then
         log "Update git codes"
-        ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name $project_name
+        ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir/$devops_branch_name $git_repo_url $git_repo $devops_branch_name $project_name
     fi
 done
 
