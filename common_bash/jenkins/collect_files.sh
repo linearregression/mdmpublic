@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-01 17:01:07>
+## Updated: Time-stamp: <2016-03-04 19:51:23>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -17,6 +17,7 @@
 ##          export jenkins_baseurl="http://123.57.240.189:58080"
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export REMOVE_PREVIOUS_DOWNLOAD=false
+##          export KEEP_DAY=7
 ##
 ############################## Function Start ##################################################
 function log() {
@@ -102,7 +103,7 @@ function collect_files() {
                 $ssh_connect "tail -n $tail_line $files > $work_path/$save_pathname/$file_name"
             else
                 log "Complete log files"
-                $ssh_connect "cp $files $work_path/$save_pathname/$file_name"
+                $ssh_connect "cp -r $files $work_path/$save_pathname/$file_name"
             fi
         done
 
@@ -111,7 +112,7 @@ function collect_files() {
             log "$server collect files compress start"
             $ssh_connect "tar -zcvf ${work_path}.tar.gz $work_path/* && rm -rf $work_path"
 
-            log "copy ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
+            log "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
             scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/
 
             tar_list+=("\n${work_path}.tar.gz")
