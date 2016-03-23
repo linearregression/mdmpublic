@@ -25,7 +25,6 @@ function log() {
 
 function shell_exit() {
     errcode=$?
-    rm -rf $env_file
     if [ $errcode -eq 0 ];then
         log "The pre_check has passed."
     else
@@ -124,22 +123,18 @@ function check_jenkins_job_status()
     fi
 }
 
+########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
-########################################################################
 echo "Check the env befor operating..."
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
+
+# Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    log "env file: pre_check.sh Set env parameters:"
-    log "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
 if [ -n "$WEBSITE_LIST" ]; then
     #Check the network whether can connect.

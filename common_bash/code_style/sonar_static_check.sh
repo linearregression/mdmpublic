@@ -131,18 +131,13 @@ EOF
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
 env_parameters=$(remove_hardline "$env_parameters")
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    log "env file: snar_static_check.sh Set env parameters:"
-    log "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+        eval $env_variable
+done 
+unset IFS
 
 # Update code
 git_update_code $git_repo $git_repo_url $branch_name $working_dir "yes"

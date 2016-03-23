@@ -71,7 +71,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 echo "Deploy to ${ssh_server_ip}:${ssh_port}"
 env_parameters=$(remove_hardline "$env_parameters")
-IFS=$'\n';
+IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
 done

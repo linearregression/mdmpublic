@@ -153,18 +153,13 @@ function check_command() {
 
 echo "server_list: ${server_list}"
 
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
 env_parameters=$(remove_hardline "$env_parameters")
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    log "env file: $env_file. Set env parameters:"
-    log "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
 if [ -z "${ssh_key_file}" ]; then
     ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"

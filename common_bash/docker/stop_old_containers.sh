@@ -64,7 +64,7 @@ function stop_expired_container() {
         fi
 
         if [ $flag -eq 0 ]; then
-           log "Container: [$container_name] Will be stopped"
+           log "Stop Container: [$container_name]"
            $ssh_connect docker stop $container_name
 
            # Store is not white list and the need to stop the container

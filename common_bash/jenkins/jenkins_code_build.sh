@@ -139,7 +139,6 @@ flag_file="/var/lib/jenkins/$JOB_NAME.flag"
 
 function shell_exit() {
     errcode=$?
-    rm -rf $env_file
     if [ $errcode -eq 0 ]; then
         echo "OK"> $flag_file
     else
@@ -148,29 +147,23 @@ function shell_exit() {
     exit $errcode
 }
 
+########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 . /etc/profile
-########################################################################
 
 leave_old_count=1 # only keep one days' build by default
 # Build Repo
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
 
-# evaulate env
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    log "env file: $env_file. Set env parameters:"
-    log "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
-
+# Global variables needed to enable the current script
+env_parameters=$(remove_hardline "$env_parameters")
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
 log "env variables. CLEAN_START: $CLEAN_START, SKIP_COPY: $SKIP_COPY, FORCE_BUILD: $FORCE_BUILD, build_command: $build_command"
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then

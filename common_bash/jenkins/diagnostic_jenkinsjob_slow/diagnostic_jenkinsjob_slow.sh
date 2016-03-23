@@ -15,24 +15,18 @@
 ##       job_run_id:
 ##       env_parameters:
 ##           export jenkins_baseurl="http://inhousejenkins.jinganiam.com"
-##           export TOP_COUNT=10
-##           export CONTEXT_COUNT=0
-##           export CONSOLE_FILE="/tmp/console.log"
-##           export SQLITE_FILE="/tmp/console.sqlite"
+##           export top_count=10
+##           export context_count=0
+##           export console_file="/tmp/console.log"
+##           export sqlite_file="/tmp/console.sqlite"
 ################################################################################################
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
 
 echo "evaluate env"
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    echo "env_file_: $env_file Set env parameters:"
-    echo "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
 # set default value
 if [ -z "$PY_PATH" ]; then

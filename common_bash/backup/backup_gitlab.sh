@@ -6,13 +6,14 @@
 ## Description :
 ## --
 ## Created : <2016-03-05>
-## Updated: Time-stamp: <2016-03-05 10:14:51>
+## Updated: Time-stamp: <2016-03-05 10:31:44>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      server_ip_port: 123.57.240.189:22
 ##      env_parameters:
 ##          export KEEP_DAY=7
+##          export KEEP_BACKUP_DAY=7
 ##          export ssh_key_file=/var/lib/jenkins/.ssh/id_rsa
 
 function remove_hardline() {
@@ -21,7 +22,7 @@ function remove_hardline() {
 }
 # env parameters
 env_parameters=$(remove_hardline "$env_parameters")
-IFS=$'\n';
+IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
 done
@@ -29,7 +30,8 @@ unset IFS
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
-
+[ -n "$KEEP_BACKUP_DAY" ] || KEEP_BACKUP_DAY=7
+[ -n "$KEEP_DAY" ] || KEEP_DAY=7
 server_split=(${server_ip_port//:/ })
 ssh_server_ip=${server_split[0]}
 ssh_port=${server_split[1]}
@@ -49,4 +51,7 @@ $ssh_connect gitlab-rake gitlab:backup:create
 
 echo "SCP backup set to Jenkins machine: $transfer_dst_path"
 scp -r -P $ssh_port -i $ssh_key_file root@$ssh_server_ip:/var/opt/gitlab/backups/* $transfer_dst_path/
+
+echo "Remove obsolete backup set"
+find $transfer_dst_path -name "*.tar" -mtime +$KEEP_BACKUP_DAY -and -not -type d -delete 
 ## File : backup_gitlab.sh ends

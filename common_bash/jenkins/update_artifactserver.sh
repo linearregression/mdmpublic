@@ -30,18 +30,13 @@ function log() {
 
 ########################################################################
 
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
+# Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    log "env file: $env_file. Set env parameters:"
-    log "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
 log "env variables. kill_running_chef_update: $kill_running_chef_update, STOP_CONTAINER: $STOP_CONTAINER"
 

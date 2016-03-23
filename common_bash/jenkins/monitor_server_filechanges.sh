@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-03-04 18:43:08>
+## Updated: Time-stamp: <2016-03-17 10:22:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,18 +21,12 @@
 ##           export mark_previous_as_true=false
 ##           export start_inotifywait_when_stopped=true
 ################################################################################################
-env_dir="/tmp/env/"
-env_file="$env_dir/$$"
 # evaulate env
-if [ -n "$env_parameters" ]; then
-    mkdir -p $env_dir
-    echo "env file: $env_file. Set env parameters:"
-    echo "$env_parameters"
-    cat > $env_file <<EOF
-$env_parameters
-EOF
-    . $env_file
-fi
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
@@ -92,7 +86,7 @@ do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
-    echo "Check $ssh_server_ip for file changes"
+    echo "Check Node $ssh_server_ip for file changes"
     monitor_server_filechanges $ssh_server_ip $ssh_port
 done
 ## File : monitor_server_filechanges.sh ends
