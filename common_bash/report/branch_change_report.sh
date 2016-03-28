@@ -6,16 +6,16 @@
 ## Description :
 ## --
 ## Created : <2016-03-28>
-## Updated: Time-stamp: <2016-03-28 16:56:57>
+## Updated: Time-stamp: <2016-03-28 22:00:58>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
-##      working_dir: /var/lib/jenkins/code/branchchangereport/
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
-##      base_branch: master
-##      active_branch: dev
+##      base_branch: sprint-28
+##      active_branch: sprint-29
 ##      env_parameters:
+##          export working_dir=/var/lib/jenkins/code/branchchangereport/
 ################################################################################################
 function remove_hardline() {
     local str=$*
@@ -54,6 +54,10 @@ for env_variable in `echo "$env_parameters"`; do
 done
 unset IFS
 
+if [ -z "$working_dir" ]; then
+    working_dir=/var/lib/jenkins/code/
+fi
+
 if [ ! -d $working_dir ]; then
     sudo mkdir -p "$working_dir"
     sudo chown -R jenkins:jenkins "$working_dir"
@@ -64,6 +68,7 @@ git_update_code2 $git_repo $git_repo_url $working_dir
 cd $working_dir/$git_repo
 
 echo "Checkout branches: $base_branch"
+# Here we mute stdout/stderr on purpose, thus the report looks clean and clear
 if ! $(git branch | grep $base_branch 2>&1 1>/dev/null); then
     git branch $base_branch 2>&1 1>/dev/null
 fi
@@ -80,6 +85,6 @@ echo "Git Commit Messages: git show-branch $active_branch origin/$base_branch $b
 git show-branch $active_branch origin/$base_branch $base_branch
 
 echo -e "\n ============================================\n"
-echo "Files Changed: git diff --stat $base_branch...$active_branch"
-git diff --stat $base_branch...$active_branch
+echo "Files Changed: git diff --stat $active_branch...$base_branch"
+git diff --stat $active_branch..$base_branch
 ## File : branch_change_report.sh ends
