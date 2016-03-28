@@ -6,14 +6,14 @@
 ## Description :
 ## --
 ## Created : <2016-03-28>
-## Updated: Time-stamp: <2016-03-28 22:00:58>
+## Updated: Time-stamp: <2016-03-28 22:10:43>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
-##      base_branch: sprint-28
-##      active_branch: sprint-29
+##      previous_release_branch: sprint-28
+##      current_active_branch: sprint-29
 ##      env_parameters:
 ##          export working_dir=/var/lib/jenkins/code/branchchangereport/
 ################################################################################################
@@ -67,24 +67,24 @@ fi
 git_update_code2 $git_repo $git_repo_url $working_dir
 cd $working_dir/$git_repo
 
-echo "Checkout branches: $base_branch"
+echo "Checkout branches: $previous_release_branch"
 # Here we mute stdout/stderr on purpose, thus the report looks clean and clear
-if ! $(git branch | grep $base_branch 2>&1 1>/dev/null); then
-    git branch $base_branch 2>&1 1>/dev/null
+if ! $(git branch | grep $previous_release_branch 2>&1 1>/dev/null); then
+    git branch $previous_release_branch 2>&1 1>/dev/null
 fi
-git pull origin $base_branch 2>&1 1>/dev/null
+git pull origin $previous_release_branch 2>&1 1>/dev/null
 
-echo "Checkout branches: $active_branch"
-if ! $(git branch | grep $active_branch 2>&1 1>/dev/null); then
-    git branch $active_branch 2>&1 1>/dev/null
+echo "Checkout branches: $current_active_branch"
+if ! $(git branch | grep $current_active_branch 2>&1 1>/dev/null); then
+    git branch $current_active_branch 2>&1 1>/dev/null
 fi
-git pull origin $active_branch 2>&1 1>/dev/null
+git pull origin $current_active_branch 2>&1 1>/dev/null
 
 echo -e "\n ======= Generating ChangeSet Report: ========\n"
-echo "Git Commit Messages: git show-branch $active_branch origin/$base_branch $base_branch"
-git show-branch $active_branch origin/$base_branch $base_branch
+echo "Git Commit Messages: git show-branch $current_active_branch origin/$previous_release_branch $previous_release_branch"
+git show-branch $current_active_branch origin/$previous_release_branch $previous_release_branch
 
 echo -e "\n ============================================\n"
-echo "Files Changed: git diff --stat $active_branch...$base_branch"
-git diff --stat $active_branch..$base_branch
+echo "Files Changed: git diff --stat $current_active_branch...$previous_release_branch"
+git diff --stat $current_active_branch..$previous_release_branch
 ## File : branch_change_report.sh ends
