@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : start_docker_container.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-01-20 15:35:58>
+## Updated: Time-stamp: <2016-03-28 16:27:14>
 ##-------------------------------------------------------------------
 image_name=${1:-"denny/osc:latest"}
 image_repo_name=${image_name%:*}

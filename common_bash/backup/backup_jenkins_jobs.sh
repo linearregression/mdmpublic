@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : backup_jenkins_jobs.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-03-28 08:44:29>
+## Updated: Time-stamp: <2016-03-28 16:27:21>
 ##-------------------------------------------------------------------
 [ -d $BACKUP_DIR ] ||  mkdir -p $BACKUP_DIR
 . /etc/profile

@@ -25,7 +25,7 @@
 ##################################################
 
 FROM denny/ruby2:v1
-MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
+MAINTAINER DennyZhang.com <denny@dennyzhang.com>
 
 ########################################################################################
 # https://about.gitlab.com/downloads/#ubuntu1404

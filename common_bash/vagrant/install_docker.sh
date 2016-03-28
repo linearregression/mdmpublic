@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : install_docker.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-01-20 15:35:55>
+## Updated: Time-stamp: <2016-03-28 16:27:14>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}

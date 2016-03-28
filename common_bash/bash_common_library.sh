@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : bash_common_library.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-01-08>
-## Updated: Time-stamp: <2016-01-20 16:01:16>
+## Updated: Time-stamp: <2016-03-28 16:27:20>
 ##-------------------------------------------------------------------
 ########################### Check Parameters ########################
 function is_ip()

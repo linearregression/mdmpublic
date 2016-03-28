@@ -1,12 +1,12 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## File : diagnostic_jenkinsjob_slow.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Co-Author :
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-03-25 13:54:23>
+## Updated: Time-stamp: <2016-03-28 16:27:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################

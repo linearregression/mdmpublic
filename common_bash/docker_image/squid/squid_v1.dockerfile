@@ -7,7 +7,7 @@
 ##################################################
 
 FROM ubuntu:14.04
-MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
+MAINTAINER DennyZhang.com <denny@dennyzhang.com>
 
 ########################################################################################
 # TODO: to be implemented

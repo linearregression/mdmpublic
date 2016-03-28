@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : kitchen_test_cookbooks.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-02-15 10:35:20>
+## Updated: Time-stamp: <2016-03-28 16:27:20>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:

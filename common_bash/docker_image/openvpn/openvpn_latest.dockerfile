@@ -9,7 +9,7 @@
 ##################################################
 
 FROM denny/openvpn:v1
-MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
+MAINTAINER DennyZhang.com <denny@dennyzhang.com>
 
 ########################################################################################
 

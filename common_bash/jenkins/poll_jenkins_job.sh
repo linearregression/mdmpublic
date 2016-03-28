@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : poll_jenkins_job.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-01-20 15:35:22>
+## Updated: Time-stamp: <2016-03-28 16:27:16>
 ##-------------------------------------------------------------------
 jenkins_job=${1?}
 jenkins_cli_jar=${2?}

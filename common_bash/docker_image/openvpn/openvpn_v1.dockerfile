@@ -9,7 +9,7 @@
 ##################################################
 
 FROM denny/sshd:v1
-MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
+MAINTAINER DennyZhang.com <denny@dennyzhang.com>
 
 ########################################################################################
 # docker pull denny/sshd:v1
@@ -60,5 +60,5 @@ MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
 ##      /etc/openvpn/easy-rsa/keys/$client.crt
 ##      /etc/openvpn/easy-rsa/keys/$client.key
 #
-## docker commit -m "initial" -a "Denny<denny.zhang001@gmail.com>" 7572605bd8e7 denny/openvpn:v1
+## docker commit -m "initial" -a "Denny<denny@dennyzhang.com>" 7572605bd8e7 denny/openvpn:v1
 ########################################################################################

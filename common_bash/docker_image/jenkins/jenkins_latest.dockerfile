@@ -23,7 +23,7 @@
 ##################################################
 
 FROM denny/jenkins:v1
-MAINTAINER DennyZhang.com <denny.zhang001@gmail.com>
+MAINTAINER DennyZhang.com <denny@dennyzhang.com>
 
 ########################################################################################
 # TODO: install jenkins jobs by chef deployment

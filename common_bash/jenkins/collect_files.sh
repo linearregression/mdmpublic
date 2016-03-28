@@ -2,11 +2,11 @@
 ################################################################################################
 ## @copyright 2015 DennyZhang.com
 ## File : collect_files.sh
-## Author : doungni<doungni@doungni.com>, Denny <denny.zhang001@gmail.com>
+## Author : doungni<doungni@doungni.com>, Denny <denny@dennyzhang.com>
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-04 19:51:23>
+## Updated: Time-stamp: <2016-03-28 16:27:17>
 ##-------------------------------------------------------------------
 
 ################################################################################################

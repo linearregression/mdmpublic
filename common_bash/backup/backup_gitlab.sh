@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : backup_gitlab.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-03-05>
-## Updated: Time-stamp: <2016-03-05 10:31:44>
+## Updated: Time-stamp: <2016-03-28 16:27:21>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:

@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : monitor_filechanges.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-01-20 15:34:59>
+## Updated: Time-stamp: <2016-03-28 16:27:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################

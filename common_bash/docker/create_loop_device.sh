@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : create_loop_device.sh
-## Author : Denny <denny.zhang001@gmail.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-12-28>
-## Updated: Time-stamp: <2016-01-20 15:33:31>
+## Updated: Time-stamp: <2016-03-28 16:27:20>
 ##-------------------------------------------------------------------
 file_count=${1?}
 
