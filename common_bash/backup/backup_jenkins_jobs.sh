@@ -6,11 +6,8 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-02-15 10:50:12>
+## Updated: Time-stamp: <2016-03-28 08:44:29>
 ##-------------------------------------------------------------------
-export BACKUP_DIR="/tmp/backup/"
-export BACKUP_SET_PREFIX="jenkins"
-
 [ -d $BACKUP_DIR ] ||  mkdir -p $BACKUP_DIR
 . /etc/profile
 
@@ -27,6 +24,7 @@ done
 backup_url="https://raw.githubusercontent.com/DennyZhang/backup_dir/master/backup_dir.sh"
 backup_cksum="1605019814"
 backup_dir_sh="/tmp/backup_dir.sh"
+base_dir=$(dirname $backup_dir_sh)
 
 if [ -f $backup_dir_sh ]; then
     cksum=$(cksum $backup_dir_sh | awk -F' ' '{print $1}')
@@ -40,6 +38,12 @@ else
     wget -O $backup_dir_sh $backup_url
     chmod 755 $backup_dir_sh
 fi
+
+# generate backup_dir.rc
+cd $base_dir
+> backup_dir.rc
+echo "BACKUP_DIR=/tmp/backup/" >> backup_dir.rc
+echo "BACKUP_SET_PREFIX=jenkins" >> backup_dir.rc
 
 sudo bash $backup_dir_sh
 ## File : backup_jenkins_jobs.sh ends

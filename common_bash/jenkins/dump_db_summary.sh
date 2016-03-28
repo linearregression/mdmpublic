@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-02-23 14:59:43>
+## Updated: Time-stamp: <2016-03-25 13:54:58>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -16,7 +16,7 @@
 ##       mongodb:
 ##          db_ip: 123.57.240.189, localhost , 127.0.0.1
 ##          db_port : Database server port.
-##          db_name : Database name, e.g. : iam; userRoot; etc..
+##          db_name : Database name, e.g. : db1; userRoot; etc..
 ##          db_user : Database user name which is a security authentication user. 
 ##                    The parameter can be null.
 ##          db_pwd  : Database user's password.
@@ -27,9 +27,9 @@
 ##          baseDn  : BaseDN of the ldap. e.g.: dc=jingantech,dc=com or dc=Tenant,dc=jingantech,dc=com
 ##      -h|--help   : Show the help information. 
 ## Usage:
-##       dump_db_summary.sh mongodb localhost 27017 iam
+##       dump_db_summary.sh mongodb localhost 27017 db1
 ##           # The command must be executed in the database server
-##       dump_db_summary.sh mongodb 123.57.240.189 27017 iam admin password1
+##       dump_db_summary.sh mongodb 123.57.240.189 27017 db1 admin password1
 ##           # The command can be executed in the database client server.
 ##       dump_db_summary.sh ldap localhost 1389 dc=jingantech,dc=com
 ##       dump_db_summary.sh -h
@@ -61,7 +61,7 @@ function usage()
         mongodb:
             db_ip       : Support ip or local hostname. e.g.: 123.57.240.189, localhost , 127.0.0.1
             db_port     : Database server port.
-            db_name     : Database name, e.g. : iam; userRoot; etc..
+            db_name     : Database name, e.g. : db1; userRoot; etc..
             db_user     : Database user name which is a security authentication user.
                           The parameter can be null.
             db_pwd      : Database user's password.
@@ -74,8 +74,8 @@ function usage()
             Presently, do not support the database.
         -h|--help       : Show the help information.
         For example:
-            dump_db_summary.sh mongodb localhost 27017 iam
-            dump_db_summary.sh mongodb 123.57.240.189 27017 iam admin password1
+            dump_db_summary.sh mongodb localhost 27017 db1
+            dump_db_summary.sh mongodb 123.57.240.189 27017 db1 admin password1
             dump_db_summary.sh ldap localhost 1389 dc=jingantech,dc=com
             dump_db_summary.sh --help
          "

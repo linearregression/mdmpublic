@@ -16,7 +16,7 @@
           <name>git_repo_url</name>
           <description>Repo url for chef source code.
 </description>
-          <defaultValue>git@git.jinganiam.com:authright/iamdevops.git</defaultValue>
+          <defaultValue>git@git.dennyzhang.com:authright/mydevops.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>branch_name</name>
@@ -26,7 +26,7 @@
         <hudson.model.StringParameterDefinition>
           <name>working_dir</name>
           <description></description>
-          <defaultValue>/var/lib/jenkins/code/dockerdeploy/iamdevops</defaultValue>
+          <defaultValue>/var/lib/jenkins/code/dockerdeploy/mydevops</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>test_command</name>

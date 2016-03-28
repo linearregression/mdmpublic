@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-11-30>
-## Updated: Time-stamp: <2016-03-24 10:53:01>
+## Updated: Time-stamp: <2016-03-28 08:49:17>
 ##-------------------------------------------------------------------
 # pre-cache Chef Omnibus installation
 mkdir -p /tmp/install.sh.14
@@ -42,6 +42,7 @@ local_ip="${eth0_ip%.*}.*"
 echo no_proxy="localhost,127.0.0.1,$local_ip" > /etc/profile.d/no_proxy.sh
 
 # bypass kitchen verify hang
-wget -O /tmp/preinstall_kitchen_verify.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/master/common_bash/chef/preinstall_kitchen_verify.sh
+# TODO: remove this hardcode http download link
+wget -O /tmp/preinstall_kitchen_verify.sh https://raw.githubusercontent.com/DennyZhang/devops_public/master/chef/preinstall_kitchen_verify.sh
 bash -e /tmp/preinstall_kitchen_verify.sh
 ## File : chef_kitchen_provision.sh ends

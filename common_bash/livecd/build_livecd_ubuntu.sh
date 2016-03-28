@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-01-20 15:35:36>
+## Updated: Time-stamp: <2016-03-25 13:55:15>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
@@ -14,7 +14,7 @@
 
 working_dir=${1:-"/root/work/"}
 fetch_iso_url=${2:-"http://releases.ubuntu.com/14.04/ubuntu-14.04.3-desktop-amd64.iso"}
-livecd_image_name=${3:-"iam-ubuntu-14.04.3.iso"}
+livecd_image_name=${3:-"my-ubuntu-14.04.3.iso"}
 volume_id=${4:-"DevOps Ubuntu"}
 
 ############################################################################

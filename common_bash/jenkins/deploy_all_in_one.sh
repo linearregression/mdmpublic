@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-01-31 10:59:43>
+## Updated: Time-stamp: <2016-03-25 13:53:55>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,7 +22,7 @@
 ##               "all_in_one_auth":{"branch_name":"dev",
 ##               "install_audit":"1"}
 ##             }
-##       chef_client_rb: cookbook_path ["/root/test/dev/iamdevops/cookbooks","/root/test/dev/iamdevops/community_cookbooks"]
+##       chef_client_rb: cookbook_path ["/root/test/dev/mydevops/cookbooks","/root/test/dev/mydevops/community_cookbooks"]
 ##       check_command: enforce_all_nagios_check.sh "check_.*_log|check_.*_cpu"
 ##       devops_branch_name: master
 ##       env_parameters:

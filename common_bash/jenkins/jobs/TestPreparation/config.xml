@@ -9,12 +9,12 @@
         <hudson.model.TextParameterDefinition>
           <name>git_pull_list</name>
           <description></description>
-          <defaultValue>/Users/mac/backup/iam_code/iamdevops,git@git.jinganiam.com:authright/iamdevops.git,dev
-/Users/mac/backup/iam_code/devops-knowledgebase,git@git.jinganiam.com:dennyzhang/devops-knowledgebase.git,master
-/Users/mac/backup/iam_code/devops_effort,git@git.jinganiam.com:authright/devops_effort.git,master
-/var/lib/jenkins/code/bash_dir/,git@git.jinganiam.com:dennyzhang/devops-knowledgebase.git,dev
-/var/lib/jenkins/code/dockerdeploy/iamdevops,git@git.jinganiam.com:authright/iamdevops.git,dev
-/var/lib/jenkins/code/digitialocean/iamdevops/,git@git.jinganiam.com:authright/iamdevops.git,dev</defaultValue>
+          <defaultValue>/Users/mac/backup/my_code/mydevops,git@git.dennyzhang.com:authright/mydevops.git,dev
+/Users/mac/backup/my_code/devops-knowledgebase,git@git.dennyzhang.com:dennyzhang/devops-knowledgebase.git,master
+/Users/mac/backup/my_code/devops_effort,git@git.dennyzhang.com:authright/devops_effort.git,master
+/var/lib/jenkins/code/bash_dir/,git@git.dennyzhang.com:dennyzhang/devops-knowledgebase.git,dev
+/var/lib/jenkins/code/dockerdeploy/mydevops,git@git.dennyzhang.com:authright/mydevops.git,dev
+/var/lib/jenkins/code/digitialocean/mydevops/,git@git.dennyzhang.com:authright/mydevops.git,dev</defaultValue>
         </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

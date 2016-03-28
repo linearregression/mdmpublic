@@ -3,7 +3,7 @@
 ## @copyright 2015 DennyZhang.com
 ## Description :
 ## --
-### #Time-stamp: <2016-03-03 14:21:52>
+### #Time-stamp: <2016-03-25 13:53:26>
 ###-------------------------------------------------------------
 
 ################################################################################################
@@ -12,7 +12,7 @@
 ##                    ip-2:port-2
 ##       deploy_run_list: "recipe[apt::default]","recipe[cluster-auth::multi_instance]"
 ##       init_run_list: "recipe[apt::default]","recipe[cluster-auth::initialize]"
-##       chef_client_rb: cookbook_path ["/root/test/iamdevops/cookbooks","/root/test/iamdevops/community_cookbooks"]
+##       chef_client_rb: cookbook_path ["/root/test/mydevops/cookbooks","/root/test/mydevops/community_cookbooks"]
 ##       chef_json:
 ##        {"os_basic_auth":
 ##                {"enable_firewall": "0",
@@ -39,7 +39,7 @@
 ##       env_parameters:
 ##             export KILL_RUNNING_CHEF_UPDATE=false
 ##             export CHEF_BINARY_CMD=chef-solo
-##             export CODE_SH="/root/iamdevops/misc/git_update.sh"
+##             export CODE_SH="/root/mydevops/misc/git_update.sh"
 ################################################################################################
 function log() {
     local msg=$*

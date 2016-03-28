@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-03-02 16:37:01>
+## Updated: Time-stamp: <2016-03-25 13:54:23>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -14,7 +14,7 @@
 ##       jenkins_job:
 ##       job_run_id:
 ##       env_parameters:
-##           export jenkins_baseurl="http://inhousejenkins.jinganiam.com"
+##           export jenkins_baseurl="http://jenkins.dennyzhang.com"
 ##           export top_count=10
 ##           export context_count=0
 ##           export console_file="/tmp/console.log"
