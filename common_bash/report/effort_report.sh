@@ -60,7 +60,7 @@ function get_effort_summary() {
     end_pattern=${3?}
     result=""
     for f in `find $git_dir -name "effort.md"`; do
-        if ! grep $end_pattern $f; then
+        if ! grep $end_pattern $f >/dev/null 2>&1 ; then
             end_pattern="`date +'%Y'`-"
             echo "Warning: Failed to find $end_pattern in $f. Choose another pattern: $end_pattern"
         fi 

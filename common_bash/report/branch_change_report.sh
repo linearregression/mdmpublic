@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-03-28>
-## Updated: Time-stamp: <2016-03-28 22:10:43>
+## Updated: Time-stamp: <2016-03-28 22:27:49>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -80,11 +80,11 @@ if ! $(git branch | grep $current_active_branch 2>&1 1>/dev/null); then
 fi
 git pull origin $current_active_branch 2>&1 1>/dev/null
 
-echo -e "\n ======= Generating ChangeSet Report: ========\n"
-echo "Git Commit Messages: git show-branch $current_active_branch origin/$previous_release_branch $previous_release_branch"
+echo -e "\n ========= Generating ChangeSet Report: from $previous_release_branch to $current_active_branch ==========\n"
+echo "【Git Commit Messages】: git show-branch $current_active_branch origin/$previous_release_branch $previous_release_branch"
 git show-branch $current_active_branch origin/$previous_release_branch $previous_release_branch
 
-echo -e "\n ============================================\n"
-echo "Files Changed: git diff --stat $current_active_branch...$previous_release_branch"
+echo -e "\n ==============================================================="
+echo "【Files Changed】: git diff --stat $current_active_branch...$previous_release_branch"
 git diff --stat $current_active_branch..$previous_release_branch
 ## File : branch_change_report.sh ends

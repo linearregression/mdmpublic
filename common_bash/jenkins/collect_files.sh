@@ -72,7 +72,10 @@ function collect_files() {
 
         # Use currrent time for collect every server
         local collect_time=$(date +'%Y%m%d-%H%M%S')
-        local work_path="$save_path/$JOB_NAME-$server_hostname-$server_ip-$server_port/$JOB_NAME-$server_ip-$collect_time"
+        local dir_by_hostname="${JOB_NAME}-${server_hostname}-${server_ip}-${server_port}"
+        local dir_by_time="${JOB_NAME}-${server_ip}-${collect_time}"
+        local work_path="${save_path}/${dir_by_hostname}/${dir_by_time}"
+
 
         $ssh_connect "[ -d $work_path ] || mkdir -p $work_path && cd $work_path"
 
@@ -110,7 +113,8 @@ function collect_files() {
         if [ $($ssh_connect "ls $work_path | wc -l") -gt 0 ]; then
             # Compress named:hostname-server_ip-server_port-current_time files
             log "$server collect files compress start"
-            $ssh_connect "tar -zcvf ${work_path}.tar.gz $work_path/* && rm -rf $work_path"
+            local dir_by_hostname_path="${save_path}/${dir_by_hostname}"
+            $ssh_connect "cd ${dir_by_hostname_path} && tar -zcvf ${dir_by_time}.tar.gz ${dir_by_time} && rm -rf $work_path"
 
             log "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
             scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/
