@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-03-28 16:27:16>
+## Updated: Time-stamp: <2016-03-31 11:23:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,6 +41,15 @@ function current_git_sha() {
 function log() {
     local msg=$*
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
+}
+
+function git_log() {
+    local code_dir=${1?}
+    local tail_count=${2:-"10"}
+    cd $code_dir
+    command="git log -n $tail_count --pretty=format:\"%h - %an, %ar : %s\""
+    echo -e "\n\nShow latest git commits: $command"
+    eval $command
 }
 
 function git_update_code() {
@@ -139,6 +148,7 @@ flag_file="/var/lib/jenkins/$JOB_NAME.flag"
 
 function shell_exit() {
     errcode=$?
+    git_log $code_dir
     if [ $errcode -eq 0 ]; then
         echo "OK"> $flag_file
     else
@@ -148,7 +158,6 @@ function shell_exit() {
 }
 
 ########################################################################
-trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 . /etc/profile
 
@@ -156,6 +165,8 @@ leave_old_count=1 # only keep one days' build by default
 # Build Repo
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
+
+trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
@@ -240,4 +251,5 @@ if [ -n "$files_to_copy" ] && ! $SKIP_COPY; then
         pack_files "${repo_dir}/${branch_name}_code_${new_sha}" "$git_repo"
     fi
 fi
+
 ## File : jenkins_code_build.sh ends

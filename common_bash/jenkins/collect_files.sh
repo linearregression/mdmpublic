@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-28 16:27:17>
+## Updated: Time-stamp: <2016-03-31 11:08:04>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,6 +29,11 @@ function log() {
 function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
+}
+
+function parse_server_list() {
+    server_list=$(echo "$server_list" | grep -v '^#')
+    echo "$server_list"
 }
 
 # For collect logfile
@@ -172,6 +177,8 @@ if [ -z "$files_list" ]; then
     log "ERROR wrong parameter: files_list can't be empty"
     exit 1
 fi
+
+server_list=$(parse_server_list "$server_list")
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY=7

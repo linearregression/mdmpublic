@@ -3,7 +3,7 @@
 ## @copyright 2015 DennyZhang.com
 ## Description :
 ## --
-### #Time-stamp: <2016-03-25 13:53:26>
+### #Time-stamp: <2016-03-31 11:06:41>
 ###-------------------------------------------------------------
 
 ################################################################################################
@@ -49,6 +49,11 @@ function log() {
 function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
+}
+
+function parse_server_list() {
+    server_list=$(echo "$server_list" | grep -v '^#')
+    echo "$server_list"
 }
 
 function bindhosts() {
@@ -150,7 +155,7 @@ function check_command() {
 ##########################################################################################
 ## bash start
 ##########################################################################################
-
+server_list=$(parse_server_list "$server_list")
 echo "server_list: ${server_list}"
 
 env_parameters=$(remove_hardline "$env_parameters")

@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-03-28 16:27:16>
+## Updated: Time-stamp: <2016-04-02 08:57:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -86,7 +86,7 @@ do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
-    echo "Check Node $ssh_server_ip for file changes"
+    echo -e "\n============== Check Node $ssh_server_ip for file changes =============="
     monitor_server_filechanges $ssh_server_ip $ssh_port
 done
 ## File : monitor_server_filechanges.sh ends
