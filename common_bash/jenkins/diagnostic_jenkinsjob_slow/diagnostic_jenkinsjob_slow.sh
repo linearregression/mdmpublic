@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-03-28 16:27:16>
+## Updated: Time-stamp: <2016-04-05 17:52:06>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,9 +29,8 @@ done
 unset IFS
 
 # set default value
-if [ -z "$PY_PATH" ]; then
-    PY_PATH="/var/lib/jenkins/code/bash_dir/master/devops-knowledgebase/code/jenkins/diagnostic_jenkinsjob_slow/diagnostic_jenkinsjob_slow.py"
-fi
+dir_name=$(dirname $0)
+py_file="${dir_name}/diagnostic_jenkinsjob_slow.py"
 
 echo "get console file"
 url=$jenkins_baseurl/view/All/job/$jenkins_job/$job_run_id/consoleFull
@@ -41,5 +40,5 @@ curl -o $CONSOLE_FILE $url
 echo "parse console"
 rm -rf $SQLITE_FILE # TODO: remove later
 
-python $PY_PATH
+python $py_file
 ## File : diagnostic_jenkinsjob_slow.sh ends
