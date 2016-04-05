@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-02 11:29:51>
+## Updated: Time-stamp: <2016-04-05 16:16:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,9 +21,9 @@
 ##           export mark_previous_as_true=false
 ##           export start_inotifywait_when_stopped=true
 ################################################################################################
-function parse_server_list() {
-    server_list=$(echo "$server_list" | grep -v '^#')
-    echo "$server_list"
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
 }
 ################################################################################################
 # evaulate env
@@ -37,6 +37,8 @@ unset IFS
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
 
 log_file="/root/monitor_server_filechanges.log"
+server_list=$(list_strip_comments "$server_list")
+file_list=$(list_strip_comments "$file_list")
 
 function monitor_server_filechanges() {
     local ssh_server_ip=${1?}
@@ -86,7 +88,6 @@ function monitor_server_filechanges() {
     fi
 }
 
-server_list=$(parse_server_list "$server_list")
 for server in ${server_list}
 do
     server_split=(${server//:/ })

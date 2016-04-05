@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-03-31 11:08:04>
+## Updated: Time-stamp: <2016-04-05 16:16:30>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -31,9 +31,9 @@ function remove_hardline() {
     echo "$str" | tr -d '\r'
 }
 
-function parse_server_list() {
-    server_list=$(echo "$server_list" | grep -v '^#')
-    echo "$server_list"
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
 }
 
 # For collect logfile
@@ -178,7 +178,7 @@ if [ -z "$files_list" ]; then
     exit 1
 fi
 
-server_list=$(parse_server_list "$server_list")
+server_list=$(list_strip_comments "$server_list")
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY=7

@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-03-28 16:27:16>
+## Updated: Time-stamp: <2016-04-05 16:16:39>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,11 +30,17 @@ function remove_hardline() {
     echo "$str" | tr -d '\r'
 }
 
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+
 function log() {
     local msg=$*
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
 }
 
+################################################################################################
 function git_update_code() {
     set -e
     local git_repo=${1?}
@@ -125,6 +131,7 @@ for env_variable in `echo "$env_parameters"`; do
 done
 unset IFS
 
+filelist_to_monitor=$(list_strip_comments "$filelist_to_monitor")
 if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
     rm -rf $flag_file
 fi

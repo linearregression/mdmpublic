@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-08>
-## Updated: Time-stamp: <2016-03-28 16:27:20>
+## Updated: Time-stamp: <2016-04-05 13:08:40>
 ##-------------------------------------------------------------------
 ########################### Check Parameters ########################
 function is_ip()
@@ -167,6 +167,22 @@ function is_port_listening()
 {
     port=${1?}
     lsof -i tcp:$port | grep LISTEN 1>/dev/null
+}
+
+function ssh_apt_update() {
+    set +e
+    # Sample: ssh_apt_update "ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
+    ssh_command=${1?}
+    echo "Run apt-get -y update"
+    apt_get_output=$($ssh_command apt-get -y update)
+    if echo "$apt_get_output" | "Hash Sum mismatch" 2>&1 2>/dev/null; then
+        echo "apt-get update fail with complain of 'Hash Sum mismatch'"
+        echo "rm -rf /var/lib/apt/lists/*"
+        $ssh_command "rm -rf /var/lib/apt/lists/*"
+        echo "Re-run apt-get -y update"
+        $ssh_command "apt-get -y update"
+    fi
+    set -e
 }
 
 ######################################################################
