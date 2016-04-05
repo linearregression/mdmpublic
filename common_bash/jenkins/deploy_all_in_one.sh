@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-03-28 16:27:16>
+## Updated: Time-stamp: <2016-04-05 08:20:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -98,6 +98,8 @@ fi
 if [ -z "$chef_client_rb" ]; then
     git_repo="iamdevops"
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
+else
+    chef_client_rb=$(echo $chef_client_rb | sed -e "s/ +/ /g")
 fi
 
 if [ -z "$SSH_SERVER_PORT" ]; then

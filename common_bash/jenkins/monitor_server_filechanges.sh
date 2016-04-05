@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-02 08:57:21>
+## Updated: Time-stamp: <2016-04-02 11:29:51>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -20,6 +20,11 @@
 ##      env_parameters:
 ##           export mark_previous_as_true=false
 ##           export start_inotifywait_when_stopped=true
+################################################################################################
+function parse_server_list() {
+    server_list=$(echo "$server_list" | grep -v '^#')
+    echo "$server_list"
+}
 ################################################################################################
 # evaulate env
 IFS=$'\n'
@@ -81,6 +86,7 @@ function monitor_server_filechanges() {
     fi
 }
 
+server_list=$(parse_server_list "$server_list")
 for server in ${server_list}
 do
     server_split=(${server//:/ })
