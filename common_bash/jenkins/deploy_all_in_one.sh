@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-05 08:20:42>
+## Updated: Time-stamp: <2016-04-05 08:33:08>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -127,7 +127,7 @@ if [ -n "$CODE_SH" ]; then
     git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
     # ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name
     # TODO: remove this line and replace to above
-    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir/$devops_branch_name $git_repo_url $git_repo $devops_branch_name "all-in-one"
+    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name "all-in-one"
 fi
 
 log "Prepare chef configuration"
