@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-05 16:16:38>
+## Updated: Time-stamp: <2016-04-06 07:01:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,12 +21,19 @@
 ##           export mark_previous_as_true=false
 ##           export start_inotifywait_when_stopped=true
 ################################################################################################
+function remove_hardline() {
+    local str=$*
+    echo "$str" | tr -d '\r'
+}
+
 function list_strip_comments() {
     my_list=$(echo "$my_list" | grep -v '^#')
     echo "$my_list"
 }
 ################################################################################################
 # evaulate env
+env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

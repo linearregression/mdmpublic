@@ -7,7 +7,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-01-20 15:34:44>
+## Updated: Time-stamp: <2016-04-06 07:01:36>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,6 +28,11 @@ function log() {
     local msg=$*
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
 }
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 
 function shell_exit() {
     errcode=$?
@@ -61,6 +66,7 @@ START=$(date +%s)
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-01-20 15:35:26>
+## Updated: Time-stamp: <2016-04-06 07:01:35>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -23,6 +23,11 @@ function log() {
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
 }
 
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 function shell_exit() {
     errcode=$?
     if [ $errcode -eq 0 ];then
@@ -130,6 +135,7 @@ echo "Check the env befor operating..."
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

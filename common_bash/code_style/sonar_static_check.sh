@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-03-28 16:27:20>
+## Updated: Time-stamp: <2016-04-06 07:01:37>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,6 +34,11 @@ function log() {
     local msg=$*
     echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
 }
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 
 function git_update_code() {
     set -e
@@ -132,7 +137,7 @@ git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 
 env_parameters=$(remove_hardline "$env_parameters")
-
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
         eval $env_variable

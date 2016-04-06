@@ -6,8 +6,12 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-03-28 16:27:21>
+## Updated: Time-stamp: <2016-04-06 08:34:41>
 ##-------------------------------------------------------------------
+if [ -z "$BACKUP_DIR" ]; then
+    BACKUP_DIR="/tmp/backup"
+fi
+    
 [ -d $BACKUP_DIR ] ||  mkdir -p $BACKUP_DIR
 . /etc/profile
 
@@ -42,7 +46,7 @@ fi
 # generate backup_dir.rc
 cd $base_dir
 > backup_dir.rc
-echo "BACKUP_DIR=/tmp/backup/" >> backup_dir.rc
+echo "BACKUP_DIR=$BACKUP_DIR" >> backup_dir.rc
 echo "BACKUP_SET_PREFIX=jenkins" >> backup_dir.rc
 
 sudo bash $backup_dir_sh

@@ -3,7 +3,7 @@
 ## @copyright 2015 DennyZhang.com
 ## Description :
 ## --
-### #Time-stamp: <2016-04-05 16:16:26>
+### #Time-stamp: <2016-04-06 07:01:37>
 ###-------------------------------------------------------------
 
 ################################################################################################
@@ -159,7 +159,7 @@ server_list=$(list_strip_comments "$server_list")
 echo "server_list: ${server_list}"
 
 env_parameters=$(remove_hardline "$env_parameters")
-
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

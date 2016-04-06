@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-04-05 17:52:06>
+## Updated: Time-stamp: <2016-04-06 07:01:36>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,19 @@
 ##           export sqlite_file="/tmp/console.sqlite"
 ################################################################################################
 
+function remove_hardline() {
+    local str=$*
+    echo "$str" | tr -d '\r'
+}
+
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 echo "evaluate env"
+env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

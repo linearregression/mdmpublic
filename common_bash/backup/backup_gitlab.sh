@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-03-05>
-## Updated: Time-stamp: <2016-03-28 16:27:21>
+## Updated: Time-stamp: <2016-04-06 06:59:31>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -20,8 +20,14 @@ function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
 }
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 # env parameters
 env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

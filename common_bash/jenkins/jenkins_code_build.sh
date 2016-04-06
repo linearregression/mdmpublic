@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-03-31 11:23:26>
+## Updated: Time-stamp: <2016-04-06 07:01:36>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -52,6 +52,11 @@ function git_log() {
     eval $command
 }
 
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 function git_update_code() {
     set -e
     local git_repo=${1?}
@@ -170,6 +175,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

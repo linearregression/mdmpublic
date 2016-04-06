@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-03-28 16:27:15>
+## Updated: Time-stamp: <2016-04-06 07:01:35>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -32,6 +32,7 @@ function log() {
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

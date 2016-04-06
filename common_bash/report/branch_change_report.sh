@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-03-28>
-## Updated: Time-stamp: <2016-03-28 22:27:49>
+## Updated: Time-stamp: <2016-04-06 07:01:35>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,6 +21,11 @@ function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
 }
+function list_strip_comments() {
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
+################################################################################################
 
 function git_update_code2() {
     set -e
@@ -48,6 +53,7 @@ git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
