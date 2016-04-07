@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-07 11:52:25>
+## Updated: Time-stamp: <2016-04-07 17:28:54>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,6 +29,8 @@
 ##             export STOP_CONTAINER=false
 ##             export KILL_RUNNING_CHEF_UPDATE=false
 ##             export START_COMMAND="docker start osc-aio"
+##             export POST_START_COMMAND="sleep 5; service apache2 start"
+##             export PRE_STOP_COMMAND="service apache2 stop"
 ##             export STOP_COMMAND="docker stop osc-aio"
 ##             export CODE_SH=""
 ##             export SSH_SERVER_PORT=22
@@ -60,15 +62,19 @@ function list_strip_comments() {
 ################################################################################################
 function shell_exit() {
     errcode=$?
-    ssh_options="$common_ssh_options -p $SSH_SERVER_PORT"
-
     if $STOP_CONTAINER; then
-        log "stop container."
-        stop_instance_command="ssh $ssh_options root@$ssh_server_ip $STOP_COMMAND"
-        log $stop_instance_command
-        eval $stop_instance_command
-    fi
+        if [ -n "$PRE_STOP_COMMAND" ]; then
+            pre_stop_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$PRE_STOP_COMMAND"'
+            log $pre_stop_command
+            eval $pre_stop_command
+        fi
 
+        log "stop container."
+        stop_command='ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip "$STOP_COMMAND"'
+        log $stop_command
+        eval $stop_command
+
+    fi
     exit $errcode
 }
 
@@ -87,6 +93,8 @@ unset IFS
 if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
     ensure_variable_isset "When STOP_CONTAINER is set, STOP_COMMAND must be given " "$STOP_COMMAND"
 fi
+
+[ -n "$POST_START_COMMAND" ] || POST_START_COMMAND="sleep 5"
 
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
@@ -117,11 +125,15 @@ fi
 common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
 if [ -n "$START_COMMAND" ]; then
-    start_instance_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip $START_COMMAND"
+    start_command='ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip "$START_COMMAND"'
+    log $start_command
+    eval $start_command
 
-    log $start_instance_command
-    eval $start_instance_command
-    sleep 5
+    sleep 3
+
+    post_start_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$POST_START_COMMAND"'
+    log $post_start_command
+    eval $post_start_command
 fi
 
 if $KILL_RUNNING_CHEF_UPDATE; then
