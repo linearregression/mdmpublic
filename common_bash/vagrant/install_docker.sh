@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-03-28 16:27:14>
+## Updated: Time-stamp: <2016-04-07 09:13:26>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -17,7 +17,7 @@ function log() {
     fi
 }
 
-function ensure_is_root() {
+function fail_unless_root() {
     # Make sure only root can run our script
     if [[ $EUID -ne 0 ]]; then
         echo "Error: This script must be run as root." 1>&2
@@ -103,7 +103,7 @@ function shell_exit() {
 
 ################################################################################################
 START=$(date +%s)
-ensure_is_root
+fail_unless_root
 
 update_system
 

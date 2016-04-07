@@ -14,7 +14,7 @@ function log() {
     echo -ne `date +'%Y-%m-%d %H:%M:%S'` " $msg\n"
 }
 
-function domain() {
+function check_domain() {
     # Check command: jq, for deal with json format
     if ! command -v jq >/dev/null 2>&1; then
         sudo apt-get install jq -y
@@ -79,6 +79,5 @@ else
     exit 1
 fi
 
-domain ${domain_list[@]}
-
+check_domain ${domain_list[@]}
 ############################## Shell End #######################################################

@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-06 07:01:36>
+## Updated: Time-stamp: <2016-04-07 11:52:25>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -53,13 +53,14 @@ function ensure_variable_isset() {
 }
 
 function list_strip_comments() {
+    my_list=${1?}
     my_list=$(echo "$my_list" | grep -v '^#')
     echo "$my_list"
 }
 ################################################################################################
 function shell_exit() {
     errcode=$?
-    ssh_options="$common_ssh_options -p $SSH_SERVER_PORT "
+    ssh_options="$common_ssh_options -p $SSH_SERVER_PORT"
 
     if $STOP_CONTAINER; then
         log "stop container."

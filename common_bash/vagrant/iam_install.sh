@@ -6,7 +6,7 @@
 ## Description:
 ## --
 ## Created: <2016-01-06>
-## Updated: Time-stamp: <2016-03-28 16:27:15>
+## Updated: Time-stamp: <2016-04-07 08:57:57>
 ##--------------------------------------------------------
 
 function fail_unless_root() {
@@ -35,7 +35,7 @@ function is_container_running(){
     fi
 }
 
-function start_docker_deamon() {
+function start_docker_daemon() {
     if ! service docker status | grep running;then
         log "start docker:"
         service docker start
@@ -53,14 +53,14 @@ function load_docker_image() {
 case "$1" in
     load-image)
         fail_unless_root
-        start_docker_deamon
+        start_docker_daemon
         docker_tar=${2:-"denny_osc_latest.tar.bz2"}        
         load_docker_image $docker_tar
         ;;
     
     start-docker-jenkins)
         fail_unless_root
-        start_docker_deamon
+        start_docker_daemon
 
         container_name="docker-jenkins"
         image_name="denny/osc:latest"
@@ -82,7 +82,7 @@ case "$1" in
 
     start-docker-all-in-one)
         fail_unless_root
-        start_docker_deamon
+        start_docker_daemon
 
         container_name="docker-all-in-one"
         image_name="denny/osc:latest"        
@@ -132,7 +132,7 @@ case "$1" in
 
     clean)
         fail_unless_root
-        start_docker_deamon
+        start_docker_daemon
 
         log "stop container:"
         docker ps -a --format "{{.Names}}" | xargs docker stop

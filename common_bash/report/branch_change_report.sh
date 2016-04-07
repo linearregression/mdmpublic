@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-03-28>
-## Updated: Time-stamp: <2016-04-06 07:01:35>
+## Updated: Time-stamp: <2016-04-07 11:53:15>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,9 @@ function remove_hardline() {
     local str=$*
     echo "$str" | tr -d '\r'
 }
+
 function list_strip_comments() {
+    my_list=${1?}
     my_list=$(echo "$my_list" | grep -v '^#')
     echo "$my_list"
 }

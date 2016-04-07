@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-04-07 07:37:36>
+## Updated: Time-stamp: <2016-04-07 11:53:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -19,29 +19,23 @@
 ##          export REMOVE_PREVIOUS_DOWNLOAD=false
 ##          export KEEP_DAY=7
 ##
-################################################################################################
-# include common library
-function refresh_common_library() {
-    local library_file_checksum=${1?}
-    local library_file=${2:-"/tmp/bash_common_library.sh"}
-    local library_url=${3:-"https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/bash_common_library.sh"}
-    if [ ! -f $library_file ]; then
-        echo "download bash common library"
-        wget -O $library_file $library_url
-    else
-        checksum=$(cksum $library_file | awk -F' ' '{print $1}')
-        if [ "$library_file_checksum" != "$checksum" ]; then
-            echo "refresh bash common library"
-            wget -O $library_file $library_url
-        fi
-    fi
+############################## Function Start ##################################################
+function log() {
+    local msg=$*
+
+    echo -e `date +['%Y-%m-%d %H-%M-%S']` "\n$msg\n"
 }
 
-library_file="/tmp/bash_common_library.sh"
-refresh_common_library "2832231617" $library_file
-. $library_file
-############################## Function Start ##################################################
+function remove_hardline() {
+    local str=$*
+    echo "$str" | tr -d '\r'
+}
 
+function list_strip_comments() {
+    my_list=${1?}
+    my_list=$(echo "$my_list" | grep -v '^#')
+    echo "$my_list"
+}
 
 # For collect logfile
 function collect_files() {

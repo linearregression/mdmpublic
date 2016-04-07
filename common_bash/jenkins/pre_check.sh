@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-04-06 07:01:35>
+## Updated: Time-stamp: <2016-04-07 11:53:16>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -24,6 +24,7 @@ function log() {
 }
 
 function list_strip_comments() {
+    my_list=${1?}
     my_list=$(echo "$my_list" | grep -v '^#')
     echo "$my_list"
 }

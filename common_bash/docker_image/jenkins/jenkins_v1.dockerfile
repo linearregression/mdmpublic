@@ -87,5 +87,13 @@ rm -rf /tmp/ruby-2.2.1*
 
 # TODO: install jenkins jobs by chef deployment
 
+# TODO: install jenkins plugins: timestamp, git client, slack
+
+# TODO: reconfigure timestamper format to use: '<b>'yyyy-MM-dd HH:mm:ss'</b> '
+
+# TODO: configure jenkins system to have 4 executors
+
+# TODO: enforce jenkins users authentication
+
 rm -rf /var/cache/*
 ########################################################################################
