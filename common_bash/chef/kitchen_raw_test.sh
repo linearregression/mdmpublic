@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-10 14:50:21>
+## Updated: Time-stamp: <2016-04-10 15:42:58>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,8 +18,6 @@
 ##      KITCHEN_LOGLEVEL(debug, info, warn, error, fatal)
 ##      SKIP_KITCHEN_CONVERGE(boolean)
 ##      SKIP_KITCHEN_VERIFY(boolean)
-################################################################################################
-. /etc/profile
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
