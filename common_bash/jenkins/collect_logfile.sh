@@ -21,13 +21,14 @@
 # retention_day  : By jenkins job configuration
 #######################################################################################
 
-############################ collect_logfile.sh Start #################################
-
-function log() {
-    local msg=$*
-
-    echo -e `date +['%Y-%m-%d %H-%M-%S']` "\n$msg\n"
-}
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 
 #######################################################################################
 # Paramenter     : server_list, server_arr[], server_split[], server_ip, server_port

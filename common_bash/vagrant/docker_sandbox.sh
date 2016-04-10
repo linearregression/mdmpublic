@@ -10,16 +10,15 @@
 # Description:
 ### END INIT INFO
 
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 LOG_FILE="/var/log/docker_sandbox.log"
-
-function log() {
-    local msg=${1?}
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-
-    if [ -n "$LOG_FILE" ]; then
-        echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n" >> $LOG_FILE
-    fi
-}
 
 case "$1" in
     start)

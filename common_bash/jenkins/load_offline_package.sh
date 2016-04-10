@@ -7,7 +7,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-04-07 11:53:16>
+## Updated: Time-stamp: <2016-04-10 12:19:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,24 +18,14 @@
 ##       package_location: /root/install_file/XXX.tar.gz
 ##       package_new_location: /var/www/repo/download
 ################################################################################################
-
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
 ################################################################################################
-
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 function shell_exit() {
     errcode=$?
 
@@ -53,7 +43,6 @@ function shell_exit() {
     
     exit $errcode
 }
-
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 

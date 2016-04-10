@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : update_artifactserver.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-06 07:01:35>
+## Updated: Time-stamp: <2016-04-10 12:19:52>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,18 +18,14 @@
 ##       dst_dir:/var/www/repo/dev
 ##       tmp_dir:/tmp/artifact
 ################################################################################################
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-########################################################################
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(list_strip_comments "$env_parameters")

@@ -5,16 +5,17 @@
 ## Description :
 ## --
 ## Created : <2015-11-19>
-## Updated: Time-stamp: <2016-01-20 15:35:02>
+## Updated: Time-stamp: <2016-04-10 12:19:38>
 ##-------------------------------------------------------------------
 
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-#################################################################################
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 jmeter_testplan="$workspace_path/jmeter_testplan.jmx"
 ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 code_sh="jmeter -n -t jmeter_testplan.jmx -l jmeter_testplan_`date +['%Y-%m-%d-%H:%M:%S']`.jtl"

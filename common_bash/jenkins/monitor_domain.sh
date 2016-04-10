@@ -8,12 +8,14 @@
 ################################################################################################
 
 ############################## Function Start ##################################################
-function log() {
-    local msg=$*
-
-    echo -ne `date +'%Y-%m-%d %H:%M:%S'` " $msg\n"
-}
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 function check_domain() {
     # Check command: jq, for deal with json format
     if ! command -v jq >/dev/null 2>&1; then

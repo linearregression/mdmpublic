@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-03-25 13:54:58>
+## Updated: Time-stamp: <2016-04-10 12:18:50>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,12 +34,14 @@
 ##       dump_db_summary.sh ldap localhost 1389 dc=jingantech,dc=com
 ##       dump_db_summary.sh -h
 ################################################################################################
-
-function log() {
-    local msg=$*
-    echo -ne "$msg\n"
-}
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 function shell_exit() {
     errcode=$?
 

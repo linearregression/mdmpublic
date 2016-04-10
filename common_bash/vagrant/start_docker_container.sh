@@ -2,52 +2,23 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : start_docker_container.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-07 09:13:25>
+## Updated: Time-stamp: <2016-04-10 12:23:22>
 ##-------------------------------------------------------------------
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 image_name=${1:-"denny/osc:latest"}
 image_repo_name=${image_name%:*}
 
-function log() {
-    local msg=${1?}
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-
-    if [ -n "$LOG_FILE" ]; then
-        echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n" >> $LOG_FILE
-    fi
-}
-
-function fail_unless_root() {
-    # Make sure only root can run our script
-    if [[ $EUID -ne 0 ]]; then
-        echo "Error: This script must be run as root." 1>&2
-        exit 1
-    fi
-}
-
-function os_release() {
-    set -e
-    distributor_id=$(lsb_release -a 2>/dev/null | grep 'Distributor ID' | awk -F":\t" '{print $2}')
-    if [ "$distributor_id" == "RedHatEnterpriseServer" ]; then
-        echo "redhat"
-    elif [ "$distributor_id" == "Ubuntu" ]; then
-        echo "ubuntu"
-    else
-        if grep CentOS /etc/issue 1>/dev/null 2>/dev/null; then
-            echo "centos"
-        else
-            if uname -a | grep '^Darwin' 1>/dev/null 2>/dev/null; then
-                echo "osx"
-            else
-                echo "ERROR: Not supported OS"
-            fi
-        fi
-    fi
-}
-################################################################################################
 function docker_pull_image() {
     local image_repo_name=${1?}
     local image_name=${2?}
@@ -74,19 +45,6 @@ function docker_pull_image() {
         echo "no" > $flag_file
     else
         echo "yes" > $flag_file
-    fi
-}
-
-function is_container_running(){
-    local container_name=${1?}
-    if docker ps -a | grep $container_name 1>/dev/null 2>/dev/null; then
-        if docker ps | grep $container_name 1>/dev/null 2>/dev/null; then
-            echo "running"
-        else
-            echo "dead"
-        fi
-    else
-        echo "none"
     fi
 }
 
@@ -150,7 +108,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t -h oscjenkins --privileged -v /root/docker/:/var/lib/jenkins/code/ \
+    docker run -d -t -h dockerjenkins --privileged -v /root/docker/:/var/lib/jenkins/code/ \
            --name $container_name -p 4022:22 -p 28000:28000 -p 28080:28080 -p 3128:3128 \
            $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then
@@ -169,7 +127,7 @@ fi
 
 if [ $container_status = "none" ]; then
     # TODO:
-    docker run -d -t --privileged -h oscaio --name $container_name \
+    docker run -d -t --privileged -h dockeraio --name $container_name \
            -p 10000-10050:10000-10050 -p 80:80 -p 443:443 \
            -p 6022:22 -p 1389:1389 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then

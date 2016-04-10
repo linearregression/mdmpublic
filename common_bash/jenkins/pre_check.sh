@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-04-07 11:53:16>
+## Updated: Time-stamp: <2016-04-10 12:22:13>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -13,21 +13,13 @@
 ##         export WEBSITE_LIST="https://bitbucket.org http://baidu.com"
 ##         export JENKINS_JOB_STATUS_FILES="CommonServerCheck.flag"
 ################################################################################################
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
 ################################################################################################
 function shell_exit() {
     errcode=$?
@@ -37,63 +29,6 @@ function shell_exit() {
         log "The pre_check has failed."
     fi
     exit $errcode
-}
-
-########################################################
-##Function Name:    check_network
-##Description:      Check the website if can connect
-##Input:            max_connect_number,website_list
-##Output:           0:success , 1:failed. 
-########################################################
-function check_network() 
-{
-    # The maximum number of trying to connect website
-    local max_retries_count=${1:-3}
-    
-    # Check website whether can connect, multiple websites, separated by spaces
-    local website_list=${2:-"https://bitbucket.org/"}
-
-    # Connect timeout
-    local timeout=7
-    
-    # The maximum allowable time data transmission
-    local maxtime=10
-    
-    # If the website cannnt connect,will sleep several second
-    local sleep_time=5
-    
-    # If any one website cannt connect,the flag value is false, otherwise is true.
-    local check_flag=true
-    
-    log "max_retries_count=$max_retries_count, website_list=$website_list"
-    
-    connect_failed_website=""
-    for website in ${website_list[*]}
-    do
-        for ((i=1; i <= $max_retries_count; i++))
-        do
-            # get http_code
-            curl -I -s --connect-timeout $timeout -m $maxtime $website | tee website_tmp.txt
-            ret=`cat website_tmp.txt | grep -q "200 OK" && echo yes || echo no`
-            if [ "X$ret" = "Xyes" ]; then
-                log "$website connect succeed"
-                break
-            fi
-            if [ $i -eq $max_retries_count ];then
-                log "$website connect failed"
-                log "The curl result:"
-                cat website_tmp.txt
-                connect_failed_website="${connect_failed_website} ${website}"
-                check_flag=false
-                break
-            fi
-            sleep $sleep_time
-        done
-    done
-    log "========== connect_failed_website= ${connect_failed_website}=========="
-    if ! $check_flag ;then
-        exit 1
-    fi
 }
 
 ########################################################

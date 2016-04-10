@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : backup_gitlab.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-03-05>
-## Updated: Time-stamp: <2016-04-07 11:52:47>
+## Updated: Time-stamp: <2016-04-10 12:20:23>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -15,17 +15,13 @@
 ##          export KEEP_DAY=7
 ##          export KEEP_BACKUP_DAY=7
 ##          export ssh_key_file=/var/lib/jenkins/.ssh/id_rsa
-
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
 ################################################################################################
 # env parameters
 env_parameters=$(remove_hardline "$env_parameters")

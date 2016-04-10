@@ -19,11 +19,14 @@
 
 # TODO: Need to reduce code duplication in between stop_old_containers.sh and stop_black_containers.sh
 ############################## Function Start ##################################################
-function log() {
-    local msg=$*
-    echo -e `date +'[%Y-%m-%d %H-%M-%S]'` "\n$msg\n"
-}
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 # Docker client version gather than 1.9.1
 function stop_black_containers() {
     # Save running container names 

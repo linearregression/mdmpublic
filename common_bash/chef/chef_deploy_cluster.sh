@@ -3,7 +3,7 @@
 ## @copyright 2015 DennyZhang.com
 ## Description :
 ## --
-### #Time-stamp: <2016-04-06 07:01:37>
+### #Time-stamp: <2016-04-10 12:17:43>
 ###-------------------------------------------------------------
 
 ################################################################################################
@@ -41,21 +41,14 @@
 ##             export CHEF_BINARY_CMD=chef-solo
 ##             export CODE_SH="/root/mydevops/misc/git_update.sh"
 ################################################################################################
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function list_strip_comments() {
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 function bindhosts() {
     # TODO: make the code general and move to bash_common_library.sh
     local server_list=${1?}

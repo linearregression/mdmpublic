@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : serverspec_check.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-03-28 16:27:15>
+## Updated: Time-stamp: <2016-04-10 12:23:05>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,25 +18,13 @@
 ##          end
 ##
 ################################################################################################
-function os_release() {
-    set -e
-    distributor_id=$(lsb_release -a 2>/dev/null | grep 'Distributor ID' | awk -F":\t" '{print $2}')
-    if [ "$distributor_id" == "RedHatEnterpriseServer" ]; then
-        echo "redhat"
-    elif [ "$distributor_id" == "Ubuntu" ]; then
-        echo "ubuntu"
-    else
-        if grep CentOS /etc/issue 1>/dev/null 2>/dev/null; then
-            echo "centos"
-        else
-            if uname -a | grep '^Darwin' 1>/dev/null 2>/dev/null; then
-                echo "osx"
-            else
-                echo "ERROR: Not supported OS"
-            fi
-        fi
-    fi
-}
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
 ################################################################################################
 function install_serverspec() {
     if ! sudo gem list | grep serverspec 2>/dev/null 1>/dev/null; then

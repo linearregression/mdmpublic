@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
 ## File : branch_change_report.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-03-28>
-## Updated: Time-stamp: <2016-04-07 11:53:15>
+## Updated: Time-stamp: <2016-04-10 12:21:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -17,37 +17,14 @@
 ##      env_parameters:
 ##          export working_dir=/var/lib/jenkins/code/branchchangereport/
 ################################################################################################
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
 ################################################################################################
-
-function git_update_code2() {
-    set -e
-    local git_repo=${1?}
-    local git_repo_url=${2?}
-    local working_dir=${3?}
-
-    echo "Git update code for '$git_repo_url' to $working_dir"
-    # checkout code, if absent
-    if [ ! -d $working_dir/$git_repo ]; then
-        mkdir -p $working_dir/
-        cd $working_dir/
-        git clone --depth 1 $git_repo_url
-    else
-        cd $working_dir/$git_repo
-        git config remote.origin.url $git_repo_url
-    fi
-}
-
-########################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 . /etc/profile
 
 # Build Repo

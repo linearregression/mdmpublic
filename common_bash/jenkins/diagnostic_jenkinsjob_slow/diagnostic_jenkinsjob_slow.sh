@@ -1,12 +1,12 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## File : diagnostic_jenkinsjob_slow.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Co-Author :
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-04-07 11:53:17>
+## Updated: Time-stamp: <2016-04-10 12:20:32>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,17 +21,15 @@
 ##           export sqlite_file="/tmp/console.sqlite"
 ################################################################################################
 
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
 ################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
+# TODO: provide a common function
 echo "evaluate env"
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(list_strip_comments "$env_parameters")

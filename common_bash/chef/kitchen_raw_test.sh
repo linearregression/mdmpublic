@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : kitchen_raw_test.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-03-28 16:27:20>
+## Updated: Time-stamp: <2016-04-10 12:17:52>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -19,17 +19,14 @@
 ##      SKIP_KITCHEN_CONVERGE(boolean)
 ##      SKIP_KITCHEN_VERIFY(boolean)
 ################################################################################################
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`"========== $msg ==========\n"
-}
-
-function exit_if_error() {
-    if [ $? -ne 0 ];then
-        exit 1
-    fi
-}
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 function exec_kitchen_cmd() {
     hooks_dir="$1/.kitchen.hooks"
     shift

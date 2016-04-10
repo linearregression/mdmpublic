@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : deploy_all_in_one.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-07 17:28:54>
+## Updated: Time-stamp: <2016-04-10 12:20:27>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,37 +28,22 @@
 ##       env_parameters:
 ##             export STOP_CONTAINER=false
 ##             export KILL_RUNNING_CHEF_UPDATE=false
-##             export START_COMMAND="docker start osc-aio"
+##             export START_COMMAND="docker start longrun-aio"
 ##             export POST_START_COMMAND="sleep 5; service apache2 start"
 ##             export PRE_STOP_COMMAND="service apache2 stop"
-##             export STOP_COMMAND="docker stop osc-aio"
+##             export STOP_COMMAND="docker stop longrun-aio"
 ##             export CODE_SH=""
 ##             export SSH_SERVER_PORT=22
+##
+## Hook points: START_COMMAND -> POST_START_COMMAND -> PRE_STOP_COMMAND -> STOP_COMMAND
 ################################################################################################
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-function ensure_variable_isset() {
-    message=${1?"parameter name should be given"}    
-    var=${2:-''}
-    if [ -z "$var" ]; then
-        echo $message
-        exit 1
-    fi
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
 ################################################################################################
 function shell_exit() {
     errcode=$?
@@ -94,8 +79,6 @@ if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
     ensure_variable_isset "When STOP_CONTAINER is set, STOP_COMMAND must be given " "$STOP_COMMAND"
 fi
 
-[ -n "$POST_START_COMMAND" ] || POST_START_COMMAND="sleep 5"
-
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
 ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
@@ -129,7 +112,7 @@ if [ -n "$START_COMMAND" ]; then
     log $start_command
     eval $start_command
 
-    sleep 3
+    sleep 2
 
     post_start_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$POST_START_COMMAND"'
     log $post_start_command

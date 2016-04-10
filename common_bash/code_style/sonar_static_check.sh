@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : sonar_static_check.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-07 11:53:18>
+## Updated: Time-stamp: <2016-04-10 12:21:25>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,51 +25,14 @@
 ##         export REFRESH_SONAR_CONF=true
 ##         export SONAR_LANGUAGE=java
 ################################################################################################
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
 ################################################################################################
-
-function git_update_code() {
-    set -e
-    local git_repo=${1?}
-    local git_repo_url=${2?}
-    local branch_name=${3?}
-    local working_dir=${4?}
-    local git_pull_outside=${5:-"no"}
-
-    log "Git update code for '$git_repo_url' to $working_dir, branch_name: $branch_name"
-    # checkout code, if absent
-    if [ ! -d $working_dir/$branch_name/$git_repo ]; then
-        mkdir -p $working_dir/$branch_name
-        cd $working_dir/$branch_name
-        git clone --depth 1 $git_repo_url --branch $branch_name --single-branch
-    else
-        cd $working_dir/$branch_name/$git_repo
-        git config remote.origin.url $git_repo_url
-        if [ $git_pull_outside = "no" ]; then
-            # add retry for network turbulence
-            git pull origin $branch_name || (sleep 2 && git pull origin $branch_name)
-        fi
-    fi
-
-    cd $working_dir/$branch_name/$git_repo
-    #git reset --hard
-    git checkout $branch_name
-}
-
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 function start_sonar_server() {
     local sonar_port="9000"
     if sudo lsof -i tcp:$sonar_port 2>/dev/null 1>/dev/null; then

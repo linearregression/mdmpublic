@@ -2,54 +2,30 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : build_livecd_ubuntu.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-04-07 09:13:26>
+## Updated: Time-stamp: <2016-04-10 12:23:08>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
 # Note: above instruction only support desktop version of ubuntu, instead of server version
+
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 
 working_dir=${1:-"/root/work/"}
 fetch_iso_url=${2:-"http://releases.ubuntu.com/14.04/ubuntu-14.04.3-desktop-amd64.iso"}
 livecd_image_name=${3:-"my-ubuntu-14.04.3.iso"}
 volume_id=${4:-"DevOps Ubuntu"}
 
-############################################################################
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-    
-    if [ -n "$LOG_FILE" ]; then
-        echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n" >> $LOG_FILE
-    fi
-}
-
-function fail_unless_root() {
-    # Make sure only root can run our script
-    if [[ $EUID -ne 0 ]]; then
-        echo "Error: This script must be run as root." 1>&2
-        exit 1
-    fi
-}
-
-function os_release() {
-    set -e
-    distributor_id=$(lsb_release -a 2>/dev/null | grep 'Distributor ID' | awk -F":\t" '{print $2}')
-    if [ "$distributor_id" == "RedHatEnterpriseServer" ]; then
-        echo "redhat"
-    elif [ "$distributor_id" == "Ubuntu" ]; then
-        echo "ubuntu"
-    else
-        if grep CentOS /etc/issue 1>/dev/null; then
-            echo "centos"
-        else
-            echo "ERROR: Not supported OS"
-        fi
-    fi
-}
 ############################################################################
 function umount_dir()
 {

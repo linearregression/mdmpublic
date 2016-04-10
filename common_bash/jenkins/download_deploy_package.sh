@@ -2,11 +2,11 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : download_deploy_package.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-03-28 16:27:16>
+## Updated: Time-stamp: <2016-04-10 12:20:07>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,16 +18,13 @@
 ##               configuration/rest/build/libs/XXX.war
 ##               gateway/war/build/libs/XXX.war
 ################################################################################################
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
-
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
 ################################################################################################
 checksum_link="$repo_server/checksum.txt"
 checksum_file="/tmp/checksum.txt"

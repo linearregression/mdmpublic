@@ -2,86 +2,24 @@
 ##-------------------------------------------------------------------
 ## @copyright 2015 DennyZhang.com
 ## File : bootstrap_sandbox.sh
-## Author : Denny <denny@dennyzhang.com>
+## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-07 09:13:26>
+## Updated: Time-stamp: <2016-04-10 12:23:45>
 ##-------------------------------------------------------------------
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
+################################################################################################
 image_name=${1?"docker image name"}
 use_private_hub=${2:-"no"}
 image_repo_name=${image_name%:*}
-
-function log() {
-    local msg=${1?}
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-
-    if [ -n "$LOG_FILE" ]; then
-        echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n" >> $LOG_FILE
-    fi
-}
-
-function fail_unless_root() {
-    # Make sure only root can run our script
-    if [[ $EUID -ne 0 ]]; then
-        echo "Error: This script must be run as root." 1>&2
-        exit 1
-    fi
-}
-
-function os_release() {
-    set -e
-    distributor_id=$(lsb_release -a 2>/dev/null | grep 'Distributor ID' | awk -F":\t" '{print $2}')
-    if [ "$distributor_id" == "RedHatEnterpriseServer" ]; then
-        echo "redhat"
-    elif [ "$distributor_id" == "Ubuntu" ]; then
-        echo "ubuntu"
-    else
-        if grep CentOS /etc/issue 1>/dev/null 2>/dev/null; then
-            echo "centos"
-        else
-            if uname -a | grep '^Darwin' 1>/dev/null 2>/dev/null; then
-                echo "osx"
-            else
-                echo "ERROR: Not supported OS"
-            fi
-        fi
-    fi
-}
 ################################################################################################
-function update_system() {
-    local os_release_name=$(os_release)
-    if [ "$os_release_name" == "ubuntu" ]; then
-        log "apt-get -y update"
-        rm -rf /var/lib/apt/lists/*
-        apt-get -y update
-        apt-get install -y bc
-    fi
-
-    if [ "$os_release_name" == "redhat" ] || [ "$os_release_name" == "centos" ]; then
-        yum -y update
-        yum install -y bc
-    fi
-}
-
-function install_docker() {
-    if ! which docker 1>/dev/null 2>/dev/null; then
-        local os_release_name=$(os_release)
-        if [ "$os_release_name" == "centos" ]; then
-            log "yum install -y docker-io"
-            yum install -y http://mirrors.yun-idc.com/epel/6/i386/epel-release-6-8.noarch.rpm
-            yum install -y docker-io
-            service docker start
-            chkconfig docker on
-        else
-            log "Install docker: wget -qO- https://get.docker.com/ | sh"
-            wget -qO- https://get.docker.com/ | sh
-        fi
-    else
-        log "docker service exists, skip installation"
-    fi
-}
-
 function create_enough_loop_device() {
     # Docker start may fail, due to no available loopback devices
     for i in {0..40}
@@ -118,19 +56,6 @@ function docker_pull_image() {
         echo "no" > $flag_file
     else
         echo "yes" > $flag_file
-    fi
-}
-
-function is_container_running(){
-    local container_name=${1?}
-    if docker ps -a | grep $container_name 1>/dev/null 2>/dev/null; then
-        if docker ps | grep $container_name 1>/dev/null 2>/dev/null; then
-            echo "running"
-        else
-            echo "dead"
-        fi
-    else
-        echo "none"
     fi
 }
 

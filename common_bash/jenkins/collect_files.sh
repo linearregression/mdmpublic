@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-04-07 11:53:18>
+## Updated: Time-stamp: <2016-04-10 12:10:55>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -19,23 +19,14 @@
 ##          export REMOVE_PREVIOUS_DOWNLOAD=false
 ##          export KEEP_DAY=7
 ##
+################################################################################################
+if [ ! -f /var/lib/enable_common_library.sh ]; then
+    wget -O /var/lib/enable_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+fi
+# export AVOID_REFRESH_LIBRARY=true
+bash /var/lib/enable_common_library.sh "1512381967"
 ############################## Function Start ##################################################
-function log() {
-    local msg=$*
-
-    echo -e `date +['%Y-%m-%d %H-%M-%S']` "\n$msg\n"
-}
-
-function remove_hardline() {
-    local str=$*
-    echo "$str" | tr -d '\r'
-}
-
-function list_strip_comments() {
-    my_list=${1?}
-    my_list=$(echo "$my_list" | grep -v '^#')
-    echo "$my_list"
-}
 
 # For collect logfile
 function collect_files() {
