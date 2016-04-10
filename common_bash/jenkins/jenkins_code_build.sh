@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-10 12:22:54>
+## Updated: Time-stamp: <2016-04-10 14:51:59>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,13 +25,16 @@
 ##           export IS_GENERATE_SHA1SUM=false
 ##      build_command: make
 ################################################################################################
+. /etc/profile
 ################################################################################################
-if [ ! -f /var/lib/enable_common_library.sh ]; then
-    wget -O /var/lib/enable_common_library.sh \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
+    [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
+    wget -O /var/lib/devops/refresh_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/enable_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1512381967"
+. /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
     local code_dir=${1?}
@@ -113,9 +116,6 @@ function shell_exit() {
 }
 
 ########################################################################
-
-. /etc/profile
-
 leave_old_count=1 # only keep one days' build by default
 # Build Repo
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')

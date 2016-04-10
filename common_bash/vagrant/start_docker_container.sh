@@ -6,15 +6,17 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-10 12:23:22>
+## Updated: Time-stamp: <2016-04-10 14:53:39>
 ##-------------------------------------------------------------------
 ################################################################################################
-if [ ! -f /var/lib/enable_common_library.sh ]; then
-    wget -O /var/lib/enable_common_library.sh \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
+    [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
+    wget -O /var/lib/devops/refresh_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/enable_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1512381967"
+. /var/lib/devops/devops_common_library.sh
 ################################################################################################
 image_name=${1:-"denny/osc:latest"}
 image_repo_name=${image_name%:*}

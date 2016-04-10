@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-10 12:21:25>
+## Updated: Time-stamp: <2016-04-10 14:50:47>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,13 +25,16 @@
 ##         export REFRESH_SONAR_CONF=true
 ##         export SONAR_LANGUAGE=java
 ################################################################################################
+. /etc/profile
 ################################################################################################
-if [ ! -f /var/lib/enable_common_library.sh ]; then
-    wget -O /var/lib/enable_common_library.sh \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
+    [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
+    wget -O /var/lib/devops/refresh_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/enable_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1512381967"
+. /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function start_sonar_server() {
     local sonar_port="9000"
@@ -97,7 +100,6 @@ EOF
 }
 
 ################################################################################################
-. /etc/profile
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 
