@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-13 23:24:34>
+## Updated: Time-stamp: <2016-04-14 16:52:18>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -15,7 +15,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1582193298"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function create_enough_loop_device() {

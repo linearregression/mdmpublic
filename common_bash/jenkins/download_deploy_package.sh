@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-13 23:24:36>
+## Updated: Time-stamp: <2016-04-14 16:52:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1582193298"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 checksum_link="$repo_server/checksum.txt"

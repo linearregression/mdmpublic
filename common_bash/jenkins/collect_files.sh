@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-14 16:00:44>
+## Updated: Time-stamp: <2016-04-14 17:23:52>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,10 +30,11 @@
 ##         eval: find /var/opt/gitlab/backups -name *.tar | head -n 1
 ##
 ##      env_parameters:
-##          export jenkins_baseurl="http://123.57.240.189:58080"
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export REMOVE_PREVIOUS_DOWNLOAD=false
 ##          export KEEP_DAY=7
+##          export SERVER_REMOTE_COPY="104.236.159.226:22:/data/backup/server1"
+##          export JENKINS_BASEURL="http://123.57.240.189:58080"
 ##
 ################################################################################################
 . /etc/profile
@@ -44,27 +45,19 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1582193298"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
-# TODO: move to common library
-function check_ssh_available() {
-    # Sample: if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ] ...
-    local server_ip=${1?}
-    local server_port=${2?}
-    nc -w 1 $server_ip $server_port >/dev/null 2>&1 && echo yes || echo no
-}
-##############################
 function data_retention() {
     local keep_day=${1?}
     local server_list=${2?}
+    log "=============== Remove old files to clean up disk"
     for server in ${server_list[@]}
     do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
-
         if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
             log "Delete expired file in $server"
             $ssh_connect "cd $save_path/$JOB_NAME-*-$server_ip-$server_port && find . -name \"$JOB_NAME*\" -mtime +$keep_day -exec rm -rfv {} \+"
@@ -188,9 +181,13 @@ files_list=$(list_strip_comments "$files_list")
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"
+if [ -z "$JENKINS_BASEURL" ] && [ -n "$JENKINS_URL" ]; then
+    JENKINS_BASEURL=$JENKINS_URL
+fi
+
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
 [ -n "$save_path" ] || save_path="/tmp/"
-    
+
 if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
     rm -rf $transfer_dst_path/*
 fi
@@ -201,7 +198,21 @@ collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY
 data_retention $KEEP_DAY "${server_list[*]}"
 
 # Print download link
-if [ -n $jenkins_baseurl ]; then
+if [ -n "$jenkins_baseurl" ]; then
     log "Download link:\n${jenkins_baseurl}/job/${JOB_NAME}/ws/"
+fi
+
+if [ -n "$SERVER_REMOTE_COPY" ]; then
+    log "=============== Copy collected files to remote server"
+    my_list=(${SERVER_REMOTE_COPY//:/ })
+    remote_server_ip=${my_list[0]}
+    remote_server_port=${my_list[1]}
+    remote_dst_dir=${my_list[2]}
+
+    ssh -o StrictHostKeyChecking=no -p $remote_server_port root@$remote_server_ip mkdir -p $remote_dst_dir
+
+    command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
+    log "$command"
+    $command
 fi
 ############################## Shell End #######################################################
