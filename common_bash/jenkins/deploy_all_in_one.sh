@@ -1,12 +1,12 @@
 #!/bin/bash -ex
 ##-------------------------------------------------------------------
-## @copyright 2015 DennyZhang.com
+## @copyright 2016 DennyZhang.com
 ## File : deploy_all_in_one.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-10 14:51:31>
+## Updated: Time-stamp: <2016-04-13 23:24:36>
 ##-------------------------------------------------------------------
 
 ################################################################################################

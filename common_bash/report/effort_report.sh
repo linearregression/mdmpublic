@@ -1,12 +1,12 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
-## @copyright 2015 DennyZhang.com
+## @copyright 2016 DennyZhang.com
 ## File : effort_report.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-04-10 14:30:33>
+## Updated: Time-stamp: <2016-04-13 23:24:34>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -20,12 +20,14 @@
 ################################################################################################
 . /etc/profile
 ################################################################################################
-if [ ! -f /var/lib/enable_common_library.sh ]; then
-    wget -O /var/lib/enable_common_library.sh \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/enable_common_library.sh
+if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
+    [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
+    wget -O /var/lib/devops/refresh_common_library.sh \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/enable_common_library.sh "1512381967"
+bash /var/lib/devops/refresh_common_library.sh "1512381967"
+. /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
 function get_effort_summary() {
@@ -57,7 +59,7 @@ end_pattern=$(date -d "$start_pattern -7 days" +'%Y-%m-%d')
 # checkout code
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
-output=$(git_update_code $git_repo $git_repo_url $branch_name $working_dir "no")
+output=$(git_update_code $git_repo $branch_name $working_dir $git_repo_url "no")
 
 # parse content
 content=$(get_effort_summary $code_dir "$start_pattern" "$end_pattern")

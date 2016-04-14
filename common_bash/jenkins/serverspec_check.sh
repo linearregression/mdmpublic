@@ -1,12 +1,12 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
-## @copyright 2015 DennyZhang.com
+## @copyright 2016 DennyZhang.com
 ## File : serverspec_check.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-04-10 14:53:41>
+## Updated: Time-stamp: <2016-04-13 23:24:35>
 ##-------------------------------------------------------------------
 
 ################################################################################################

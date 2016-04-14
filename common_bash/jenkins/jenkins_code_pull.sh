@@ -1,12 +1,12 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
-## @copyright 2015 DennyZhang.com
+## @copyright 2016 DennyZhang.com
 ## File : jenkins_code_pull.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-10 15:28:40>
+## Updated: Time-stamp: <2016-04-13 23:24:36>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -37,7 +37,7 @@ function shell_exit() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 ########################################################################
-
+git_pull_list=$(list_strip_comments "$git_pull_list")
 for git_pull in `echo $git_pull_list`; do
     git_pull=`echo $git_pull | sed 's/,/ /g'`
     item=($git_pull)

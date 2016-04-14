@@ -1,5 +1,5 @@
 #!/bin/bash -e
-## @copyright 2015 DennyZhang.com
+## @copyright 2016 DennyZhang.com
 ### BEGIN INIT INFO
 # Provides: docker_sandbox
 # Required-Start:

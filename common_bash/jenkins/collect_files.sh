@@ -1,18 +1,34 @@
 #!/bin/bash -xe
 ################################################################################################
-## @copyright 2015 DennyZhang.com
+## @copyright 2016 DennyZhang.com
 ## File : collect_files.sh
-## Author : doungni<doungni@doungni.com>, Denny <denny@dennyzhang.com>
+## Author : Denny <denny@dennyzhang.com>
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
-## Created : <2016-01-25>
-## Updated: Time-stamp: <2016-04-10 14:51:18>
+## Created : <2016-04-14>
+## Updated: Time-stamp: <2016-04-14 16:00:44>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
-##      server_list: The list of servers to collect
-##      files_list : Collected on each server file list
+##      server_list:
+##         # Jenkins
+##         172.17.0.2:22
+##         # Gitlab
+##         172.17.0.4:22
+##         # Atlassian: JIRA/Confluence
+##         172.17.0.3:22
+##
+##      files_list:
+##         # Jenkins backup
+##         eval: find /var/lib/jenkins/jobs -name config.xml
+##         # Confluence backup
+##         eval: find /var/atlassian/application-data/confluence/backups/ -name *.zip | head -n 1
+##         # JIRA backup
+##         eval: find /var/atlassian/application-data/jira/export/ -name *.zip | head -n 1
+##         # Gitlab backup
+##         eval: find /var/opt/gitlab/backups -name *.tar | head -n 1
+##
 ##      env_parameters:
 ##          export jenkins_baseurl="http://123.57.240.189:58080"
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
@@ -31,15 +47,82 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "1512381967"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
-# For collect logfile
-function collect_files() {
-    local server_list=$1
-    local files_list=$2
-    local keep_day=$3
-    local tail_line=$4
+# TODO: move to common library
+function check_ssh_available() {
+    # Sample: if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ] ...
+    local server_ip=${1?}
+    local server_port=${2?}
+    nc -w 1 $server_ip $server_port >/dev/null 2>&1 && echo yes || echo no
+}
+##############################
+function data_retention() {
+    local keep_day=${1?}
+    local server_list=${2?}
+    for server in ${server_list[@]}
+    do
+        local server_split=(${server//:/ })
+        local server_ip=${server_split[0]}
+        local server_port=${server_split[1]}
+        local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
 
-    local count_traversal=0
-    local save_path="/tmp/"
+        if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
+            log "Delete expired file in $server"
+            $ssh_connect "cd $save_path/$JOB_NAME-*-$server_ip-$server_port && find . -name \"$JOB_NAME*\" -mtime +$keep_day -exec rm -rfv {} \+"
+        else
+            log "Error: Fail to ssh $server_ip:$server_port"
+        fi
+    done
+
+    echo "rm obselete files under $transfer_dst_path older than $keep_day"
+    find $transfer_dst_path -name "*.tar.gz*" -mtime +$keep_day -and -not -type d -delete 
+}
+
+function collect_files_by_host() {
+    local server_ip=${1?}
+    local server_port=${2?}
+    local work_path=${3?}
+    local files_list=${4?}
+
+    local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
+
+    # loop files_list
+    IFS=$'\n'
+    for t_file in ${files_list[@]}
+    do
+        unset IFS
+        if [[ "$t_file" = "eval: "* ]]; then
+            log "Evaluate file list: $t_file"
+            local eval_command=${t_file#"eval: "}
+            set +e
+            ssh_result=$($ssh_connect "$eval_command")
+            if [ $? -ne 0 ] || [ -z "$ssh_result" ]; then
+                log "Warning: Fail to run $eval_command"
+            else
+                collect_files_by_host $server_ip $server_port $work_path "$ssh_result"
+            fi
+            # TODO: restore set -e setting
+        else
+            log "Collect files:$t_file"
+            ssh_result=$($ssh_connect test -r $t_file && echo yes || echo no)
+            if [ "x$ssh_result" == "xno" ]; then
+                log "Warning: file [$t_file] not readable"
+                continue
+            fi
+
+            # copy files
+            file_parent_dir=${t_file%/*}
+            save_pathname=${file_parent_dir#*/}
+            file_name=${t_file##*/}
+
+            $ssh_connect "mkdir -p $work_path/$save_pathname"
+            $ssh_connect "cp -r $t_file $work_path/$save_pathname/$file_name"
+        fi
+    done
+}
+
+function collect_files() {
+    local server_list=${1?}
+    local files_list=${2?}
 
     for server in ${server_list[@]}
     do
@@ -47,104 +130,35 @@ function collect_files() {
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
 
-        count_traversal=$((count_traversal+1))
-        log "Collect files from Server Ip_Port[$count_traversal]: $server_ip:$server_port"
-
-        # Check if IP:PORT can connect, timeout 1 seconds
-        local nc_return=$(nc -w 1 $server_ip $server_port >/dev/null 2>&1 && echo yes || echo no)
-        if [ "x$nc_return" == "xno" ]; then
-            log "Warning: Server: $server_ip:$server_port can not connect"
-            unconnect_list+=("\n$server")
-            continue
-        fi
-
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
 
-        # Check if SSH service can connect
-        local ssh_return=$($ssh_connect hostname >/dev/null 2>&1 && echo yes || echo no)
-        if [ "x$nc_return" == "xno" ]; then
-            log "Warning: Can not connect $server_ip:$server_port by ssh"
-            continue
-        fi
+        log "=============== Collect files from $server_ip:$server_port"
+        if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
+            local server_hostname=$($ssh_connect "hostname")
 
-        # Get server_ip hostname, need judge can not connect
-        local server_hostname=$($ssh_connect "hostname")
+            local dir_by_hostname="${JOB_NAME}-${server_hostname}-${server_ip}-${server_port}"
+            local dir_by_time="${JOB_NAME}-${server_ip}-${server_port}-${collect_time}"
+            local work_path="${save_path}/${dir_by_hostname}/${dir_by_time}"
+            $ssh_connect "[ -d $work_path ] || mkdir -p $work_path"
+            collect_files_by_host $server_ip $server_port $work_path "$files_list"
 
-        # Use currrent time for collect every server
-        local collect_time=$(date +'%Y%m%d-%H%M%S')
-        local dir_by_hostname="${JOB_NAME}-${server_hostname}-${server_ip}-${server_port}"
-        local dir_by_time="${JOB_NAME}-${server_ip}-${collect_time}"
-        local work_path="${save_path}/${dir_by_hostname}/${dir_by_time}"
+            if [ $($ssh_connect "ls $work_path | wc -l") -gt 0 ]; then
+                # Compress named:hostname-server_ip-server_port-current_time files
+                log "Compress collected files at $server"
+                local dir_by_hostname_path="${save_path}/${dir_by_hostname}"
+                $ssh_connect "cd ${dir_by_hostname_path} && tar -zcvf ${dir_by_time}.tar.gz ${dir_by_time} 1>/dev/null && rm -rf $work_path"
 
-
-        $ssh_connect "[ -d $work_path ] || mkdir -p $work_path && cd $work_path"
-
-        # Cycle files_list
-        for files in ${files_list[@]}
-        do
-            # By connect ip collect files
-            log "Current collect files: [$server_hostname]$server_ip:$server_port:$files"
-
-            # True if files exists and is readable
-            ssh_result=$($ssh_connect test -r $files && echo yes || echo no)
-            # If non-existent and unreadable
-            if [ "x$ssh_result" == "xno" ]; then
-                log "Warning: files [$files] not readable"
-                unexist_unread_list+=("\n$server:$files")
-                continue
+                log "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
+                scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/
+                # TODO:
+                tar_list+=("\n${work_path}.tar.gz")
             fi
-
-            # Deal with files pathname
-            file_parent_dir=${files%/*}
-            save_pathname=${file_parent_dir#*/}
-            file_name=${files##*/}
-
-            $ssh_connect "mkdir -p $work_path/$save_pathname"
-            # Include tail_line exist and not exist
-            if [ -n "$tail_line" ] && [ $tail_line -gt 0 ]; then
-                log "Collect the tail $tail_line line of the files"
-                $ssh_connect "tail -n $tail_line $files > $work_path/$save_pathname/$file_name"
-            else
-                log "Complete log files"
-                $ssh_connect "cp -r $files $work_path/$save_pathname/$file_name"
-            fi
-        done
-
-        if [ $($ssh_connect "ls $work_path | wc -l") -gt 0 ]; then
-            # Compress named:hostname-server_ip-server_port-current_time files
-            log "$server collect files compress start"
-            local dir_by_hostname_path="${save_path}/${dir_by_hostname}"
-            $ssh_connect "cd ${dir_by_hostname_path} && tar -zcvf ${dir_by_time}.tar.gz ${dir_by_time} && rm -rf $work_path"
-
-            log "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
-            scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/
-
-            tar_list+=("\n${work_path}.tar.gz")
+        else
+            log "Error: Fail to ssh $server_ip:$server_port"
         fi
-        # The array is used for need remote upload
-        need_transfer_list+=("$server:${work_path}.tar.gz:$job_name-$server_hostname-$server_ip-$server_port")
-
-        log "Delete expired file in $server"
-        $ssh_connect "find $save_path/$JOB_NAME-$server_hostname-$server_ip-$server_port -name "$JOB_NAME*" -mtime +$keep_day -exec rm -rfv {} \+"
     done
 }
 
-function print_info() {
-    # Print disconnect ssh server
-    if [ ${#unconnect_list[@]} -gt 0 ]; then
-        log "Unconnect ssh list:${unconnect_list[@]}"
-    fi
-
-    # Print unexist and unread files list
-    if [ ${#unexist_unread_list[@]} -gt 0 ]; then
-        log "Files don't exist or not found:${unexist_unread_list[@]}"
-    fi
-
-    # Print collect log list
-    if [ ${#tar_list[@]} -gt 0 ]; then
-        log "Collected log list:${tar_list[@]}"
-    fi
-}
 ############################## Function End ####################################################
 
 ############################## Shell Start #####################################################
@@ -159,41 +173,35 @@ unset IFS
 if [ -z "$ssh_key_file" ]; then
     ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 fi
+
 file_path="/tmp"
+collect_time=$(date +'%Y%m%d-%H%M%S')
 
-# Jenkins parameter judge
-if [ -z "$server_list" ]; then
-    log "ERROR wrong parameter: server_list can't be empty"
-    exit 1
-fi
+ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
+ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
 
-# Judge files list exist
-if [ -z "$files_list" ]; then
-    log "ERROR wrong parameter: files_list can't be empty"
-    exit 1
-fi
+# TODO:
+ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAME"
 
 server_list=$(list_strip_comments "$server_list")
+files_list=$(list_strip_comments "$files_list")
 
 # Set default value
-[ -n "$KEEP_DAY" ] || KEEP_DAY=7
+[ -n "$KEEP_DAY" ] || KEEP_DAY="7"
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
-[ -n "$transfer_dst_keep_day" ] || transfer_dst_keep_day="7"
-
+[ -n "$save_path" ] || save_path="/tmp/"
+    
 if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
     rm -rf $transfer_dst_path/*
 fi
-# Connect server and collect files
-collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY $TAIL_LINE
 
-# Echo print info
-print_info
+# Connect server and collect files
+collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY
+
+data_retention $KEEP_DAY "${server_list[*]}"
 
 # Print download link
 if [ -n $jenkins_baseurl ]; then
     log "Download link:\n${jenkins_baseurl}/job/${JOB_NAME}/ws/"
 fi
-
-echo "rm obselete files under $transfer_dst_path older than $KEEP_DAY"
-find $transfer_dst_path -name "*.tar.gz*" -mtime +$KEEP_DAY -and -not -type d -delete 
 ############################## Shell End #######################################################
