@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-14 17:23:52>
+## Updated: Time-stamp: <2016-04-14 17:46:01>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -181,9 +181,7 @@ files_list=$(list_strip_comments "$files_list")
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"
-if [ -z "$JENKINS_BASEURL" ] && [ -n "$JENKINS_URL" ]; then
-    JENKINS_BASEURL=$JENKINS_URL
-fi
+[ -n "$JENKINS_BASEURL" ] || JENKINS_BASEURL=$JENKINS_URL
 
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
 [ -n "$save_path" ] || save_path="/tmp/"
@@ -197,11 +195,6 @@ collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY
 
 data_retention $KEEP_DAY "${server_list[*]}"
 
-# Print download link
-if [ -n "$jenkins_baseurl" ]; then
-    log "Download link:\n${jenkins_baseurl}/job/${JOB_NAME}/ws/"
-fi
-
 if [ -n "$SERVER_REMOTE_COPY" ]; then
     log "=============== Copy collected files to remote server"
     my_list=(${SERVER_REMOTE_COPY//:/ })
@@ -214,5 +207,10 @@ if [ -n "$SERVER_REMOTE_COPY" ]; then
     command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
     log "$command"
     $command
+fi
+
+# Print download link at the bottom
+if [ -n "$JENKINS_BASEURL" ]; then
+    log "=============== Download link:\n${JENKINS_BASEURL}/job/${JOB_NAME}/ws/"
 fi
 ############################## Shell End #######################################################
