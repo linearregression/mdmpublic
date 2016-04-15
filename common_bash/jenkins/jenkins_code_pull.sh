@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-14 16:52:20>
+## Updated: Time-stamp: <2016-04-15 07:52:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -26,7 +26,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1582193298"
+bash /var/lib/devops/refresh_common_library.sh "3372880711"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -46,6 +46,6 @@ for git_pull in `echo $git_pull_list`; do
     git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
     branch_name=${item[2]}
     log "git pull in working_dir"
-    git_update_code $git_repo $branch_name $working_dir $git_repo_url "no"
+    git_update_code $branch_name $working_dir $git_repo_url "no"
 done
 ## File : jenkins_code_pull.sh ends

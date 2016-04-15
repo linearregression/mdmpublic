@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-04-14 16:52:19>
+## Updated: Time-stamp: <2016-04-15 07:52:37>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -26,7 +26,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1582193298"
+bash /var/lib/devops/refresh_common_library.sh "3372880711"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -59,7 +59,7 @@ end_pattern=$(date -d "$start_pattern -7 days" +'%Y-%m-%d')
 # checkout code
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
-output=$(git_update_code $git_repo $branch_name $working_dir $git_repo_url "no")
+output=$(git_update_code $branch_name $working_dir $git_repo_url "no")
 
 # parse content
 content=$(get_effort_summary $code_dir "$start_pattern" "$end_pattern")

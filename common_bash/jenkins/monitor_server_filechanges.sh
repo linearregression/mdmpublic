@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-14 16:52:20>
+## Updated: Time-stamp: <2016-04-15 07:52:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1582193298"
+bash /var/lib/devops/refresh_common_library.sh "3372880711"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # evaulate env
@@ -39,6 +39,8 @@ for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
 done
 unset IFS
+
+fail_unless_os "ubuntu/redhat/centos"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true

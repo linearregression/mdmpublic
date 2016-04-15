@@ -6,7 +6,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-14 17:46:01>
+## Updated: Time-stamp: <2016-04-15 08:48:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -45,13 +45,13 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1582193298"
+bash /var/lib/devops/refresh_common_library.sh "3372880711"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
     local keep_day=${1?}
     local server_list=${2?}
-    log "=============== Remove old files to clean up disk"
+    echo "=============== Remove old files to clean up disk"
     for server in ${server_list[@]}
     do
         local server_split=(${server//:/ })
@@ -59,10 +59,10 @@ function data_retention() {
         local server_port=${server_split[1]}
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
         if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
-            log "Delete expired file in $server"
+            echo "Delete expired file in $server"
             $ssh_connect "cd $save_path/$JOB_NAME-*-$server_ip-$server_port && find . -name \"$JOB_NAME*\" -mtime +$keep_day -exec rm -rfv {} \+"
         else
-            log "Error: Fail to ssh $server_ip:$server_port"
+            echo "Error: Fail to ssh $server_ip:$server_port"
         fi
     done
 
@@ -84,21 +84,21 @@ function collect_files_by_host() {
     do
         unset IFS
         if [[ "$t_file" = "eval: "* ]]; then
-            log "Evaluate file list: $t_file"
+            echo "Evaluate file list: $t_file"
             local eval_command=${t_file#"eval: "}
             set +e
             ssh_result=$($ssh_connect "$eval_command")
             if [ $? -ne 0 ] || [ -z "$ssh_result" ]; then
-                log "Warning: Fail to run $eval_command"
+                echo "Warning: Fail to run $eval_command"
             else
                 collect_files_by_host $server_ip $server_port $work_path "$ssh_result"
             fi
             # TODO: restore set -e setting
         else
-            log "Collect files:$t_file"
+            echo "Collect files:$t_file"
             ssh_result=$($ssh_connect test -r $t_file && echo yes || echo no)
             if [ "x$ssh_result" == "xno" ]; then
-                log "Warning: file [$t_file] not readable"
+                echo "Warning: file [$t_file] not readable"
                 continue
             fi
 
@@ -125,7 +125,7 @@ function collect_files() {
 
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
 
-        log "=============== Collect files from $server_ip:$server_port"
+        echo "=============== Collect files from $server_ip:$server_port"
         if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
             local server_hostname=$($ssh_connect "hostname")
 
@@ -137,17 +137,17 @@ function collect_files() {
 
             if [ $($ssh_connect "ls $work_path | wc -l") -gt 0 ]; then
                 # Compress named:hostname-server_ip-server_port-current_time files
-                log "Compress collected files at $server"
+                echo "Compress collected files at $server"
                 local dir_by_hostname_path="${save_path}/${dir_by_hostname}"
                 $ssh_connect "cd ${dir_by_hostname_path} && tar -zcvf ${dir_by_time}.tar.gz ${dir_by_time} 1>/dev/null && rm -rf $work_path"
 
-                log "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
+                echo "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
                 scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/
                 # TODO:
                 tar_list+=("\n${work_path}.tar.gz")
             fi
         else
-            log "Error: Fail to ssh $server_ip:$server_port"
+            echo "Error: Fail to ssh $server_ip:$server_port"
         fi
     done
 }
@@ -162,19 +162,14 @@ for env_variable in `echo "$env_parameters"`; do
 done
 unset IFS
 
-# Parameter for current time
-if [ -z "$ssh_key_file" ]; then
-    ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
-fi
+ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
+ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
+# TODO:
+ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAME"
 
 file_path="/tmp"
 collect_time=$(date +'%Y%m%d-%H%M%S')
-
-ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
-ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
-
-# TODO:
-ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAME"
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
 server_list=$(list_strip_comments "$server_list")
 files_list=$(list_strip_comments "$files_list")
@@ -196,7 +191,7 @@ collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY
 data_retention $KEEP_DAY "${server_list[*]}"
 
 if [ -n "$SERVER_REMOTE_COPY" ]; then
-    log "=============== Copy collected files to remote server"
+    echo "=============== Copy collected files to remote server"
     my_list=(${SERVER_REMOTE_COPY//:/ })
     remote_server_ip=${my_list[0]}
     remote_server_port=${my_list[1]}
@@ -205,12 +200,12 @@ if [ -n "$SERVER_REMOTE_COPY" ]; then
     ssh -o StrictHostKeyChecking=no -p $remote_server_port root@$remote_server_ip mkdir -p $remote_dst_dir
 
     command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
-    log "$command"
+    echo "$command"
     $command
 fi
 
 # Print download link at the bottom
 if [ -n "$JENKINS_BASEURL" ]; then
-    log "=============== Download link:\n${JENKINS_BASEURL}/job/${JOB_NAME}/ws/"
+    echo -e "=============== Download link:\n${JENKINS_BASEURL}/job/${JOB_NAME}/ws/"
 fi
 ############################## Shell End #######################################################

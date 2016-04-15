@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-14 16:52:21>
+## Updated: Time-stamp: <2016-04-15 15:42:57>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,8 +29,8 @@
 ##             export STOP_CONTAINER=false
 ##             export KILL_RUNNING_CHEF_UPDATE=false
 ##             export START_COMMAND="docker start longrun-aio"
-##             export POST_START_COMMAND="sleep 5; service apache2 start"
-##             export PRE_STOP_COMMAND="service apache2 stop"
+##             export POST_START_COMMAND="sleep 5; service apache2 start; true"
+##             export PRE_STOP_COMMAND="service apache2 stop; true"
 ##             export STOP_COMMAND="docker stop longrun-aio"
 ##             export CODE_SH=""
 ##             export SSH_SERVER_PORT=22
@@ -44,7 +44,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1582193298"
+bash /var/lib/devops/refresh_common_library.sh "3372880711"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -83,7 +83,8 @@ fi
 
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
-ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+
 kill_chef_command="killall -9 chef-solo || true"
 
 if [ -n "$CODE_SH" ]; then

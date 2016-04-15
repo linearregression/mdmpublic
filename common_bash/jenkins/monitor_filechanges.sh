@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-14 16:52:20>
+## Updated: Time-stamp: <2016-04-15 07:52:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -31,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1582193298"
+bash /var/lib/devops/refresh_common_library.sh "3372880711"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_changed_filelist() {
@@ -118,7 +118,7 @@ else
 fi
 
 # Update code
-git_update_code $git_repo $branch_name $working_dir $git_repo_url
+git_update_code $branch_name $working_dir $git_repo_url
 cd $working_dir/$branch_name/$git_repo
 # add retry for network turbulence
 git pull origin $branch_name || (sleep 2 && git pull origin $branch_name)
