@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-15 07:52:37>
+## Updated: Time-stamp: <2016-04-15 16:39:19>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3372880711"
+bash /var/lib/devops/refresh_common_library.sh "2247122206"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Global variables needed to enable the current script
