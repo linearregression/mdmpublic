@@ -1,12 +1,12 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## File : chef_deploy_cluster.sh
+## File : deploy_cluster.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-19 16:37:51>
+## Updated: Time-stamp: <2016-04-19 16:38:48>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -53,7 +53,6 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-# TODO: remove this file, in favor of deploy_cluster.sh
 function bindhosts() {
     # TODO: make the code general and move to bash_common_library.sh
     local server_list=${1?}
@@ -209,8 +208,7 @@ do
 
     if [ -n "${CODE_SH}" ]; then
         log "Update git codes"
-        # TODO: whether we still need $project_name parameter?
-        ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir/$devops_branch_name $git_repo_url $git_repo $devops_branch_name $project_name
+        ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $devops_branch_name
     fi
 done
 
