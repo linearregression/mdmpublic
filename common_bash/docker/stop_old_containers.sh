@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2247122206"
+bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Docker client version gather than 1.7.1
@@ -152,5 +152,4 @@ fi
 
 # Call main entry function
 main_entry
-
 ############################## Shell End #######################################################

@@ -6,9 +6,8 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-15 16:39:22>
+## Updated: Time-stamp: <2016-04-18 10:50:23>
 ##-------------------------------------------------------------------
-
 ################################################################################################
 ## env variables:
 ##      working_dir: /var/lib/jenkins/code
@@ -33,7 +32,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2247122206"
+bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function start_sonar_server() {
@@ -111,8 +110,10 @@ for env_variable in `echo "$env_parameters"`; do
 done 
 unset IFS
 
+[ -n "$SONAR_BASE_URL" ] || SONAR_BASE_URL=$JENKINS_URL
+
 # Update code
-git_update_code $git_repo_url $branch_name $working_dir "yes"
+git_update_code $branch_name  $working_dir $git_repo_url "yes"
 code_dir=$working_dir/$branch_name/$git_repo
 cd $code_dir
 # add retry for network turbulence

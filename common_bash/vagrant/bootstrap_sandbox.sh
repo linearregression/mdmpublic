@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-15 16:39:19>
+## Updated: Time-stamp: <2016-04-18 10:50:19>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -15,23 +15,13 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2247122206"
+bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 image_name=${1?"docker image name"}
 use_private_hub=${2:-"no"}
 image_repo_name=${image_name%:*}
 ################################################################################################
-function create_enough_loop_device() {
-    # Docker start may fail, due to no available loopback devices
-    for i in {0..40}
-    do
-        if [ ! -b /dev/loop$i ]; then
-            mknod -m0660 /dev/loop$i b 7 $i
-        fi
-    done
-}
-
 function docker_pull_image() {
     local image_repo_name=${1?}
     local image_name=${2?}

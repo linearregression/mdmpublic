@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-15 17:17:57>
+## Updated: Time-stamp: <2016-04-19 09:09:34>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -44,7 +44,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2247122206"
+bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -117,9 +117,11 @@ if [ -n "$START_COMMAND" ]; then
 
     sleep 2
 
-    post_start_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$POST_START_COMMAND"'
-    log $post_start_command
-    eval $post_start_command
+    if [ -n "$POST_START_COMMAND" ]; then
+        post_start_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$POST_START_COMMAND"'
+        log $post_start_command
+        eval $post_start_command
+    fi
 fi
 
 if $KILL_RUNNING_CHEF_UPDATE; then

@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-15 16:39:19>
+## Updated: Time-stamp: <2016-04-18 10:50:20>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -27,7 +27,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2247122206"
+bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -38,7 +38,6 @@ function shell_exit() {
 function git_directory_commit() {
     local code_dir=${1?}
     local branch_name=${2?}
-    local commit_message=${3:-"Misc change"}
 
     cd $code_dir
     echo "Commit changes detected in intermediate directory"
@@ -46,8 +45,15 @@ function git_directory_commit() {
     if echo "$git_status" | grep "nothing to commit, working directory clean" 2>&1 1>/dev/null; then
         echo "No change"
     else
+        echo "=========== git commit changes"
+        echo "git_status: $git_status"
+
+        git config --global user.email "$git_email"
+        git config --global user.name "$git_username"
         git add *
-        git commit -am $commit_message
+
+        git_commit_message="Robot Push: Sync Git Repo"
+        git commit -am "$git_commit_message"
         git push origin $branch_name
     fi
 }
@@ -78,7 +84,7 @@ function replicate_git_repo() {
         cp -r $src_dir/$d  $intermediate_dir/
     done
 
-    git_directory_commit $intermediate_dir $git_repo_dst_name
+    git_directory_commit $intermediate_dir $git_branch_dst
 }
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0
@@ -95,6 +101,9 @@ unset IFS
 ########################################################
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code"
 [ -d "$working_dir" ] || mkdir -p $working_dir
+
+git_email="jenkins.auto@dennyzhang.com"
+git_username="Jenkins Auto"
 
 repo_list=$(list_strip_comments "$repo_list")
 for repo in `echo $repo_list`; do

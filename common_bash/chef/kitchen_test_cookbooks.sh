@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-15 16:39:22>
+## Updated: Time-stamp: <2016-04-18 10:50:24>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -34,7 +34,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2247122206"
+bash /var/lib/devops/refresh_common_library.sh "3606538101"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function get_cookbooks() {
@@ -101,19 +101,19 @@ function test_cookbook() {
         yml_list=$(echo -e "${all_yml_list}\n${black_yml_list}\n${black_yml_list}" | sort | uniq -u )
     fi
 
-    log "yml list is:${yml_list}"
-    log "test $cookbook"
-    log "cd `pwd`"
-    log "export INSTANCE_NAME=$INSTANCE_NAME"
-    log "$test_command"
+    echo "yml list is:${yml_list}"
+    echo "test $cookbook"
+    echo "======================== cd `pwd`"
+    echo "======================== export INSTANCE_NAME=$INSTANCE_NAME"
+    echo "$test_command"
     for yml in ${yml_list}; do
-        log "export KITCHEN_YAML=${yml}"
+        echo "======================== export KITCHEN_YAML=${yml}"
         export KITCHEN_YAML=${yml}
         if ! eval "$test_command"; then
-            log "ERROR $cookbook"
+            echo "ERROR $cookbook"
             failed_cookbooks="${failed_cookbooks} ${cookbook}:${yml}"
         fi
-        log "failed_cookbooks=$failed_cookbooks"            
+        echo "failed_cookbooks=$failed_cookbooks"            
     done
     unset INSTANCE_NAME
 }
@@ -172,18 +172,18 @@ cd $cookbook_dir
 failed_cookbooks=""
 cookbooks=$(get_cookbooks "$cookbook_list" "$cookbook_dir" "$skip_cookbook_list")
 
-log "Get cookbooks List"
+echo "Get cookbooks List"
 echo "cookbooks: $cookbooks"
 
 echo "Set locale as en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
-log "Test Cookbooks"
+echo "Test Cookbooks"
 test_cookbook_list "$test_command" "$cookbooks" "$cookbook_dir"
 
 if [ "$failed_cookbooks" != "" ]; then
-    log "Failed cookbooks: $failed_cookbooks"
+    echo "Failed cookbooks: $failed_cookbooks"
     exit 1
 fi
 ## File : kitchen_test_cookbooks.sh ends
