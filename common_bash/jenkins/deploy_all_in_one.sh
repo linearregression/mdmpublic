@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-19 09:09:34>
+## Updated: Time-stamp: <2016-04-19 12:15:34>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -92,7 +92,7 @@ if [ -n "$CODE_SH" ]; then
 fi
 
 if [ -z "$code_dir" ]; then
-    code_dir="/root/test"
+    code_dir="/root/chef"
 fi
 
 # TODO: remove this section later

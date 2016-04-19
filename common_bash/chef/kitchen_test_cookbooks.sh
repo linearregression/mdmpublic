@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-18 10:50:24>
+## Updated: Time-stamp: <2016-04-19 10:23:41>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -102,7 +102,7 @@ function test_cookbook() {
     fi
 
     echo "yml list is:${yml_list}"
-    echo "test $cookbook"
+    echo "======================== test $cookbook"
     echo "======================== cd `pwd`"
     echo "======================== export INSTANCE_NAME=$INSTANCE_NAME"
     echo "$test_command"
