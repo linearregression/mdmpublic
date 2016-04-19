@@ -1,12 +1,15 @@
 #!/bin/bash -xe
 ################################################################################################
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : collect_files.sh
 ## Author : Denny <denny@dennyzhang.com>
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-18 10:50:23>
+## Updated: Time-stamp: <2016-04-19 21:12:54>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -45,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3606538101"
+bash /var/lib/devops/refresh_common_library.sh "750668488"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {

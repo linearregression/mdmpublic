@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : perform_smoke_test.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-16>
-## Updated: Time-stamp: <2016-04-18 10:50:21>
+## Updated: Time-stamp: <2016-04-19 21:12:53>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -15,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3606538101"
+bash /var/lib/devops/refresh_common_library.sh "750668488"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function prepare_protractor() {

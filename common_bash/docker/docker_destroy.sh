@@ -1,12 +1,15 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : docker_destroy.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-01-02>
-## Updated: Time-stamp: <2016-04-18 10:16:02>
+## Updated: Time-stamp: <2016-04-19 21:09:04>
 ##-------------------------------------------------------------------
 if ! which docker 2>/dev/null 1>/dev/null; then
     echo "Skip, since docker is not installed"

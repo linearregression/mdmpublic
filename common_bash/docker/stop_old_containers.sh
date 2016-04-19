@@ -1,6 +1,9 @@
 #!/bin/bash -e
 ################################################################################################
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 # * Author        : doungni
 # * Email         : doungni@doungni.com
 # * Last modified : 2015-12-03 15:08
@@ -28,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3606538101"
+bash /var/lib/devops/refresh_common_library.sh "750668488"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Docker client version gather than 1.7.1

@@ -1,12 +1,15 @@
 #!/bin/bash -x
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : wait_jenkins_up.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-04-13 23:24:35>
+## Updated: Time-stamp: <2016-04-19 21:09:00>
 ##-------------------------------------------------------------------
 jenkins_url=${1:-"http://127.0.0.1:28080/jnlpJars/jenkins-cli.jar/"}
 max_wait_seconds=${2:-600}

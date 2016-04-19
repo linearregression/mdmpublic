@@ -1,12 +1,15 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : check_yml_file.sh
 ## Author : Denny <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-18 10:13:28>
+## Updated: Time-stamp: <2016-04-19 21:07:56>
 ##-------------------------------------------------------------------
 function log() {
     local msg=$*

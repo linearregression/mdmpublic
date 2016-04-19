@@ -1,12 +1,15 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : poll_jenkins_job.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-04-13 23:24:35>
+## Updated: Time-stamp: <2016-04-19 21:09:01>
 ##-------------------------------------------------------------------
 jenkins_job=${1?}
 jenkins_cli_jar=${2?}

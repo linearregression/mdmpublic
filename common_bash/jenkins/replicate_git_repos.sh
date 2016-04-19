@@ -1,12 +1,15 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
+## Licensed under MIT 
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##
 ## File : replicate_git_repos.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-18 10:50:20>
+## Updated: Time-stamp: <2016-04-19 21:12:53>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -27,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3606538101"
+bash /var/lib/devops/refresh_common_library.sh "750668488"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -45,14 +48,15 @@ function git_directory_commit() {
     if echo "$git_status" | grep "nothing to commit, working directory clean" 2>&1 1>/dev/null; then
         echo "No change"
     else
-        echo "=========== git commit changes"
+        git_commit_message="Robot Push: Sync Git Repo"
+
+        echo "=========== Jenkins Robot push changes: $git_commit_message"
         echo "git_status: $git_status"
 
         git config --global user.email "$git_email"
         git config --global user.name "$git_username"
         git add *
 
-        git_commit_message="Robot Push: Sync Git Repo"
         git commit -am "$git_commit_message"
         git push origin $branch_name
     fi
