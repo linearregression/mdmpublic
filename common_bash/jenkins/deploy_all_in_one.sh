@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-19 21:12:54>
+## Updated: Time-stamp: <2016-04-22 10:19:48>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -98,9 +98,8 @@ if [ -z "$code_dir" ]; then
     code_dir="/root/test"
 fi
 
-# TODO: remove this section later
 if [ -z "$chef_client_rb" ]; then
-    git_repo="iamdevops"
+    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 else
     chef_client_rb=$(echo $chef_client_rb | sed -e "s/ +/ /g")

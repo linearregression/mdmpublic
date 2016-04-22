@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-19 21:12:53>
+## Updated: Time-stamp: <2016-04-20 09:08:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -54,12 +54,12 @@ function detect_changed_file() {
     local files_to_monitor=${4?}
     local file_list=$(git_changed_filelist $src_dir $old_sha $new_sha)
 
-    echo -ne "\n\n==========""git diff --name-only ${old_sha}..${new_sha}\n"
+    echo -ne "\n\n========== git diff --name-only ${old_sha}..${new_sha}\n"
     echo $file_list
     IFS=$'\n'
     for file in ${file_list[*]}; do
       if echo -ne "$files_to_monitor" | grep "$file" 1>/dev/null 2>1; then
-         echo -ne "\n\n=========="" $file is changed!"
+         echo -ne "\n\n========== $file is changed!"
          changed_file_list="$changed_file_list $file"
       fi
     done
@@ -132,11 +132,11 @@ cd $code_dir
 new_sha=$(current_git_sha $code_dir)
 
 if [ -z "$old_sha" ] || [ $old_sha = $new_sha ]; then
-    log -ne "\n\n========== ""Latest git sha is $old_sha. No commits since last git pull\n\n"
+    log -ne "\n\n========== Latest git sha is $old_sha. No commits since last git pull\n\n"
 else
     detect_changed_file $code_dir $old_sha $new_sha "$filelist_to_monitor"
     if [ -n "$changed_file_list" ]; then
-        log -ne "\n\n==========""git diff $old_sha $new_sha\n"
+        log -ne "\n\n========== git diff $old_sha $new_sha\n"
         log -ne "\n\n=====================\n\n"
         log -ne "ERROR file changed: \n`echo "$changed_file_list" | tr ' ' '\n'`\n"
         exit 1
