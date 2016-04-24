@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:42:34>
+## Updated: Time-stamp: <2016-04-24 16:04:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -190,10 +190,10 @@ if [ -z "${chef_client_rb}" ]; then
 fi
 
 if [ -n "${chef_json}" ]; then
-    chef_json=`echo $chef_json`    
+    chef_json=$(string_strip_comments "$chef_json")    
+    chef_json=`echo $chef_json`
     chef_json=${chef_json/#\{/}
     chef_json=${chef_json/%\}/}
-    chef_json=$(string_strip_comments "$chef_json")
 fi
 
 log "Start to bind cluster hosts"
