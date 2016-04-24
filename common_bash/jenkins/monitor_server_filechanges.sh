@@ -8,10 +8,9 @@
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
-## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-19 21:12:53>
+## Created : <2016-04-03>
+## Updated: Time-stamp: <2016-04-24 07:41:06>
 ##-------------------------------------------------------------------
-
 ################################################################################################
 ## env variables:
 ##      server_list:
@@ -23,7 +22,7 @@
 ##      env_parameters:
 ##           export mark_previous_as_true=false
 ##           export start_inotifywait_when_stopped=true
-################################################################################################
+##           export BACKUP_OLD_DIR=/root/monitor_backup
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
@@ -34,24 +33,6 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "750668488"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-# evaulate env
-env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
-IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
-done
-unset IFS
-
-fail_unless_os "ubuntu/redhat/centos"
-
-[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
-[ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
-
-log_file="/root/monitor_server_filechanges.log"
-server_list=$(list_strip_comments "$server_list")
-file_list=$(list_strip_comments "$file_list")
-
 function monitor_server_filechanges() {
     local ssh_server_ip=${1?}
     local ssh_port=${2?}
@@ -77,7 +58,8 @@ function monitor_server_filechanges() {
             done
             if [ "$monitor_directories" = "" ]; then
                 echo "ERROR: No qualified files to be monitored in $ssh_server_ip"
-                exit 1
+                has_error="1"
+                continue
             fi
             local command="$ssh_connect $inotifywait_command $monitor_directories --outfile $log_file"
             echo "Run $command"
@@ -96,16 +78,46 @@ function monitor_server_filechanges() {
         echo -e "\n============== File change list =============="
         $ssh_connect cat $log_file
         echo -e "\n=============================================="
-        exit 1
+        has_error="1"
     fi
 }
+################################################################################################
+# evaulate env
+env_parameters=$(remove_hardline "$env_parameters")
+env_parameters=$(list_strip_comments "$env_parameters")
+IFS=$'\n'
+for env_variable in `echo "$env_parameters"`; do
+    eval $env_variable
+done
+unset IFS
 
+# fail_unless_os "ubuntu/redhat/centos"
+
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
+[ -n "$BACKUP_OLD_DIR" ] || BACKUP_OLD_DIR=/root/monitor_backup
+
+log_file="/root/monitor_server_filechanges.log"
+server_list=$(list_strip_comments "$server_list")
+file_list=$(list_strip_comments "$file_list")
+has_error="0"
+
+# check files
 for server in ${server_list}
 do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
-    echo -e "\n============== Check Node $ssh_server_ip for file changes =============="
+    echo -e "\n============== Check Node ${ssh_server_ip}:${ssh_port} for file changes =============="
     monitor_server_filechanges $ssh_server_ip $ssh_port
 done
+
+# TODO: backup changed files
+
+# TODO: show diff
+
+# quit with exit code restored
+if [ "$has_error" = "1" ]; then
+    exit 1
+fi
 ## File : monitor_server_filechanges.sh ends
