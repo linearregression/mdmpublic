@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-22 11:00:31>
+## Updated: Time-stamp: <2016-04-24 09:34:56>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -59,7 +59,6 @@ function detect_changed_file() {
     IFS=$'\n'
     for file in ${file_list[*]}; do
       if echo -e "$files_to_monitor" | grep "$file" 1>/dev/null 2>1; then
-         echo -e "\n========== $file is changed!\n"
          changed_file_list="$changed_file_list $file"
       fi
     done
@@ -137,8 +136,7 @@ else
     detect_changed_file $code_dir $old_sha $new_sha "$filelist_to_monitor"
     if [ -n "$changed_file_list" ]; then
         echo -e "\n\n========== git diff $old_sha $new_sha\n"
-        echo -e "\n\n=====================\n\n"
-        echo -e "ERROR file changed: \n`echo "$changed_file_list" | tr ' ' '\n'`\n"
+        echo -e "========== ERROR file changed: \n`echo "$changed_file_list" | tr ' ' '\n'`\n"
         exit 1
     fi
 fi
