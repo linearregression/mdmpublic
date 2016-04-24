@@ -4,12 +4,12 @@
 ## Licensed under MIT 
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-## File : download_deploy_package.sh
+## File : sync_http_repo_server.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
-## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-19 21:12:54>
+## Created : <2016-04-23>
+## Updated: Time-stamp: <2016-04-24 15:40:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,14 +28,43 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "750668488"
+bash /var/lib/devops/refresh_common_library.sh "3767938096"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
+. /etc/profile
+
+fail_unless_os "ubuntu/redhat/centos/osx"
+
+# calculate checksum: cksum * > checksum.txt
 checksum_link="$repo_server/checksum.txt"
 checksum_file="/tmp/checksum.txt"
+local_checksum_file="local_checksum.txt"
+
+function get_local_checksum() {
+    local working_dir=${1?}
+    local filename=${2?}
+    local local_checksum_file=${3?}
+    cd $working_dir
+    cksum=$(grep "$filename" "$local_checksum_file")
+    echo $cksum
+}
+
+function update_local_checksum() {
+    local working_dir=${1?}
+    local filename=${2?}
+    local local_checksum_file=${3?}
+    cd $working_dir
+    [ -f $local_checksum_file ] || touch $local_checksum_file
+    cksum=$(cksum $filename)
+
+    if grep $filename $local_checksum_file 1>/dev/null 2>&1; then
+        cat $local_checksum_file | grep -v $filename > $local_checksum_file
+    fi
+    echo "$cksum" >> $local_checksum_file
+}
 
 log "Download $checksum_link"
-wget -O $checksum_file $checksum_link 1>/dev/null 2>/dev/null
+wget -O $checksum_file $checksum_link 1>/dev/null 2>&1
 
 [ -d $dst_path ] || mkdir -p $dst_path
 
@@ -52,24 +81,24 @@ for f in $download_files; do
             log "ERROR: Fail to find $f in $checksum_link"
             exit 1
         else
-            local_checksum=$(cksum $f)
+            # get local checksum
+            local_checksum=$(get_local_checksum $dst_path $f $local_checksum_file)
             if [ "$remote_checksum" != "$local_checksum" ]; then
                 log "Re-download $f, since it is changed in server side"
                 wget -O $f "$repo_server/$f"
                 has_file_changed=true
+                update_local_checksum $dst_path $f $local_checksum_file
             fi
         fi
     else
         log "Download $f, since it's missing in local drive"
         wget -O $f "$repo_server/$f"
         has_file_changed=true
+        update_local_checksum $dst_path $f $local_checksum_file        
     fi
 done
 
-if $has_file_changed; then
-    log "Update checksum, since some files are changed"
-    ls -1 | grep -v checksum.txt | xargs cksum > checksum.txt
-else
+if ! $has_file_changed; then
     log "No files are changed in remote server, since previous download"
 fi
-## File : download_deploy_package.sh ends
+## File : sync_http_repo_server.sh ends

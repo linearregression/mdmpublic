@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-19 21:12:55>
+## Updated: Time-stamp: <2016-04-24 15:40:40>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -53,7 +53,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "750668488"
+bash /var/lib/devops/refresh_common_library.sh "3767938096"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function bindhosts() {
@@ -193,6 +193,7 @@ if [ -n "${chef_json}" ]; then
     chef_json=`echo $chef_json`    
     chef_json=${chef_json/#\{/}
     chef_json=${chef_json/%\}/}
+    chef_json=$(string_strip_comments "$chef_json")
 fi
 
 log "Start to bind cluster hosts"

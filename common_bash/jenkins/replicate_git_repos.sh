@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-19 21:12:53>
+## Updated: Time-stamp: <2016-04-24 15:40:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "750668488"
+bash /var/lib/devops/refresh_common_library.sh "3767938096"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {

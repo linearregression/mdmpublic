@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-22 10:19:48>
+## Updated: Time-stamp: <2016-04-24 15:40:39>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -47,7 +47,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "750668488"
+bash /var/lib/devops/refresh_common_library.sh "3767938096"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -139,6 +139,7 @@ if [ -n "$CODE_SH" ]; then
     ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip "$CODE_SH" $code_dir $git_repo_url $devops_branch_name "all-in-one"
 fi
 
+chef_json=$(string_strip_comments "$chef_json")
 log "Prepare chef configuration"
 echo "$chef_client_rb" > /tmp/client.rb
 echo "$chef_json" > /tmp/client.json
