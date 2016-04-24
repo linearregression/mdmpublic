@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:40:40>
+## Updated: Time-stamp: <2016-04-24 15:42:34>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -139,7 +139,7 @@ function shell_exit() {
 git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
+env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

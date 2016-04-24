@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-24 15:40:38>
+## Updated: Time-stamp: <2016-04-24 15:42:33>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -84,7 +84,7 @@ function monitor_server_filechanges() {
 ################################################################################################
 # evaulate env
 env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
+env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
@@ -98,8 +98,8 @@ unset IFS
 [ -n "$BACKUP_OLD_DIR" ] || BACKUP_OLD_DIR=/root/monitor_backup
 
 log_file="/root/monitor_server_filechanges.log"
-server_list=$(list_strip_comments "$server_list")
-file_list=$(list_strip_comments "$file_list")
+server_list=$(string_strip_comments "$server_list")
+file_list=$(string_strip_comments "$file_list")
 has_error="0"
 
 # check files

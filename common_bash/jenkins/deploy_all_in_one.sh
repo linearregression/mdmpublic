@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-24 15:40:39>
+## Updated: Time-stamp: <2016-04-24 15:42:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -73,7 +73,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 echo "Deploy to ${ssh_server_ip}:${ssh_port}"
 env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
+env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable

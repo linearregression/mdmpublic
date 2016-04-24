@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-24 15:40:40>
+## Updated: Time-stamp: <2016-04-24 15:42:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -174,8 +174,8 @@ file_path="/tmp"
 collect_time=$(date +'%Y%m%d-%H%M%S')
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
-server_list=$(list_strip_comments "$server_list")
-files_list=$(list_strip_comments "$files_list")
+server_list=$(string_strip_comments "$server_list")
+files_list=$(string_strip_comments "$files_list")
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"

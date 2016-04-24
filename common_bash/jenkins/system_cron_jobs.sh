@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-24 15:40:38>
+## Updated: Time-stamp: <2016-04-24 15:42:32>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -35,7 +35,7 @@ bash /var/lib/devops/refresh_common_library.sh "3767938096"
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
+env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
@@ -43,7 +43,7 @@ done
 unset IFS
 
 ########################################################
-cron_job_list=$(list_strip_comments "$cron_job_list")
+cron_job_list=$(string_strip_comments "$cron_job_list")
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 IFS=$'\n'

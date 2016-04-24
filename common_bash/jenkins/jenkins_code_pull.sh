@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:40:39>
+## Updated: Time-stamp: <2016-04-24 15:42:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -40,7 +40,7 @@ function shell_exit() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 ########################################################################
-git_pull_list=$(list_strip_comments "$git_pull_list")
+git_pull_list=$(string_strip_comments "$git_pull_list")
 for git_pull in `echo $git_pull_list`; do
     git_pull=`echo $git_pull | sed 's/,/ /g'`
     item=($git_pull)

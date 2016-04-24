@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-24 15:40:38>
+## Updated: Time-stamp: <2016-04-24 15:42:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -95,7 +95,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
+env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
@@ -109,7 +109,7 @@ unset IFS
 git_email="jenkins.auto@dennyzhang.com"
 git_username="Jenkins Auto"
 
-repo_list=$(list_strip_comments "$repo_list")
+repo_list=$(string_strip_comments "$repo_list")
 for repo in `echo $repo_list`; do
     repo=`echo $repo | sed 's/,/ /g'`
     item=($repo)

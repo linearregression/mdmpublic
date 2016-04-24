@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-24 15:40:39>
+## Updated: Time-stamp: <2016-04-24 15:42:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -86,14 +86,14 @@ code_dir=$working_dir/$branch_name/$git_repo
 
 # Global variables needed to enable the current script
 env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(list_strip_comments "$env_parameters")
+env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
     eval $env_variable
 done
 unset IFS
 
-filelist_to_monitor=$(list_strip_comments "$filelist_to_monitor")
+filelist_to_monitor=$(string_strip_comments "$filelist_to_monitor")
 if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
     rm -rf $flag_file
 fi
