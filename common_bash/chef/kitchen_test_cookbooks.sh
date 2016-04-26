@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : kitchen_test_cookbooks.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:42:34>
+## Updated: Time-stamp: <2016-04-25 14:12:32>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -37,20 +37,20 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function get_cookbooks() {
     cookbook_list=${1?}
     cookbook_dir=${2?}
     skip_cookbook_list=${3:-""}
-    cd $cookbook_dir
+    cd "$cookbook_dir"
 
     if [ "$cookbook_list" = "ALL" ]; then
         cookbooks=`ls -1 .`
         cookbooks="$cookbooks"
     else
-        cookbooks=$(echo $cookbook_list | sed "s/,/ /g")
+        cookbooks=$(echo "$cookbook_list" | sed "s/,/ /g")
     fi
 
     # skip_cookbook_list
@@ -66,7 +66,7 @@ function get_cookbooks() {
         must_cookbooks=`ls -1 .`
         must_cookbooks="$must_cookbooks"
     else
-        must_cookbooks=$(echo $must_cookbook_list | sed "s/,/ /g")
+        must_cookbooks=$(echo "$must_cookbook_list" | sed "s/,/ /g")
     fi
 
     for cookbook in $must_cookbooks; do
@@ -75,23 +75,23 @@ function get_cookbooks() {
         fi
     done
 
-    echo $cookbooks_ret | sed "s/ $//g"
+    echo "$cookbooks_ret" | sed "s/ $//g"
 }
 
 function test_cookbook() {
-    test_command=${1?}
-    cookbook_dir=${2?}
-    coobook=${3?}
-    
-    cd ${cookbook_dir}/${cookbook}
+    local test_command=${1?}
+    local cookbook_dir=${2?}
+    local cookbook=${3?}
 
-    MY_BUILD_ID=$(echo $BUILD_ID | tr '_' '-')
-    export CURRENT_COOKBOOK=$cookbook    
+    cd "${cookbook_dir}/${cookbook}"
+
+    MY_BUILD_ID=$(echo "$BUILD_ID" | tr '_' '-')
+    export CURRENT_COOKBOOK=$cookbook
     if [ -z "$INSTANCE_NAME" ]; then
         if [ -z "$BUILD_USER" ]; then
             export INSTANCE_NAME="${cookbook}-${JOB_NAME}-${MY_BUILD_ID}"
         else
-            BUILD_USER=$(echo $BUILD_USER | sed 's/ /-/g')
+            BUILD_USER=$(echo "$BUILD_USER" | sed 's/ /-/g')
             export INSTANCE_NAME="${cookbook}-${JOB_NAME}-${MY_BUILD_ID}-${BUILD_USER}"
         fi
     fi
@@ -116,7 +116,7 @@ function test_cookbook() {
             echo "ERROR $cookbook"
             failed_cookbooks="${failed_cookbooks} ${cookbook}:${yml}"
         fi
-        echo "failed_cookbooks=$failed_cookbooks"            
+        echo "failed_cookbooks=$failed_cookbooks"
     done
     unset INSTANCE_NAME
 }
@@ -136,41 +136,41 @@ function shell_exit() {
     exit $errcode
 }
 ########################################################################
-git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then
-    [ ! -d $code_dir ] || sudo rm -rf $code_dir
+    [ ! -d "$code_dir" ] || sudo rm -rf "$code_dir"
 fi
 
-if [ ! -d $working_dir ]; then
+if [ ! -d "$working_dir" ]; then
     mkdir -p "$working_dir"
     chown -R jenkins:jenkins "$working_dir"
 fi
 
-if [ -d $code_dir ]; then
+if [ -d "$code_dir" ]; then
     if [ -n "$REMOVE_BERKSFILE_LOCK" ] && $REMOVE_BERKSFILE_LOCK; then
-        cd $code_dir/cookbooks
+        cd "$code_dir/cookbooks"
         git checkout */Berksfile.lock
     fi
 fi
 
-if [ -z "$SKIP_CODE_UPDATE" ] || [ ! $SKIP_CODE_UPDATE ]; then
-    git_update_code $branch_name $working_dir $git_repo_url
-    cd $working_dir/$branch_name/$git_repo
+if [ -z "$SKIP_CODE_UPDATE" ] || [ ! "$SKIP_CODE_UPDATE" ]; then
+    git_update_code "$branch_name" "$working_dir" "$git_repo_url"
+    cd "$working_dir/$branch_name/$git_repo"
     # add retry for network turbulence
-    git pull origin $branch_name || (sleep 2 && git pull origin $branch_name)
+    git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
 fi
 
 cookbook_dir="$code_dir/cookbooks"
-cd $cookbook_dir
+cd "$cookbook_dir"
 
 failed_cookbooks=""
 cookbooks=$(get_cookbooks "$cookbook_list" "$cookbook_dir" "$skip_cookbook_list")

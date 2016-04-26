@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : perform_smoke_test.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-16>
-## Updated: Time-stamp: <2016-04-24 15:40:38>
+## Updated: Time-stamp: <2016-04-25 14:12:30>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -18,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function prepare_protractor() {
@@ -31,7 +31,7 @@ function prepare_protractor() {
     protractor_testcase="$working_dir/protractor_testcase.js"
 
     log "configure $protractor_conf_cfg"
-    cat > $protractor_conf_cfg <<EOF
+    cat > "$protractor_conf_cfg" <<EOF
 exports.config = {
     seleniumAddress: 'http://localhost:4444/wd/hub',
     // ----- What tests to run -----
@@ -76,7 +76,7 @@ exports.config = {
 EOF
 
     log "configure $protractor_testcase"
-    cat > $protractor_testcase <<EOF
+    cat > "$protractor_testcase" <<EOF
 describe('Authright GUI verification', function() {
 url = "http://" + browser.params.login.server_ip
 
@@ -92,7 +92,7 @@ function test_protractor() {
     log "================ protractor $protractor_conf_cfg ============"
     export LANG="en_US.UTF-8"
     export LC_ALL="en_US.UTF-8"
-    protractor $protractor_conf_cfg
+    protractor "$protractor_conf_cfg"
 }
 
 #################################################################################

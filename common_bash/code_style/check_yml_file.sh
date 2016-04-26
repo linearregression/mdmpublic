@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : check_yml_file.sh
@@ -9,16 +9,13 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-19 21:07:56>
+## Updated: Time-stamp: <2016-04-25 11:16:43>
 ##-------------------------------------------------------------------
-function log() {
-    local msg=$*
-    echo -ne `date +['%Y-%m-%d %H:%M:%S']`" $msg\n"
-}
 
+base_dir=$(basename "$(pwd)")
 # get default env parameter
 if [ -z "$CURRENT_COOKBOOK" ]; then
-    export COOKBOOK="../"$(basename $(pwd))
+    export COOKBOOK="../${base_dir}"
 else
     export COOKBOOK="../$CURRENT_COOKBOOK"
 fi
@@ -26,6 +23,6 @@ fi
 for yml in `ls -1 .kitchen*.yml*`; do
     export KITCHEN_YAML=$yml
     echo "Check yml of $COOKBOOK: $yml"
-    kitchen diagnose --no-instances --loader 2>&1 1>/dev/null
+    kitchen diagnose --no-instances --loader 1>/dev/null 2>&1
 done
 ## File : check_yml_file.sh ends

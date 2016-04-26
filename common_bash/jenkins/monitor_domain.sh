@@ -4,7 +4,7 @@
 # * Email         : doungni@doungni.com
 # * Last modified : 2016-01-06 17:05
 # * Filename      : domain.sh
-# * Description   : 
+# * Description   :
 ################################################################################################
 
 ############################## Function Start ##################################################
@@ -15,7 +15,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function check_domain() {
@@ -36,12 +36,12 @@ function check_domain() {
     do
         api_url="http://api.whoapi.com/?apikey=${apikey_list[count_v]}&r=whois&domain=$1"
 
-        ret=$(curl -m 10 --connect-timeout 10 -s -d "getcode=secret" $api_url | jq . | grep date_expires | awk -F "\"" '{print $4}'| awk '{print $1}')
-        if [ -z $ret ]; then
+        ret=$(curl -m 10 --connect-timeout 10 -s -d "getcode=secret" "$api_url" | jq . | grep date_expires | awk -F "\"" '{print $4}'| awk '{print $1}')
+        if [ -z "$ret" ]; then
             log "Current API cannot call or APIKEY exception or domain error"
             exit 1
         fi
-        ex_ret=$(date +%s -d $ret)
+        ex_ret=$(date +%s -d "$ret")
         cur_ret=$(date +%s)
         day_ret=$(((ex_ret-cur_ret)/86400))
 
@@ -85,5 +85,5 @@ else
     exit 1
 fi
 
-check_domain ${domain_list[@]}
+check_domain "${domain_list[@]}"
 ############################## Shell End #######################################################

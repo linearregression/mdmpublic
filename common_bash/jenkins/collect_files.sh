@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 ################################################################################################
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : collect_files.sh
@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-24 15:42:33>
+## Updated: Time-stamp: <2016-04-25 14:15:17>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,20 +48,20 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
     local keep_day=${1?}
     local server_list=${2?}
     echo "=============== Remove old files to clean up disk"
-    for server in ${server_list[@]}
+    for server in "${server_list[@]}"
     do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
-        if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
+        if [ "x$(check_ssh_available "$server_ip" "$server_port")" = "xyes" ]; then
             echo "Delete expired file in $server"
             $ssh_connect "cd $save_path/$JOB_NAME-*-$server_ip-$server_port && find . -name \"$JOB_NAME*\" -mtime +$keep_day -exec rm -rfv {} \+"
         else
@@ -70,7 +70,7 @@ function data_retention() {
     done
 
     echo "rm obselete files under $transfer_dst_path older than $keep_day"
-    find $transfer_dst_path -name "*.tar.gz*" -mtime +$keep_day -and -not -type d -delete 
+    find "$transfer_dst_path" -name "*.tar.gz*" -mtime "+$keep_day" -and -not -type d -delete
 }
 
 function collect_files_by_host() {
@@ -83,7 +83,7 @@ function collect_files_by_host() {
 
     # loop files_list
     IFS=$'\n'
-    for t_file in ${files_list[@]}
+    for t_file in "${files_list[@]}"
     do
         unset IFS
         if [[ "$t_file" = "eval: "* ]]; then
@@ -94,12 +94,12 @@ function collect_files_by_host() {
             if [ $? -ne 0 ] || [ -z "$ssh_result" ]; then
                 echo "Warning: Fail to run $eval_command"
             else
-                collect_files_by_host $server_ip $server_port $work_path "$ssh_result"
+                collect_files_by_host "$server_ip" "$server_port" "$work_path" "$ssh_result"
             fi
             # TODO: restore set -e setting
         else
             echo "Collect files:$t_file"
-            ssh_result=$($ssh_connect test -r $t_file && echo yes || echo no)
+            ssh_result=$($ssh_connect test -r "$t_file" && echo yes || echo no)
             if [ "x$ssh_result" == "xno" ]; then
                 echo "Warning: file [$t_file] not readable"
                 continue
@@ -120,7 +120,7 @@ function collect_files() {
     local server_list=${1?}
     local files_list=${2?}
 
-    for server in ${server_list[@]}
+    for server in "${server_list[@]}"
     do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
@@ -129,23 +129,24 @@ function collect_files() {
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
 
         echo "=============== Collect files from $server_ip:$server_port"
-        if [ "x$(check_ssh_available $server_ip $server_port)" = "xyes" ]; then
+        if [ "x$(check_ssh_available "$server_ip" "$server_port")" = "xyes" ]; then
             local server_hostname=$($ssh_connect "hostname")
 
             local dir_by_hostname="${JOB_NAME}-${server_hostname}-${server_ip}-${server_port}"
             local dir_by_time="${JOB_NAME}-${server_ip}-${server_port}-${collect_time}"
             local work_path="${save_path}/${dir_by_hostname}/${dir_by_time}"
             $ssh_connect "[ -d $work_path ] || mkdir -p $work_path"
-            collect_files_by_host $server_ip $server_port $work_path "$files_list"
+            collect_files_by_host "$server_ip" "$server_port" "$work_path" "$files_list"
 
-            if [ $($ssh_connect "ls $work_path | wc -l") -gt 0 ]; then
+            local file_count=$($ssh_connect "ls $work_path | wc -l")
+            if [ "$file_count" -gt 0 ]; then
                 # Compress named:hostname-server_ip-server_port-current_time files
                 echo "Compress collected files at $server"
                 local dir_by_hostname_path="${save_path}/${dir_by_hostname}"
                 $ssh_connect "cd ${dir_by_hostname_path} && tar -zcvf ${dir_by_time}.tar.gz ${dir_by_time} 1>/dev/null && rm -rf $work_path"
 
                 echo "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
-                scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/
+                scp -P "$server_port" -i "$ssh_key_file" -o StrictHostKeyChecking=no "root@$server_ip:/${work_path}.tar.gz" "$transfer_dst_path/"
                 # TODO:
                 tar_list+=("\n${work_path}.tar.gz")
             fi
@@ -161,7 +162,7 @@ function collect_files() {
 # evaulate env
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
@@ -170,7 +171,6 @@ ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files
 # TODO:
 ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAME"
 
-file_path="/tmp"
 collect_time=$(date +'%Y%m%d-%H%M%S')
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
@@ -185,7 +185,7 @@ files_list=$(string_strip_comments "$files_list")
 [ -n "$save_path" ] || save_path="/tmp/"
 
 if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
-    rm -rf $transfer_dst_path/*
+    rm -rf "$transfer_dst_path/*"
 fi
 
 # Connect server and collect files
@@ -200,7 +200,7 @@ if [ -n "$SERVER_REMOTE_COPY" ]; then
     remote_server_port=${my_list[1]}
     remote_dst_dir=${my_list[2]}
 
-    ssh -o StrictHostKeyChecking=no -p $remote_server_port root@$remote_server_ip mkdir -p $remote_dst_dir
+    ssh -o StrictHostKeyChecking=no -p "$remote_server_port" "root@$remote_server_ip" mkdir -p "$remote_dst_dir"
 
     command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
     echo "$command"

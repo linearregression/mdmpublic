@@ -1,14 +1,14 @@
 #!/bin/bash -e
 ################################################################################################
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 # * Author        : doungni
 # * Email         : doungni@doungni.com
 # * Last modified : 2016-01-04 16:21
 # * Filename      : stop_black_containers.sh
-# * Description   : 
+# * Description   :
 ################################################################################################
 
 ################################################################################################
@@ -16,8 +16,8 @@
 #       docker_ip_port: Docker daemon server ip:port
 #       regular_black_list: Regular expressions are supported
 # * By define parameter
-#       ssh_identity_file ssh_connet black_list running_contianer_names 
-#       black_containers_list count_v container_name 
+#       ssh_identity_file ssh_connet black_list running_contianer_names
+#       black_containers_list count_v container_name
 ################################################################################################
 
 # TODO: Need to reduce code duplication in between stop_old_containers.sh and stop_black_containers.sh
@@ -29,16 +29,16 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Docker client version gather than 1.9.1
 function stop_black_containers() {
-    # Save running container names 
+    # Save running container names
     running_container_names=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d'))
     log "Docker daemon: $daemon_ip:$daemon_port current running container list[${#running_container_names[@]}]:\n${running_container_names[@]}"
 
-    # Count variable 
+    # Count variable
     local count_v=0
     # Continue to traverse the currently running container on the server
     for container_name in "${running_container_names[@]}"
@@ -46,9 +46,9 @@ function stop_black_containers() {
         for black_name in "${black_list[@]}"
         do
             # Find the container in the white list and mark it as 1
-            if [ $container_name = $black_name ]; then
+            if [ "$container_name" = "$black_name" ]; then
                 log "Container: [$container_name] in the black list, Will be stopped"
-                $ssh_connect docker stop $container_name
+                $ssh_connect docker stop "$container_name"
 
                 # Store is not white list and the need to stop the container
                 stop_black_containers[count_v]=$container_name
@@ -70,7 +70,7 @@ function main_entry() {
         # SSH connect parameter
         ssh_connect="ssh -p $daemon_port -i $ssh_identity_file -o StrictHostKeyChecking=no root@$daemon_ip"
 
-        nc_return=$(nc -w 1 $daemon_ip $daemon_port >/dev/null 2>&1 && echo yes || echo no)
+        nc_return=$(nc -w 1 "$daemon_ip" "$daemon_port" >/dev/null 2>&1 && echo yes || echo no)
         if [ "x$nc_return" == "xno" ]; then
             log "Can not connect docker daemon server $daemon_ip:$daemon_port"
             continue
@@ -83,7 +83,7 @@ function main_entry() {
                 regular_list=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d' | grep -e "^$regular"))||true
                 black_list+=("${regular_list[@]}")
             done
-            
+
             log "Docker daemon $daemon_ip:$daemon_port black list[${#black_list[@]}]:\n${black_list[@]}"
         fi
 

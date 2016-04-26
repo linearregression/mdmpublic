@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : kitchen_raw_test.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:40:40>
+## Updated: Time-stamp: <2016-04-25 14:12:32>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function exec_kitchen_cmd() {
@@ -48,11 +48,11 @@ function exec_kitchen_cmd() {
     log "exec kitchen command: $command"
     eval "$command"
     exit_if_error
-    
+
     if [ -a "${hooks_dir}/post-$cmd" ];then
         log "start to exec kitchen hook: post-$cmd"
         bash -e "${hooks_dir}/post-$cmd" && log "kitchen hook: post-$cmd exec done!"
-        exit_if_error        
+        exit_if_error
     fi
 }
 
@@ -73,7 +73,7 @@ function shell_exit() {
             log "keep instance"
         else
             log "destroy instance."
-            exec_kitchen_cmd ${kitchen_dir} destroy $show_log
+            exec_kitchen_cmd "${kitchen_dir}" destroy "$show_log"
         fi
     fi
 
@@ -85,7 +85,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 current_cookbook=`pwd`
 current_cookbook=${current_cookbook##*/}
 
-if [ -z $KITCHEN_VERIFY_SHOW_DEBUG ]; then
+if [ -z "$KITCHEN_VERIFY_SHOW_DEBUG" ]; then
     KITCHEN_VERIFY_SHOW_DEBUG=false
 fi
 
@@ -101,27 +101,27 @@ fi
 
 kitchen_dir=`pwd`
 if [ -z "$SKIP_KITCHEN_DESTROY" ] || ! $SKIP_KITCHEN_DESTROY; then
-    exec_kitchen_cmd ${kitchen_dir} destroy "$show_log"
+    exec_kitchen_cmd "${kitchen_dir}" destroy "$show_log"
 else
     log "skip kitchen destroy"
 fi
 if [ -z "$SKIP_KITCHEN_CREATE" ] || ! $SKIP_KITCHEN_CREATE; then
-    exec_kitchen_cmd ${kitchen_dir} create "$show_log"
+    exec_kitchen_cmd "${kitchen_dir}" create "$show_log"
 else
     log "skip kitchen create"
 fi
 
 if [ -z "$SKIP_KITCHEN_CONVERGE" ] || ! $SKIP_KITCHEN_CONVERGE; then
-    exec_kitchen_cmd ${kitchen_dir} converge  "$show_log"
+    exec_kitchen_cmd "${kitchen_dir}" converge  "$show_log"
 else
     log "skip kitchen converge"
 fi
 
 if [ -z "$SKIP_KITCHEN_VERIFY" ] || ! $SKIP_KITCHEN_VERIFY; then
     if $KITCHEN_VERIFY_SHOW_DEBUG; then
-        exec_kitchen_cmd ${kitchen_dir} verify -l debug
+        exec_kitchen_cmd "${kitchen_dir}" verify -l debug
     else
-        exec_kitchen_cmd ${kitchen_dir} verify "$show_log"
+        exec_kitchen_cmd "${kitchen_dir}" verify "$show_log"
     fi
 else
     log "skip kitchen verify"

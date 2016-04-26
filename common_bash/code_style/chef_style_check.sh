@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : chef_style_check.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:40:40>
+## Updated: Time-stamp: <2016-04-25 14:12:32>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -18,19 +18,20 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # get default env parameter
+base_dir=$(basename "$(pwd)")
 if [ -z "$CURRENT_COOKBOOK" ]; then
-    export COOKBOOK="../"$(basename $(pwd))
+    export COOKBOOK="../${base_dir}"
 else
     export COOKBOOK="../$CURRENT_COOKBOOK"
 fi
 
 log "foodcritic $COOKBOOK"
-foodcritic $COOKBOOK
+foodcritic "$COOKBOOK"
 
 log "rubocop $COOKBOOK"
-rubocop $COOKBOOK
+rubocop "$COOKBOOK"
 ## File : chef_style_check.sh ends

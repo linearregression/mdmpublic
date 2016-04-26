@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-04-24 15:40:39>
+## Updated: Time-stamp: <2016-04-25 14:12:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -17,7 +17,7 @@
 ##          db_ip: 123.57.240.189, localhost , 127.0.0.1
 ##          db_port : Database server port.
 ##          db_name : Database name, e.g. : db1; userRoot; etc..
-##          db_user : Database user name which is a security authentication user. 
+##          db_user : Database user name which is a security authentication user.
 ##                    The parameter can be null.
 ##          db_pwd  : Database user's password.
 ##                    The parameter can be null. It must be used together with db_user.
@@ -25,7 +25,7 @@
 ##          db_ip   : Support ip or local hostname. e.g.: 123.57.240.189, localhost , 127.0.0.1
 ##          db_port : ldap server port.
 ##          baseDn  : BaseDN of the ldap. e.g.: dc=jingantech,dc=com or dc=Tenant,dc=jingantech,dc=com
-##      -h|--help   : Show the help information. 
+##      -h|--help   : Show the help information.
 ## Usage:
 ##       dump_db_summary.sh mongodb localhost 27017 db1
 ##           # The command must be executed in the database server
@@ -41,18 +41,18 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
     errcode=$?
 
-    [ ${errcode} -eq ${RETURN_CODE} ] && exit 0
-    
-    if [ ${errcode} -ne 0 ];then
-        log "`date +['%Y-%m-%d %H-%M-%S']`Dump ${db_service} summary information failed."
+    [ "$errcode" -eq "$RETURN_CODE" ] && exit 0
+
+    if [ "$errcode" -ne 0 ];then
+        log "Dump ${db_service} summary information failed."
     else
-        log "`date +['%Y-%m-%d %H-%M-%S']`Dump ${db_service} summary information successfully."
+        log "Dump ${db_service} summary information successfully."
     fi
     exit $errcode
 }
@@ -92,31 +92,31 @@ function dump_mongodb_summary()
     local db_name=${3?}
     local db_user=${4}
     local db_pwd=${5}
-    
+
     mongodb_connect="${db_ip}:${db_port}/${db_name}"
-    
+
     if [ -n "${db_user}" -a -n "${db_pwd}" ];then
         mongodb_connect="${mongodb_connect} -u ${db_user} -p ${db_pwd}"
     fi
-    
+
     # TODO:Summary items: collectionNames; dataSum; dataSize; indexSum; indexSize; storageEngine
     # Get the collectionNames
-    collectionNames=$(echo "show collections" | mongo ${mongodb_connect} | sed -n "3,$ {$ ! p}")
-    collectionNames=$(echo $collectionNames)
-    collectionSum=$(echo ${collectionNames} | awk '{print NF}')
-    
+    collectionNames=$(echo "show collections" | mongo "$mongodb_connect" | sed -n "3,$ {$ ! p}")
+    collectionNames=$(echo "$collectionNames")
+    collectionSum=$(echo "$collectionNames" | awk '{print NF}')
+
     # Get the dataSum and indexSum
-    db_stats=$(echo "db.stats()" | mongo ${mongodb_connect})
-    
-    dataSum=$(echo $db_stats |  grep -o "objects[^,]*" | awk -F: '{print $2}')
-    dataSize=$(echo $db_stats |  grep -o "dataSize[^,]*" | awk -F: '{print $2}')
-    indexSum=$(echo $db_stats |  grep -o "indexes[^,]*" | awk -F: '{print $2}')
-    indexSize=$(echo $db_stats |  grep -o "indexSize[^,]*" | awk -F: '{print $2}')
+    db_stats=$(echo "db.stats()" | mongo "$mongodb_connect")
 
-    storageEngine=$(echo "db.serverStatus().storageEngine.name" | mongo ${mongodb_connect} | sed -n '3,$ {$ ! p}')
+    dataSum=$(echo "$db_stats" |  grep -o "objects[^,]*" | awk -F: '{print $2}')
+    dataSize=$(echo "$db_stats" |  grep -o "dataSize[^,]*" | awk -F: '{print $2}')
+    indexSum=$(echo "$db_stats" |  grep -o "indexes[^,]*" | awk -F: '{print $2}')
+    indexSize=$(echo "$db_stats" |  grep -o "indexSize[^,]*" | awk -F: '{print $2}')
 
-    current_connect=$(echo 'db.serverStatus().connections.current' | mongo ${mongodb_connect} | sed -n '3,$ {$ ! p}')
-    available_connect=$(echo 'db.serverStatus().connections.available' | mongo ${mongodb_connect} | sed -n '3,$ {$ ! p}')
+    storageEngine=$(echo "db.serverStatus().storageEngine.name" | mongo "$mongodb_connect" | sed -n '3,$ {$ ! p}')
+
+    current_connect=$(echo 'db.serverStatus().connections.current' | mongo "$mongodb_connect" | sed -n '3,$ {$ ! p}')
+    available_connect=$(echo 'db.serverStatus().connections.available' | mongo "$mongodb_connect" | sed -n '3,$ {$ ! p}')
 
     log "*************************${db_service} SUMMARY*******START********************************"
     log "The current connect number : ${current_connect}"
@@ -146,17 +146,17 @@ function dump_ldap_summary()
     local serverPort=${2?}
 
     # The baseDN of ldap , e.g. : dc=jingantech,dc=com
-    local baseDn=${3?}  
-    
+    local baseDn=${3?}
+
     # TODO:Summary items: dataSum; dataSize; indexSum; indexSize; storageEngine
-    
+
     # Get the path of config.ldif from the process. e.g.:/usr/local/ldap/config/config.ldif
     local config_path=$(ps -aux | grep ldap | grep -o 'configFile .*config.ldif' | awk '{print $2}' )
-    ldap_bin_path=$(echo `dirname $(dirname $config_path)`/bin)
-    
-    dataSum=$(${ldap_bin_path}/ldapsearch -h ${host} --port ${serverPort} --baseDN ${baseDn} '(uid=*)' -d | grep -c "^dn:")
-    
-    
+    ldap_bin_path=$(echo `dirname $(dirname "$config_path")`/bin)
+
+    dataSum=$("${ldap_bin_path}/ldapsearch" -h "$host" --port "$serverPort" --baseDN "$baseDn" '(uid=*)' -d | grep -c "^dn:")
+
+
     log "*******************${db_service} SUMMARY*******START**********************"
     log "The total number of the ldap's baseDN '${baseDn}' : ${dataSum}"
     log "*******************${db_service} SUMMARY*******END************************"
@@ -170,7 +170,7 @@ function dump_redis_summary()
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
-# Define a return code constant : 99 
+# Define a return code constant : 99
 RETURN_CODE=99
 
 if [ "x$1" == "x-h" -o "x$1" == "x--help" ];then
@@ -186,7 +186,7 @@ shift
 func_name="dump_${db_service}_summary"
 
 # Call the function according the first parameter
-if ! type -t ${func_name} | grep -wi function > /dev/null; then
+if ! type -t "$func_name" | grep -wi function > /dev/null; then
     log "[ERROR] Do not support the db service:${db_service}"
     usage
     exit 1

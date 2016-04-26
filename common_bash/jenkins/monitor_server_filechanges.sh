@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : monitor_server_filechanges.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-24 15:42:33>
+## Updated: Time-stamp: <2016-04-25 14:14:17>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function monitor_server_filechanges() {
@@ -52,31 +52,31 @@ function monitor_server_filechanges() {
             local inotifywait_command="/usr/bin/inotifywait -d -m --timefmt \"%Y-%m-%d %H:%M:%S\" --format \"%T %w %e %f\" -e modify -r "
             local monitor_directories=""
             for file in $file_list; do
-                if $ssh_connect [ -f $file -o -d $file ]; then
+                if $ssh_connect [ -f "$file" -o -d "$file" ]; then
                     monitor_directories="$monitor_directories $file"
                 fi
             done
             if [ "$monitor_directories" = "" ]; then
                 echo "ERROR: No qualified files to be monitored in $ssh_server_ip"
                 has_error="1"
-                continue
+                return
             fi
             local command="$ssh_connect $inotifywait_command $monitor_directories --outfile $log_file"
             echo "Run $command"
-            $command
+            eval "$command"
         fi
     fi
 
     if [ -n "$mark_previous_as_true" ] && $mark_previous_as_true; then
-        $ssh_connect truncate --size=0 $log_file
+        $ssh_connect truncate --size=0 "$log_file"
     fi
 
     echo "Check whether new file changes have happened"
-    file_size=$($ssh_connect stat -c %s $log_file)
+    file_size=$($ssh_connect stat -c %s "$log_file")
     if [ "$file_size" != "0" ]; then
         echo "ERROR: $log_file is not empty, which indicates files changed"
         echo -e "\n============== File change list =============="
-        $ssh_connect cat $log_file
+        $ssh_connect cat "$log_file"
         echo -e "\n=============================================="
         has_error="1"
     fi
@@ -87,7 +87,7 @@ env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
@@ -109,7 +109,7 @@ do
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
     echo -e "\n============== Check Node ${ssh_server_ip}:${ssh_port} for file changes =============="
-    monitor_server_filechanges $ssh_server_ip $ssh_port
+    monitor_server_filechanges "$ssh_server_ip" "$ssh_port"
 done
 
 # TODO: backup changed files

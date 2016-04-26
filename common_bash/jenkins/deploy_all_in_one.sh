@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : deploy_all_in_one.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-24 15:42:33>
+## Updated: Time-stamp: <2016-04-25 14:15:53>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -40,6 +40,7 @@
 ##
 ## Hook points: START_COMMAND -> POST_START_COMMAND -> PRE_STOP_COMMAND -> STOP_COMMAND
 ################################################################################################
+# TODO: move this script to ../chef/ directory
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
@@ -47,22 +48,23 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
     errcode=$?
+    unset common_ssh_options
     if $STOP_CONTAINER; then
         if [ -n "$PRE_STOP_COMMAND" ]; then
-            pre_stop_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$PRE_STOP_COMMAND"'
-            log $pre_stop_command
-            eval $pre_stop_command
+            pre_stop_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip ${PRE_STOP_COMMAND}"
+            log "$pre_stop_command"
+            eval "$pre_stop_command"
         fi
 
         log "stop container."
-        stop_command='ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip "$STOP_COMMAND"'
-        log $stop_command
-        eval $stop_command
+        stop_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip ${STOP_COMMAND}"
+        log "$stop_command"
+        eval "$stop_command"
 
     fi
     exit $errcode
@@ -76,7 +78,7 @@ env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
@@ -99,10 +101,10 @@ if [ -z "$code_dir" ]; then
 fi
 
 if [ -z "$chef_client_rb" ]; then
-    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 else
-    chef_client_rb=$(echo $chef_client_rb | sed -e "s/ +/ /g")
+    chef_client_rb=$(echo "$chef_client_rb" | sed -e "s/ +/ /g")
 fi
 
 if [ -z "$SSH_SERVER_PORT" ]; then
@@ -110,33 +112,33 @@ if [ -z "$SSH_SERVER_PORT" ]; then
 fi
 
 # TODO: ensure_variable_isset "chef_client_rb must be set" "$chef_client_rb"
-common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
+export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
 if [ -n "$START_COMMAND" ]; then
-    start_command='ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip "$START_COMMAND"'
-    log $start_command
-    eval $start_command
+    start_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip ${START_COMMAND}"
+    log "$start_command"
+    eval "$start_command"
 
     sleep 2
 
     if [ -n "$POST_START_COMMAND" ]; then
-        post_start_command='ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip "$POST_START_COMMAND"'
-        log $post_start_command
-        eval $post_start_command
+        post_start_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip ${POST_START_COMMAND}"
+        log "$post_start_command"
+        eval "$post_start_command"
     fi
 fi
 
 if $KILL_RUNNING_CHEF_UPDATE; then
-    log $kill_chef_command
-    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $kill_chef_command
+    log "$kill_chef_command"
+    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$kill_chef_command"
 fi
 
 if [ -n "$CODE_SH" ]; then
     log "Update git codes"
-    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
     # ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name
     # TODO: remove this line and replace to above
-    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip "$CODE_SH" $code_dir $git_repo_url $devops_branch_name "all-in-one"
+    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$CODE_SH" "$code_dir" "$git_repo_url" "$devops_branch_name" "all-in-one"
 fi
 
 chef_json=$(string_strip_comments "$chef_json")
@@ -144,15 +146,15 @@ log "Prepare chef configuration"
 echo "$chef_client_rb" > /tmp/client.rb
 echo "$chef_json" > /tmp/client.json
 
-scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no /tmp/client.rb root@$ssh_server_ip:/root/client.rb
-scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no /tmp/client.json root@$ssh_server_ip:/root/client.json
+scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no /tmp/client.rb "root@$ssh_server_ip:/root/client.rb"
+scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no /tmp/client.json "root@$ssh_server_ip:/root/client.json"
 
 log "Apply chef update"
 log "ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip chef-solo --config /root/client.rb -j /root/client.json"
-ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip chef-solo --config /root/client.rb -j /root/client.json
+ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" chef-solo --config /root/client.rb -j /root/client.json
 
 if [ -n "$check_command" ]; then
     log "$check_command"
-    ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip "$check_command"
+    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$check_command"
 fi
 ## File : deploy_all_in_one.sh ends

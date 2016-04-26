@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##--------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File: iam_install.sh
@@ -9,7 +9,7 @@
 ## Description:
 ## --
 ## Created: <2016-01-06>
-## Updated: Time-stamp: <2016-04-24 15:40:37>
+## Updated: Time-stamp: <2016-04-25 14:17:57>
 ##--------------------------------------------------------
 
 ################################################################################################
@@ -19,20 +19,20 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function start_docker_daemon() {
     if ! service docker status | grep running;then
         log "start docker:"
         service docker start
-    fi    
+    fi
 }
 
 function load_docker_image() {
     docker_tar=${1}
     log "docker load image:$docker_tar"
-    docker load -i ./$docker_tar    
+    docker load -i "./$docker_tar"
 }
 
 ################################################################################
@@ -41,10 +41,10 @@ case "$1" in
     load-image)
         fail_unless_root
         start_docker_daemon
-        docker_tar=${2:-"denny_osc_latest.tar.bz2"}        
-        load_docker_image $docker_tar
+        docker_tar=${2:-"denny_osc_latest.tar.bz2"}
+        load_docker_image "$docker_tar"
         ;;
-    
+
     start-docker-jenkins)
         fail_unless_root
         start_docker_daemon
@@ -53,17 +53,17 @@ case "$1" in
         image_name="denny/osc:latest"
         log "start to create container docker-jenkins ..."
         container_status=$(is_container_running "${container_name}")
-        
-        if [ $container_status = "none" ];then
+
+        if [ "$container_status" = "none" ];then
             docker run -d -t -h dockerjenkins --privileged \
                    --name ${container_name} -p 4022:22 -p 28000:28000 -p 28080:28080 -p 3128:3128 \
                    $image_name /usr/sbin/sshd -D
-        elif [ $container_status = "dead" ];then
+        elif [ "$container_status" = "dead" ];then
             docker start ${container_name}
         fi
 
         docker exec -it ${container_name} bash -c "service jenkins start"
-        docker exec -it ${container_name} bash -c "service apache2 start" 
+        docker exec -it ${container_name} bash -c "service apache2 start"
         log "ok"
         ;;
 
@@ -72,18 +72,18 @@ case "$1" in
         start_docker_daemon
 
         container_name="docker-all-in-one"
-        image_name="denny/osc:latest"        
+        image_name="denny/osc:latest"
         log "start to create container ${container_name} ..."
         container_status=$(is_container_running "docker-all-in-one")
-        
-        if [ $container_status = "none" ];then
+
+        if [ "$container_status" = "none" ];then
             docker run -d -t --privileged -h dockeraio --name "${container_name}" \
                    -p 10000-10050:10000-10050 -p 80:80 -p 443:443 \
                    -p 6022:22 -p 1389:1389 $image_name /usr/sbin/sshd -D
-        elif [ $container_status = "dead" ];then
+        elif [ "$container_status" = "dead" ];then
             docker start ${container_name}
         fi
-        log "ok"        
+        log "ok"
         ;;
 
     inject-keys)
@@ -97,11 +97,11 @@ case "$1" in
 
     bootstrap-up)
         fail_unless_root
-        
+
         log "cp docker_sandbox.sh to /etc/init.d/docker_sandbox"
         rm -rf /etc/init.d/docker_sandbox
         update-rc.d docker_sandbox remove
-        
+
         cp docker_sandbox.sh /etc/init.d/docker_sandbox
         chmod 755 /etc/init.d/docker_sandbox
         update-rc.d docker_sandbox defaults
@@ -126,7 +126,7 @@ case "$1" in
 
         log "remove container:"
         docker ps -a --format "{{.Names}}" | xargs docker rm
-        log "ok"        
+        log "ok"
         ;;
     *)
         echo "Usage: $0 {all/load-image/start-docker-jenkins/start-docker-all-in-one/inject-keys/bootstrap-up/clean}"

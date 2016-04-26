@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : effort_report.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-04-24 15:40:37>
+## Updated: Time-stamp: <2016-04-25 14:12:29>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -43,8 +43,8 @@ function get_effort_summary() {
         if ! grep $end_pattern $f >/dev/null 2>&1 ; then
             end_pattern="`date +'%Y'`-"
             echo "Warning: Failed to find $end_pattern in $f. Choose another pattern: $end_pattern"
-        fi 
-        content="`awk "/$start_pattern/,/$end_pattern/" $f | grep -v "^$start_pattern" | grep -v '^=======' | grep -v "^$end_pattern"`"   
+        fi
+        content="`awk "/$start_pattern/,/$end_pattern/" $f | grep -v "^$start_pattern" | grep -v '^=======' | grep -v "^$end_pattern"`"
         name=$(dirname $f)
         name=${name##*/}
         result="${result}Member - ${name}:\n${content}\n---------------------------------\n\n"
@@ -60,12 +60,12 @@ start_pattern=$start_weekday
 end_pattern=$(date -d "$start_pattern -7 days" +'%Y-%m-%d')
 
 # checkout code
-git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
-code_dir=$working_dir/$branch_name/$git_repo
-output=$(git_update_code $branch_name $working_dir $git_repo_url "no")
+git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+code_dir="$working_dir/$branch_name/$git_repo"
+output=$(git_update_code "$branch_name" "$working_dir" "$git_repo_url" "no")
 
 # parse content
-content=$(get_effort_summary $code_dir "$start_pattern" "$end_pattern")
+content=$(get_effort_summary "$code_dir" "$start_pattern" "$end_pattern")
 echo "Show report"
 title="DevOps周报"
 echo -e "☆☆☆☆ ${title}: ${start_weekday} ☆☆☆☆\n\n$content"

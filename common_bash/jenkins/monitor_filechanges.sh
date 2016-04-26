@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : monitor_filechanges.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-24 15:42:33>
+## Updated: Time-stamp: <2016-04-25 14:12:30>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,7 +34,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_changed_filelist() {
@@ -42,8 +42,8 @@ function git_changed_filelist() {
     local src_dir=${1?}
     local old_sha=${2?}
     local new_sha=${3?}
-    cd $src_dir
-    git diff --name-only $old_sha $new_sha
+    cd "$src_dir"
+    git diff --name-only "$old_sha" "$new_sha"
 }
 
 function detect_changed_file() {
@@ -52,7 +52,7 @@ function detect_changed_file() {
     local old_sha=${2?}
     local new_sha=${3?}
     local files_to_monitor=${4?}
-    local file_list=$(git_changed_filelist $src_dir $old_sha $new_sha)
+    local file_list=$(git_changed_filelist "$src_dir" "$old_sha" "$new_sha")
 
     echo -e "\n\n========== git diff --name-only ${old_sha}..${new_sha}\n"
     echo "${file_list}\n"
@@ -69,9 +69,9 @@ flag_file="/var/lib/jenkins/$JOB_NAME.flag"
 function shell_exit() {
     errcode=$?
     if [ $errcode -eq 0 ]; then
-        echo "OK"> $flag_file
+        echo "OK" > "$flag_file"
     else
-        echo "ERROR"> $flag_file
+        echo "ERROR" > "$flag_file"
     fi
     exit $errcode
 }
@@ -81,7 +81,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 log "env variables. CLEAN_START: $CLEAN_START"
 
-git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
+git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 
 # Global variables needed to enable the current script
@@ -89,53 +89,55 @@ env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
 filelist_to_monitor=$(string_strip_comments "$filelist_to_monitor")
 if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
-    rm -rf $flag_file
+    rm -rf "$flag_file"
 fi
 
 # check previous failure
-if [ -f $flag_file ] && [[ `cat $flag_file` = "ERROR" ]]; then
+if [ -f "$flag_file" ] && [[ `cat "$flag_file"` = "ERROR" ]]; then
     echo "Previous check has failed"
     exit 1
 fi
 
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then
-  [ ! -d $code_dir ] || rm -rf $code_dir
+  [ ! -d "$code_dir" ] || rm -rf "$code_dir"
 fi
 
-if [ ! -d $working_dir ]; then
+if [ ! -d "$working_dir" ]; then
    mkdir -p "$working_dir"
    chown -R jenkins:jenkins "$working_dir"
 fi
 
-if [ -d $code_dir ]; then
-  old_sha=$(current_git_sha $code_dir)
+if [ -d "$code_dir" ]; then
+  old_sha=$(current_git_sha "$code_dir")
 else
   old_sha=""
 fi
 
 # Update code
-git_update_code $branch_name $working_dir $git_repo_url
-cd $working_dir/$branch_name/$git_repo
+git_update_code "$branch_name" "$working_dir" "$git_repo_url" "yes"
+code_dir="$working_dir/$branch_name/$git_repo"
+cd "$code_dir"
+
 # add retry for network turbulence
-git pull origin $branch_name || (sleep 2 && git pull origin $branch_name)
+git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
 
 changed_file_list=""
-cd $code_dir
+cd "$code_dir"
 
-new_sha=$(current_git_sha $code_dir)
+new_sha=$(current_git_sha "$code_dir")
 
-if [ -z "$old_sha" ] || [ $old_sha = $new_sha ]; then
+if [ -z "$old_sha" ] || [ "$old_sha" = "$new_sha" ]; then
     echo -e "\n\n========== Latest git sha is $old_sha. No commits since last git pull\n\n"
 else
-    detect_changed_file $code_dir $old_sha $new_sha "$filelist_to_monitor"
+    detect_changed_file "$code_dir" "$old_sha" "$new_sha" "$filelist_to_monitor"
     if [ -n "$changed_file_list" ]; then
-        echo -e "\n\n========== git diff $old_sha $new_sha\n"
+        echo -e "\n\n========== git diff ${old_sha} ${new_sha}\n"
         echo -e "========== ERROR file changed: \n`echo "$changed_file_list" | tr ' ' '\n'`\n"
         exit 1
     fi

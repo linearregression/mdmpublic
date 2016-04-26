@@ -1,6 +1,6 @@
 #!/bin/bash -e
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ### BEGIN INIT INFO
@@ -21,7 +21,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 LOG_FILE="/var/log/docker_sandbox.log"
@@ -34,7 +34,7 @@ case "$1" in
             log "start docker:"
             service docker start
         fi
-        
+
         log "start docker container docker-jenkins and docker-all-in-one"
         docker start docker-jenkins
         docker start docker-all-in-one

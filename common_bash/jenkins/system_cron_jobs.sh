@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : system_cron_jobs.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-24 15:42:32>
+## Updated: Time-stamp: <2016-04-25 14:12:29>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -38,7 +38,7 @@ env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
@@ -47,7 +47,7 @@ cron_job_list=$(string_strip_comments "$cron_job_list")
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 IFS=$'\n'
-for cron_job in ${cron_job_list[@]}
+for cron_job in "${cron_job_list[@]}"
 do
     unset IFS
 

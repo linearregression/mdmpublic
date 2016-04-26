@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : build_livecd_ubuntu.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-04-24 15:40:38>
+## Updated: Time-stamp: <2016-04-25 14:12:29>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
@@ -22,7 +22,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -36,31 +36,31 @@ function umount_dir()
 {
     local dir=${1?}
 
-    if [ -d $dir ]; then
+    if [ -d "$dir" ]; then
         fs_name=`stat --file-system --format=%T $dir`
         if [ "$fs_name" = "tmpfs" ] || [ "$fs_name" = "isofs" ]; then
-            umount $dir
+            umount "$dir"
         fi
     fi
 }
 
 function original_ubuntu_iso() {
     local working_dir=${1?}
-    local short_iso_filename=$(basename $fetch_iso_url)
+    local short_iso_filename=$(basename "$fetch_iso_url")
     echo "$working_dir/../$short_iso_filename"
 }
 
 function livecd_clean_up() {
-    umount_dir $working_dir/mnt
-    umount_dir $working_dir/edit/dev
+    umount_dir "$working_dir/mnt"
+    umount_dir "$working_dir/edit/dev"
 }
 
 function clean_up_dev_mount() {
     local working_dir=${1?}
-    if [ -d $working_dir/edit ]; then
+    if [ -d "$working_dir/edit" ]; then
         fs_name=`stat --file-system --format=%T /dev`
         if [ "$fs_name" = "tmpfs" ] || [ "$fs_name" = "isofs" ]; then
-            cd $working_dir
+            cd "$working_dir"
             chroot edit umount /proc || true
             chroot edit umount /sys || true
             chroot edit umount /dev/pts || true
@@ -73,21 +73,20 @@ function customize_ubuntu_image() {
     set -e
     log "Customize Image"
     local chroot_dir=${1?}
-    local download_dir=${2:-"/data/download"}
 
     log "change /etc/resolv.conf"
-    chroot $chroot_dir bash -c "echo nameserver 8.8.8.8 > /etc/resolv.conf"
+    chroot "$chroot_dir" bash -c "echo nameserver 8.8.8.8 > /etc/resolv.conf"
     log "apt-get -y update"
-    chroot $chroot_dir bash -c "apt-get -y update" 1>/dev/null
-    chroot $chroot_dir bash -c "apt-get install -y tmux vim openssh-server" 1>/dev/null
+    chroot "$chroot_dir" bash -c "apt-get -y update" 1>/dev/null
+    chroot "$chroot_dir" bash -c "apt-get install -y tmux vim openssh-server" 1>/dev/null
 
     log "Install docker. This may take several minutes"
-    chroot $chroot_dir bash -c "wget -qO- https://get.docker.com/ | sh"
+    chroot "$chroot_dir" bash -c "wget -qO- https://get.docker.com/ | sh"
 
     # TODO:
     # log "Enable docker autostart"
-    # chroot $chroot_dir bash -c "update-rc.d docker defaults"
-    # chroot $chroot_dir bash -c "update-rc.d docker enable"
+    # chroot "$chroot_dir" bash -c "update-rc.d docker defaults"
+    # chroot "$chroot_dir" bash -c "update-rc.d docker enable"
 }
 
 ############################################################################
@@ -107,20 +106,20 @@ log "Install necessary packages"
 which aptitude 1>/dev/null || apt-get install -y aptitude 1>/dev/null
 aptitude install -y squashfs-tools genisoimage 1>/dev/null
 
-rm -rf $working_dir && mkdir -p $working_dir
-cd $working_dir
+rm -rf "$working_dir" && mkdir -p "$working_dir"
+cd "$working_dir"
 mkdir mnt
 
-ubuntu_iso_full_path=$(original_ubuntu_iso $working_dir)
-if [ ! -f $ubuntu_iso_full_path ]; then
+ubuntu_iso_full_path=$(original_ubuntu_iso "$working_dir")
+if [ ! -f "$ubuntu_iso_full_path" ]; then
     log "Download original ubuntu iso"
-    wget -O  $ubuntu_iso_full_path $fetch_iso_url
+    wget -O "$ubuntu_iso_full_path" "$fetch_iso_url"
 fi
 
 # mount mnt
-clean_up_dev_mount $working_dir
+clean_up_dev_mount "$working_dir"
 log "Mount iso and extract content. This may takes ~30 seconds"
-mount -o loop $(original_ubuntu_iso $working_dir) mnt
+mount -o loop "$(original_ubuntu_iso "$working_dir")" mnt
 mkdir extract-cd
 rsync --exclude=/casper/filesystem.squashfs -a mnt/ extract-cd
 
@@ -137,7 +136,7 @@ chroot edit mount -t devpts none /dev/pts
 # chroot edit export HOME=/root
 # chroot edit export LC_ALL=C
 
-customize_ubuntu_image $working_dir/edit
+customize_ubuntu_image "$working_dir/edit"
 
 log "Clean up and umount filesystem"
 chroot edit apt-get -y update
@@ -172,6 +171,6 @@ rm md5sum.txt
 find -type f -print0 | xargs -0 md5sum | grep -v isolinux/boot.cat | tee md5sum.txt
 
 log "Create ISO image"
-mkisofs -r -D -V "$volume_id" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $dst_iso .
+mkisofs -r -D -V "$volume_id" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o "$dst_iso" .
 log "Build process completed: image can be found in $dst_iso."
 ## File : build_livecd_ubuntu.sh ends

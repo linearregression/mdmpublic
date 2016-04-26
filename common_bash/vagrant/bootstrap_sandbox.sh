@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : bootstrap_sandbox.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-24 15:40:37>
+## Updated: Time-stamp: <2016-04-25 14:20:13>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -18,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 image_name=${1?"docker image name"}
@@ -32,25 +32,25 @@ function docker_pull_image() {
     command="docker pull $image_name"
 
     old_image_id=""
-    if docker images | grep $image_repo_name; then
-        old_image_id=$(docker images | grep $image_repo_name | awk -F' ' '{print $3}')
+    if docker images | grep "$image_repo_name"; then
+        old_image_id=$(docker images | grep "$image_repo_name" | awk -F' ' '{print $3}')
     fi
 
     log "docker pull $image_name, this steps may take tens of minutes."
     set +e
-    docker pull $image_name
+    docker pull "$image_name"
     if [ $? -eq 0 ]; then
         log "Retry: docker pull $image_name, in case doggy internet issue."
-        docker pull $image_name
+        docker pull "$image_name"
     fi
     set -e
 
-    new_image_id=$(docker images | grep $image_repo_name | awk -F' ' '{print $3}')
+    new_image_id=$(docker images | grep "$image_repo_name" | awk -F' ' '{print $3}')
 
     if [ "$old_image_id" = "$new_image_id" ]; then
-        echo "no" > $flag_file
+        echo "no" > "$flag_file"
     else
-        echo "yes" > $flag_file
+        echo "yes" > "$flag_file"
     fi
 }
 
@@ -108,15 +108,15 @@ function shell_exit() {
 }
 
 function config_auto_start() {
-    service_name=${1?}
+    local service_name=${1?}
     local os_release_name=$(os_release)
     if [ "$os_release_name" == "ubuntu" ]; then
-        update-rc.d docker_sandbox defaults
-        update-rc.d docker_sandbox enable
+        update-rc.d "$service_name" defaults
+        update-rc.d "$service_name" enable
     fi
 
     if [ "$os_release_name" == "redhat" ] || [ "$os_release_name" == "centos" ]; then
-        chkconfig docker_sandbox on
+        chkconfig "$service_name" on
     fi
 }
 
@@ -156,7 +156,7 @@ config_auto_start "docker_sandbox"
 log "Start docker of docker-jenkins"
 flag_file="image.txt"
 
-docker_pull_image $image_repo_name $image_name $flag_file
+docker_pull_image "$image_repo_name" "$image_name" "$flag_file"
 image_has_new_version=`cat $flag_file`
 
 container_name="docker-jenkins"
@@ -171,9 +171,9 @@ fi
 
 if [ $container_status = "none" ]; then
     docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ \
-            -h $hostname --name $container_name -p 4022:22 -p 28000:28000 \
+            -h "$hostname" --name "$container_name" -p 4022:22 -p 28000:28000 \
             -p 28080:28080 -p 3128:3128 \
-           $image_name /usr/sbin/sshd -D
+            "$image_name" /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then
     docker start $container_name
 fi

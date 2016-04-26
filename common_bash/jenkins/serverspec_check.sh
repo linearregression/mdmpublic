@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : serverspec_check.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-04-24 15:40:38>
+## Updated: Time-stamp: <2016-04-25 14:12:30>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 
 fail_unless_os "ubuntu|redhat/centos/osx"
@@ -50,7 +50,7 @@ function install_serverspec() {
 
 function setup_serverspec() {
     working_dir=${1?}
-    cd $working_dir
+    cd "$working_dir"
     if [ ! -f spec/spec_helper.rb ]; then
         echo "Setup Serverspec Test case"
         cat > spec/spec_helper.rb <<EOF
@@ -97,9 +97,9 @@ flag_file="/var/lib/jenkins/$JOB_NAME.flag"
 function shell_exit() {
     errcode=$?
     if [ $errcode -eq 0 ]; then
-        echo "OK"> $flag_file
+        echo "OK" > "$flag_file"
     else
-        echo "ERROR"> $flag_file
+        echo "ERROR" > "$flag_file"
     fi
     exit $errcode
 }
@@ -143,18 +143,18 @@ rake spec -v
 # 4 command 2: "get docker container number" < 15
 if [ -n "$remote_list" ]; then
     remote_list=(${remote_list// / })
-    
+
     ssh_connect="ssh -p ${remote_list[1]} -i ${remote_list[2]} -o stricthostkeychecking=no root@${remote_list[0]}"
     loadavg_va=$($ssh_connect "cat /proc/loadavg | awk '{print \$1}'")
     container_num=$($ssh_connect "docker ps | sed '1d' | wc -l")
-    
+
     # compare loadavg value
     if [ `echo "$loadavg_va > ${remote_list[3]}" | bc` -eq 1 ]; then
         exit 1
     fi
-    
+
     # compare the number of containers
-    if [ $container_num -gt ${remote_list[4]} ]; then
+    if [ "$container_num" -gt "${remote_list[4]}" ]; then
         exit 1
     fi
 fi

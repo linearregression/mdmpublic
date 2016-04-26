@@ -1,14 +1,14 @@
 #!/bin/bash -ex
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : download_load_test_report.sh
 ## Description :
 ## --
 ## Created : <2015-09-24>
-## Updated: Time-stamp: <2016-04-24 15:42:32>
+## Updated: Time-stamp: <2016-04-25 14:12:29>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -33,7 +33,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -43,8 +43,8 @@ function shell_exit() {
         if ! $ALWAYS_KEEP_INSTANCE; then
             if [ -n "$STOP_COMMAND" ]; then
                 stop_instance_command="ssh -i $ssh_key_file -o StrictHostKeyChecking=no root@$ssh_server_ip $STOP_COMMAND"
-                log $stop_instance_command
-                eval $stop_instance_command
+                log "$stop_instance_command"
+                eval "$stop_instance_command"
             fi
         fi
     else
@@ -52,8 +52,8 @@ function shell_exit() {
         if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
             if [ -n "$STOP_COMMAND" ]; then
                 stop_instance_command="ssh -i $ssh_key_file -o StrictHostKeyChecking=no root@$ssh_server_ip $STOP_COMMAND"
-                log $stop_instance_command
-                eval $stop_instance_command
+                log "$stop_instance_command"
+                eval "$stop_instance_command"
             fi
         fi
     fi
@@ -70,7 +70,7 @@ env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
@@ -90,27 +90,27 @@ report_dir_path="$workspace_path/$report_dir_name"
 if [ -z "$ssh_server_port" ]; then
     start_instance_command="ssh -i $ssh_key_file -o StrictHostKeyChecking=no root@$ssh_server_ip $START_COMMAND"
 else
-    start_instance_command="ssh -i $ssh_key_file -p $ssh_server_port -o StrictHostKeyChecking=no root@$ssh_server_ip $START_COMMAND"    
+    start_instance_command="ssh -i $ssh_key_file -p $ssh_server_port -o StrictHostKeyChecking=no root@$ssh_server_ip $START_COMMAND"
 fi
 
 if [ -n "$START_COMMAND" ]; then
-    log $start_instance_command
-    eval $start_instance_command
+    log "$start_instance_command"
+    eval "$start_instance_command"
     sleep 5
 fi
 
-ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip test -f $report_remote_path
+ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" test -f $report_remote_path
 if [ $? -ne 0 ];then
     log "The load test report file don't be found in the container."
     exit 1
 fi
 
-mkdir -p $report_dir_path
+mkdir -p "$report_dir_path"
 
-scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip:${report_remote_path%/*}/* $report_dir_path
-scp -i $ssh_key_file -P $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip:$report_check_log $report_dir_path
-cat $report_dir_path/${report_check_log##*/}
-result=$(cat $report_dir_path/${report_check_log##*/} | grep -w "Check failed" | sed -n '1p')
+scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip:${report_remote_path%/*}/*" "$report_dir_path"
+scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip:$report_check_log" "$report_dir_path"
+cat "$report_dir_path/${report_check_log##*/}"
+result=$(cat "$report_dir_path/${report_check_log##*/}" | grep -w "Check failed" | sed -n '1p')
 
 log "If you want to view all the load test result file, please click the link: $test_report_url/ws/$report_dir_name."
 log "If you only want to view the load test report file, please click the link: $test_report_url/ws/$report_dir_name/$report_file_name."

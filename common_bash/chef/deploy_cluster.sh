@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : deploy_cluster.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 16:04:18>
+## Updated: Time-stamp: <2016-04-25 14:12:32>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -53,7 +53,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function bindhosts() {
@@ -131,7 +131,7 @@ function init_cluster() {
 
     log "Prepare chef configuration"
     echo ${chef_client_rb} > /tmp/client_init.rb
-    echo -e "{\n\"run_list\": [${init_run_list}],\n$chef_json\n}" > /tmp/client_init.json    
+    echo -e "{\n\"run_list\": [${init_run_list}],\n$chef_json\n}" > /tmp/client_init.json
 
     scp $ssh_scp_args -P $ssh_port /tmp/client_init.rb root@$ssh_server_ip:/root/client_init.rb
     scp $ssh_scp_args -P $ssh_port /tmp/client_init.json root@$ssh_server_ip:/root/client_init.json
@@ -162,7 +162,7 @@ env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
 for env_variable in `echo "$env_parameters"`; do
-    eval $env_variable
+    eval "$env_variable"
 done
 unset IFS
 
@@ -190,7 +190,7 @@ if [ -z "${chef_client_rb}" ]; then
 fi
 
 if [ -n "${chef_json}" ]; then
-    chef_json=$(string_strip_comments "$chef_json")    
+    chef_json=$(string_strip_comments "$chef_json")
     chef_json=`echo $chef_json`
     chef_json=${chef_json/#\{/}
     chef_json=${chef_json/%\}/}

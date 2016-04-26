@@ -1,7 +1,7 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
-## Licensed under MIT 
+## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
 ## File : jenkins_code_pull.sh
@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-24 15:42:33>
+## Updated: Time-stamp: <2016-04-25 14:12:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3767938096"
+bash /var/lib/devops/refresh_common_library.sh "3313057955"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -41,14 +41,13 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 ########################################################################
 git_pull_list=$(string_strip_comments "$git_pull_list")
-for git_pull in `echo $git_pull_list`; do
-    git_pull=`echo $git_pull | sed 's/,/ /g'`
+for git_pull in `echo "$git_pull_list"`; do
+    git_pull=`echo "$git_pull" | sed 's/,/ /g'`
     item=($git_pull)
     working_dir=${item[0]}
     git_repo_url=${item[1]}
-    git_repo=$(echo ${git_repo_url%.git} | awk -F '/' '{print $2}')
     branch_name=${item[2]}
     log "git pull in working_dir"
-    git_update_code $branch_name $working_dir $git_repo_url "no"
+    git_update_code "$branch_name" "$working_dir" "$git_repo_url" "no"
 done
 ## File : jenkins_code_pull.sh ends
