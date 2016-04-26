@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-04-26 22:02:59>
+## Updated: Time-stamp: <2016-04-26 22:08:35>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,10 @@ for env_variable in `echo "$env_parameters"`; do
 done
 unset IFS
 
-[ -n "$top_count" ] || export top_count=20
+[ -n "$top_count" ] || export top_count="20"
+[ -n "$console_file" ] || export console_file="/tmp/console.log"
+[ -n "$sqlite_file" ] || export sqlite_file="/tmp/console.sqlite"
+[ -n "$jenkins_baseurl" ] || export jenkins_baseurl="$JENKINS_URL"
 
 # set default value
 dir_name=$(dirname "$0")
