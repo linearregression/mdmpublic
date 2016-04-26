@@ -6,7 +6,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-04-26 22:08:35>
+## Updated: Time-stamp: <2016-04-26 22:20:08>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -14,11 +14,11 @@
 ##       jenkins_job:
 ##       job_run_id:
 ##       env_parameters:
-##           export jenkins_baseurl="http://jenkins.dennyzhang.com"
-##           export top_count=20
+##           export JENKINS_BASEURL="http://jenkins.dennyzhang.com"
+##           export TOP_COUNT=20
+##           export CONSOLE_FILE="/tmp/console.log"
+##           export SQLITE_FILE="/tmp/console.sqlite"
 ##           export context_count=0
-##           export console_file="/tmp/console.log"
-##           export sqlite_file="/tmp/console.sqlite"
 ################################################################################################
 
 ################################################################################################
@@ -41,17 +41,19 @@ for env_variable in `echo "$env_parameters"`; do
 done
 unset IFS
 
-[ -n "$top_count" ] || export top_count="20"
-[ -n "$console_file" ] || export console_file="/tmp/console.log"
-[ -n "$sqlite_file" ] || export sqlite_file="/tmp/console.sqlite"
-[ -n "$jenkins_baseurl" ] || export jenkins_baseurl="$JENKINS_URL"
+[ -n "$TOP_COUNT" ] || export TOP_COUNT="20"
+[ -n "$CONSOLE_FILE" ] || export CONSOLE_FILE="/tmp/console.log"
+[ -n "$SQLITE_FILE" ] || export SQLITE_FILE="/tmp/console.sqlite"
+[ -n "$JENKINS_BASEURL" ] || export JENKINS_BASEURL="$JENKINS_URL"
+
+ensure_variable_isset "ERROR wrong parameter: jenkins_baseurl can't be empty" "$JENKINS_BASEURL"
 
 # set default value
 dir_name=$(dirname "$0")
 py_file="${dir_name}/diagnostic_jenkinsjob_slow.py"
 
 echo "get console file"
-url=$jenkins_baseurl/view/All/job/$jenkins_job/$job_run_id/consoleFull
+url="${JENKINS_BASEURL}/view/All/job/$jenkins_job/$job_run_id/consoleFull"
 curl -I "$url" | grep "HTTP/1.1 200"
 curl -o "$CONSOLE_FILE" "$url"
 
