@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-02>
-## Updated: Time-stamp: <2016-04-25 11:16:43>
+## Updated: Time-stamp: <2016-04-26 22:55:43>
 ##-------------------------------------------------------------------
 if ! which docker 2>/dev/null 1>/dev/null; then
     echo "Skip, since docker is not installed"
@@ -20,7 +20,7 @@ else
     fi
 
     echo "Prepare to destroy all docker contianers"
-    for container in `sudo docker ps -a | grep -v '^CONTAINER' | awk -F' ' '{print $1}'`; do
+    for container in $(sudo docker ps -a | grep -v '^CONTAINER' | awk -F' ' '{print $1}'); do
         echo "docker inspect $container"
         sudo docker inspect "$container"
 

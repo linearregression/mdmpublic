@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-25 14:12:32>
+## Updated: Time-stamp: <2016-04-26 22:52:48>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function exec_kitchen_cmd() {
@@ -82,7 +82,7 @@ function shell_exit() {
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
-current_cookbook=`pwd`
+current_cookbook=$(pwd)
 current_cookbook=${current_cookbook##*/}
 
 if [ -z "$KITCHEN_VERIFY_SHOW_DEBUG" ]; then
@@ -99,7 +99,7 @@ if [ -n "$REMOVE_BERKSFILE_LOCK" ] && $REMOVE_BERKSFILE_LOCK; then
     log "$command" && eval "$command"
 fi
 
-kitchen_dir=`pwd`
+kitchen_dir=$(pwd)
 if [ -z "$SKIP_KITCHEN_DESTROY" ] || ! $SKIP_KITCHEN_DESTROY; then
     exec_kitchen_cmd "${kitchen_dir}" destroy "$show_log"
 else

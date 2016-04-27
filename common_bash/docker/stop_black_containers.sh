@@ -29,14 +29,14 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Docker client version gather than 1.9.1
 function stop_black_containers() {
     # Save running container names
     running_container_names=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d'))
-    log "Docker daemon: $daemon_ip:$daemon_port current running container list[${#running_container_names[@]}]:\n${running_container_names[@]}"
+    log "Docker daemon: $daemon_ip:$daemon_port current running container list[${#running_container_names[@]}]:\n${running_container_names[*]}"
 
     # Count variable
     local count_v=0
@@ -84,7 +84,7 @@ function main_entry() {
                 black_list+=("${regular_list[@]}")
             done
 
-            log "Docker daemon $daemon_ip:$daemon_port black list[${#black_list[@]}]:\n${black_list[@]}"
+            log "Docker daemon $daemon_ip:$daemon_port black list[${#black_list[@]}]:\n${black_list[*]}"
         fi
 
         # Judge black list

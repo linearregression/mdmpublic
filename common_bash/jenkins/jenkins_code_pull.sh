@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-25 14:12:31>
+## Updated: Time-stamp: <2016-04-26 23:13:17>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -41,8 +41,8 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 ########################################################################
 git_pull_list=$(string_strip_comments "$git_pull_list")
-for git_pull in `echo "$git_pull_list"`; do
-    git_pull=`echo "$git_pull" | sed 's/,/ /g'`
+for git_pull in $git_pull_list; do
+    git_pull=$(echo "$git_pull" | sed 's/,/ /g')
     item=($git_pull)
     working_dir=${item[0]}
     git_repo_url=${item[1]}

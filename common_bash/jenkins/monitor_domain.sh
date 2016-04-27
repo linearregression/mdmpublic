@@ -15,7 +15,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function check_domain() {
@@ -26,7 +26,7 @@ function check_domain() {
 
     # Versify command jq
     if [ $? -ne 0 ]; then
-        log "Error: command "jq" not exist"
+        log "Error: command(jq) not exist"
         exit 1
     fi
 
@@ -58,10 +58,10 @@ function check_domain() {
     done
 
     if [ ${#expired_domain[@]} -gt 0 ]; then
-        log "Expired domain list:\n${expired_domain[@]}"
+        log "Expired domain list: ${expired_domain[*]}"
         exit 1
     else
-        log "Currently no expiration domain\nCurrent domain expires instructions:${current_domain[@]}"
+        log "Currently no expiration domain\nCurrent domain expires instructions:${current_domain[*]}"
     fi
 }
 

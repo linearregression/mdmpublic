@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-04-25 14:12:29>
+## Updated: Time-stamp: <2016-04-26 23:13:47>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
@@ -22,7 +22,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -37,7 +37,7 @@ function umount_dir()
     local dir=${1?}
 
     if [ -d "$dir" ]; then
-        fs_name=`stat --file-system --format=%T $dir`
+        fs_name=$(stat --file-system --format="%T" "$dir")
         if [ "$fs_name" = "tmpfs" ] || [ "$fs_name" = "isofs" ]; then
             umount "$dir"
         fi
@@ -58,7 +58,7 @@ function livecd_clean_up() {
 function clean_up_dev_mount() {
     local working_dir=${1?}
     if [ -d "$working_dir/edit" ]; then
-        fs_name=`stat --file-system --format=%T /dev`
+        fs_name=$(stat --file-system --format="%T" /dev)
         if [ "$fs_name" = "tmpfs" ] || [ "$fs_name" = "isofs" ]; then
             cd "$working_dir"
             chroot edit umount /proc || true

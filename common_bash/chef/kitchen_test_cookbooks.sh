@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-25 14:12:32>
+## Updated: Time-stamp: <2016-04-27 09:54:05>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -37,7 +37,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function get_cookbooks() {
@@ -47,7 +47,7 @@ function get_cookbooks() {
     cd "$cookbook_dir"
 
     if [ "$cookbook_list" = "ALL" ]; then
-        cookbooks=`ls -1 .`
+        cookbooks=$(ls -1 .)
         cookbooks="$cookbooks"
     else
         cookbooks=$(echo "$cookbook_list" | sed "s/,/ /g")
@@ -63,7 +63,7 @@ function get_cookbooks() {
 
     # must_cookbook_list
     if [ "$must_cookbook_list" = "ALL" ]; then
-        must_cookbooks=`ls -1 .`
+        must_cookbooks=$(ls -1 .)
         must_cookbooks="$must_cookbooks"
     else
         must_cookbooks=$(echo "$must_cookbook_list" | sed "s/,/ /g")
@@ -105,8 +105,8 @@ function test_cookbook() {
     fi
 
     echo "yml list is:${yml_list}"
-    echo "======================== test $cookbook"
-    echo "======================== cd `pwd`"
+    echo "======================== test cookbook: $cookbook"
+    echo "======================== cd $(pwd)"
     echo "======================== export INSTANCE_NAME=$INSTANCE_NAME"
     echo "$test_command"
     for yml in ${yml_list}; do
@@ -141,7 +141,7 @@ code_dir=$working_dir/$branch_name/$git_repo
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS
@@ -158,7 +158,7 @@ fi
 if [ -d "$code_dir" ]; then
     if [ -n "$REMOVE_BERKSFILE_LOCK" ] && $REMOVE_BERKSFILE_LOCK; then
         cd "$code_dir/cookbooks"
-        git checkout */Berksfile.lock
+        git checkout ./*/Berksfile.lock
     fi
 fi
 

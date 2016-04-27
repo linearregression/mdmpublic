@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-04-25 11:16:41>
+## Updated: Time-stamp: <2016-04-27 10:17:29>
 ##-------------------------------------------------------------------
 jenkins_job=${1?}
 jenkins_cli_jar=${2?}
@@ -18,7 +18,7 @@ max_wait_seconds=${4:-3600}
 
 sleep_seconds=5
 
-for((i=0; i< $max_wait_seconds; i=i+$sleep_seconds)); do {
+for((i=0; i<max_wait_seconds; i=i+sleep_seconds)); do {
     output=$(java -jar "$jenkins_cli_jar" -s "$jenkins_url" console "$jenkins_job" -n 10)
     echo "$output"
 

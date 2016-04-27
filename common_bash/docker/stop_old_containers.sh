@@ -31,14 +31,14 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Docker client version gather than 1.7.1
 function stop_expired_container() {
     # Save running container names
     running_container_names=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d'))
-    log "Docker daemon: $daemon_ip:$daemon_port current running container list[${#running_container_names[@]}]:\n${running_container_names[@]}"
+    log "Docker daemon: $daemon_ip:$daemon_port current running container list[${#running_container_names[@]}]:\n${running_container_names[*]}"
 
     # Continue to traverse the currently running container on the server
     for container_name in "${running_container_names[@]}"
@@ -52,7 +52,7 @@ function stop_expired_container() {
         server_current_ts=$($ssh_connect date +%s)
 
         # 1day =24h =1440min =86400s
-        if [ $(($server_current_ts-$container_start_ts)) -lt $(($keep_days*86400)) ]; then
+        if [ $((server_current_ts-container_start_ts)) -lt $((keep_days*86400)) ]; then
             continue
         fi
 
@@ -108,7 +108,7 @@ function main_entry() {
                 white_list+=("${regular_list[@]}")
             done
 
-            log "Docker daemon $daemon_ip:$daemon_port white list[${#white_list[@]}]:\n${white_list[@]}"
+            log "Docker daemon $daemon_ip:$daemon_port white list[${#white_list[@]}]:\n${white_list[*]}"
         fi
 
         # Call stop expired container function

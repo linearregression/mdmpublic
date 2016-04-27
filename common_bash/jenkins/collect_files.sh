@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-25 14:15:17>
+## Updated: Time-stamp: <2016-04-27 10:10:45>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
@@ -161,7 +161,7 @@ function collect_files() {
 ############################## Shell Start #####################################################
 # evaulate env
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS
@@ -200,7 +200,7 @@ if [ -n "$SERVER_REMOTE_COPY" ]; then
     remote_server_port=${my_list[1]}
     remote_dst_dir=${my_list[2]}
 
-    ssh -o StrictHostKeyChecking=no -p "$remote_server_port" "root@$remote_server_ip" mkdir -p "$remote_dst_dir"
+    ssh -o StrictHostKeyChecking=no -p "$remote_server_port" "root@$remote_server_ip" mkdir -p "\$remote_dst_dir"
 
     command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
     echo "$command"

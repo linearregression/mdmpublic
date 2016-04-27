@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-04-25 14:12:30>
+## Updated: Time-stamp: <2016-04-26 23:05:07>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 
 fail_unless_os "ubuntu|redhat/centos/osx"
@@ -124,7 +124,7 @@ cat > spec/localhost/sample_spec.rb <<EOF
 require 'spec_helper'
 
 # Check at least 3 GB free disk
-describe command("[ `df -h / | tail -n1 |awk -F' ' '{print $4}' | awk -F'G' '{print $1}' | awk -F'.' '{print $1}'` -gt 3 ]") do
+describe command("[ $(df -h / | tail -n1 |awk -F' ' '{print $4}' | awk -F'G' '{print $1}' | awk -F'.' '{print $1}') -gt 3 ]") do
   its(:exit_status) { should eq 0 }
 end
 
@@ -149,7 +149,7 @@ if [ -n "$remote_list" ]; then
     container_num=$($ssh_connect "docker ps | sed '1d' | wc -l")
 
     # compare loadavg value
-    if [ `echo "$loadavg_va > ${remote_list[3]}" | bc` -eq 1 ]; then
+    if [ $(echo "$loadavg_va > ${remote_list[3]}" | bc) -eq 1 ]; then
         exit 1
     fi
 

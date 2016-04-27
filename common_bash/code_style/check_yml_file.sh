@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-25 11:16:43>
+## Updated: Time-stamp: <2016-04-27 10:25:29>
 ##-------------------------------------------------------------------
 
 base_dir=$(basename "$(pwd)")
@@ -20,7 +20,7 @@ else
     export COOKBOOK="../$CURRENT_COOKBOOK"
 fi
 
-for yml in `ls -1 .kitchen*.yml*`; do
+for yml in .kitchen*.yml*; do
     export KITCHEN_YAML=$yml
     echo "Check yml of $COOKBOOK: $yml"
     kitchen diagnose --no-instances --loader 1>/dev/null 2>&1

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-25 14:14:17>
+## Updated: Time-stamp: <2016-04-26 23:11:12>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function monitor_server_filechanges() {
@@ -86,7 +86,7 @@ function monitor_server_filechanges() {
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS

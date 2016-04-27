@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-04-25 14:21:02>
+## Updated: Time-stamp: <2016-04-26 23:14:47>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 . /etc/profile
@@ -80,8 +80,8 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
-        eval "$env_variable"
+for env_variable in $env_parameters; do
+    eval "$env_variable"
 done
 unset IFS
 
@@ -91,8 +91,8 @@ failed_git_repos=""
 install_shellcheck
 
 git_list=$(string_strip_comments "$git_list")
-for git_repo_url in `echo "$git_list"`; do
-    git_repo_url=`echo "$git_repo_url" | sed 's/,/ /g'`
+for git_repo_url in $git_list; do
+    git_repo_url=$(echo "$git_repo_url" | sed 's/,/ /g')
     item=($git_repo_url)
     git_repo_url=${item[0]}
     branch_name=${item[1]}

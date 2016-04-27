@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-04-25 14:12:31>
+## Updated: Time-stamp: <2016-04-26 23:12:58>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -102,7 +102,7 @@ function dump_mongodb_summary()
     # TODO:Summary items: collectionNames; dataSum; dataSize; indexSum; indexSize; storageEngine
     # Get the collectionNames
     collectionNames=$(echo "show collections" | mongo "$mongodb_connect" | sed -n "3,$ {$ ! p}")
-    collectionNames=$(echo "$collectionNames")
+    collectionNames="$collectionNames"
     collectionSum=$(echo "$collectionNames" | awk '{print NF}')
 
     # Get the dataSum and indexSum
@@ -152,7 +152,7 @@ function dump_ldap_summary()
 
     # Get the path of config.ldif from the process. e.g.:/usr/local/ldap/config/config.ldif
     local config_path=$(ps -aux | grep ldap | grep -o 'configFile .*config.ldif' | awk '{print $2}' )
-    ldap_bin_path=$(echo `dirname $(dirname "$config_path")`/bin)
+    ldap_bin_path=$(echo $(dirname $(dirname "$config_path"))/bin)
 
     dataSum=$("${ldap_bin_path}/ldapsearch" -h "$host" --port "$serverPort" --baseDN "$baseDn" '(uid=*)' -d | grep -c "^dn:")
 
@@ -177,8 +177,6 @@ if [ "x$1" == "x-h" -o "x$1" == "x--help" ];then
     usage
     exit ${RETURN_CODE}
 fi
-
-log "`date +['%Y-%m-%d %H-%M-%S']`All the input parameter: $@."
 
 db_service=${1?}
 shift

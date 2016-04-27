@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-25 14:12:30>
+## Updated: Time-stamp: <2016-04-26 23:11:10>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,7 +34,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_changed_filelist() {
@@ -55,7 +55,7 @@ function detect_changed_file() {
     local file_list=$(git_changed_filelist "$src_dir" "$old_sha" "$new_sha")
 
     echo -e "\n\n========== git diff --name-only ${old_sha}..${new_sha}\n"
-    echo "${file_list}\n"
+    echo -e "${file_list}\n"
     IFS=$'\n'
     for file in ${file_list[*]}; do
       if echo -e "$files_to_monitor" | grep "$file" 1>/dev/null 2>1; then
@@ -88,7 +88,7 @@ code_dir=$working_dir/$branch_name/$git_repo
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS
@@ -99,7 +99,7 @@ if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
 fi
 
 # check previous failure
-if [ -f "$flag_file" ] && [[ `cat "$flag_file"` = "ERROR" ]]; then
+if [ -f "$flag_file" ] && [[ "$(cat "$flag_file")" = "ERROR" ]]; then
     echo "Previous check has failed"
     exit 1
 fi
@@ -138,7 +138,7 @@ else
     detect_changed_file "$code_dir" "$old_sha" "$new_sha" "$filelist_to_monitor"
     if [ -n "$changed_file_list" ]; then
         echo -e "\n\n========== git diff ${old_sha} ${new_sha}\n"
-        echo -e "========== ERROR file changed: \n`echo "$changed_file_list" | tr ' ' '\n'`\n"
+        echo -e "========== ERROR file changed: \n$(echo "$changed_file_list" | tr ' ' '\n')\n"
         exit 1
     fi
 fi

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-25 14:12:31>
+## Updated: Time-stamp: <2016-04-26 23:11:04>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,7 +36,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -73,7 +73,7 @@ function copy_to_reposerver() {
 
     for f in ${files_to_copy[*]};do
         cp "$f" "$dst_dir/"
-        file_name=`basename "$f"`
+        file_name=$(basename "$f")
         rm -rf "$repo_link/$file_name"
         ln -s "$dst_dir/$file_name" "$repo_link/$file_name"
     done
@@ -130,7 +130,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS
@@ -163,7 +163,7 @@ log "old_sha: $old_sha, new_sha: $new_sha"
 if ! $FORCE_BUILD; then
     if [ "$revision" = "HEAD" ] && [ "$old_sha" = "$new_sha" ]; then
         log "No new commit, since previous build"
-        if [ -f "$flag_file" ] && [[ `cat "$flag_file"` = "ERROR" ]]; then
+        if [ -f "$flag_file" ] && [[ $(cat "$flag_file") = "ERROR" ]]; then
             log "Previous build has failed"
             exit 1
         else

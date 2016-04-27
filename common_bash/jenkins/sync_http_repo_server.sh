@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-23>
-## Updated: Time-stamp: <2016-04-25 14:12:30>
+## Updated: Time-stamp: <2016-04-27 10:22:41>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 . /etc/profile
@@ -56,9 +56,11 @@ function update_local_checksum() {
     cd "$working_dir"
     [ -f "$local_checksum_file" ] || touch "$local_checksum_file"
     cksum=$(cksum "$filename")
-
+    current_filename=$(basename "${0}")
+    tmp_file="/tmp/${current_filename}_$$"
     if grep "$filename" "$local_checksum_file" 1>/dev/null 2>&1; then
-        cat "$local_checksum_file" | grep -v "$filename" > "$local_checksum_file"
+        grep -v "$filename" "$local_checksum_file" > "$tmp_file"
+        mv "$tmp_file" "$local_checksum_file"
     fi
     echo "$cksum" >> "$local_checksum_file"
 }

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-25 14:15:53>
+## Updated: Time-stamp: <2016-04-27 10:10:09>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -56,13 +56,13 @@ function shell_exit() {
     unset common_ssh_options
     if $STOP_CONTAINER; then
         if [ -n "$PRE_STOP_COMMAND" ]; then
-            pre_stop_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip ${PRE_STOP_COMMAND}"
+            pre_stop_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$PRE_STOP_COMMAND\""
             log "$pre_stop_command"
             eval "$pre_stop_command"
         fi
 
         log "stop container."
-        stop_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip ${STOP_COMMAND}"
+        stop_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$STOP_COMMAND\""
         log "$stop_command"
         eval "$stop_command"
 
@@ -77,7 +77,7 @@ echo "Deploy to ${ssh_server_ip}:${ssh_port}"
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS
@@ -115,14 +115,14 @@ fi
 export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
 if [ -n "$START_COMMAND" ]; then
-    start_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip ${START_COMMAND}"
+    start_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$START_COMMAND\""
     log "$start_command"
     eval "$start_command"
 
     sleep 2
 
     if [ -n "$POST_START_COMMAND" ]; then
-        post_start_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip ${POST_START_COMMAND}"
+        post_start_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$POST_START_COMMAND\""
         log "$post_start_command"
         eval "$post_start_command"
     fi
@@ -130,7 +130,7 @@ fi
 
 if $KILL_RUNNING_CHEF_UPDATE; then
     log "$kill_chef_command"
-    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$kill_chef_command"
+    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "\$kill_chef_command"
 fi
 
 if [ -n "$CODE_SH" ]; then
@@ -155,6 +155,6 @@ ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_serve
 
 if [ -n "$check_command" ]; then
     log "$check_command"
-    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$check_command"
+    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "\$check_command"
 fi
 ## File : deploy_all_in_one.sh ends

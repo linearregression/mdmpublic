@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-04-25 14:12:30>
+## Updated: Time-stamp: <2016-04-26 23:11:16>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -23,7 +23,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3313057955"
+bash /var/lib/devops/refresh_common_library.sh "2993535181"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -54,7 +54,7 @@ function check_jenkins_job_status()
     do
         local flag_file="/var/lib/jenkins/$flag_file_name"
         if test -f "$flag_file" ;then
-            if [ `cat "$flag_file"` != "OK" ];then
+            if [ "$(cat "$flag_file")" != "OK" ];then
                 log "The status of $flag_file is ERROR."
                 check_flag=false
             else
@@ -78,7 +78,7 @@ echo "Check the env befor operating..."
 env_parameters=$(remove_hardline "$env_parameters")
 env_parameters=$(string_strip_comments "$env_parameters")
 IFS=$'\n'
-for env_variable in `echo "$env_parameters"`; do
+for env_variable in $env_parameters; do
     eval "$env_variable"
 done
 unset IFS
