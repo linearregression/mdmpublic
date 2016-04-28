@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-27 10:10:45>
+## Updated: Time-stamp: <2016-04-28 11:43:57>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -83,7 +83,7 @@ function collect_files_by_host() {
 
     # loop files_list
     IFS=$'\n'
-    for t_file in "${files_list[@]}"
+    for t_file in ${files_list[*]}
     do
         unset IFS
         if [[ "$t_file" = "eval: "* ]]; then
@@ -146,7 +146,8 @@ function collect_files() {
                 $ssh_connect "cd ${dir_by_hostname_path} && tar -zcvf ${dir_by_time}.tar.gz ${dir_by_time} 1>/dev/null && rm -rf $work_path"
 
                 echo "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
-                scp -P "$server_port" -i "$ssh_key_file" -o StrictHostKeyChecking=no "root@$server_ip:/${work_path}.tar.gz" "$transfer_dst_path/"
+                ssh_command="scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/"
+                $ssh_command
                 # TODO:
                 tar_list+=("\n${work_path}.tar.gz")
             fi
@@ -185,7 +186,8 @@ files_list=$(string_strip_comments "$files_list")
 [ -n "$save_path" ] || save_path="/tmp/"
 
 if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
-    rm -rf "$transfer_dst_path/*"
+    echo "Remove previous files: $transfer_dst_path"
+    rm -rf "$transfer_dst_path"/*
 fi
 
 # Connect server and collect files
@@ -200,11 +202,12 @@ if [ -n "$SERVER_REMOTE_COPY" ]; then
     remote_server_port=${my_list[1]}
     remote_dst_dir=${my_list[2]}
 
-    ssh -o StrictHostKeyChecking=no -p "$remote_server_port" "root@$remote_server_ip" mkdir -p "\$remote_dst_dir"
+    ssh_command="ssh -o StrictHostKeyChecking=no -p $remote_server_port root@$remote_server_ip mkdir -p $remote_dst_dir"
+    $ssh_command
 
-    command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
-    echo "$command"
-    $command
+    ssh_command="scp -P $remote_server_port -r $transfer_dst_path/* root@$remote_server_ip:$remote_dst_dir"
+    echo "$ssh_command"
+    $ssh_command
 fi
 
 # Print download link at the bottom

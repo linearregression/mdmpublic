@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-26 23:10:53>
+## Updated: Time-stamp: <2016-04-28 11:49:05>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -118,9 +118,6 @@ unset IFS
 # Update code
 git_update_code "$branch_name" "$working_dir" "$git_repo_url" "yes"
 code_dir="$working_dir/$branch_name/$git_repo"
-cd "$code_dir"
-# add retry for network turbulence
-git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
 
 cd "$code_dir"
 git checkout "$revision"

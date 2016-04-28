@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-26 23:11:10>
+## Updated: Time-stamp: <2016-04-28 11:49:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -123,9 +123,6 @@ fi
 git_update_code "$branch_name" "$working_dir" "$git_repo_url" "yes"
 code_dir="$working_dir/$branch_name/$git_repo"
 cd "$code_dir"
-
-# add retry for network turbulence
-git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
 
 changed_file_list=""
 cd "$code_dir"

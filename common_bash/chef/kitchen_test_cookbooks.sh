@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-27 09:54:05>
+## Updated: Time-stamp: <2016-04-28 11:48:47>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -164,9 +164,6 @@ fi
 
 if [ -z "$SKIP_CODE_UPDATE" ] || [ ! "$SKIP_CODE_UPDATE" ]; then
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
-    cd "$working_dir/$branch_name/$git_repo"
-    # add retry for network turbulence
-    git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
 fi
 
 cookbook_dir="$code_dir/cookbooks"

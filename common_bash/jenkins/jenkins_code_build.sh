@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-26 23:11:04>
+## Updated: Time-stamp: <2016-04-28 11:49:13>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -155,8 +155,6 @@ fi
 git_update_code "$branch_name" "$working_dir" "$git_repo_url" "yes"
 code_dir="$working_dir/$branch_name/$git_repo"
 cd "$code_dir"
-# add retry for network turbulence
-git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
 
 new_sha=$(current_git_sha "$code_dir")
 log "old_sha: $old_sha, new_sha: $new_sha"
