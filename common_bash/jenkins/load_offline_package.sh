@@ -10,7 +10,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-04-27 10:12:29>
+## Updated: Time-stamp: <2016-04-28 10:29:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -90,7 +90,8 @@ log "make tmp dir:${tmp_dir}"
 package_tar_file=$(basename "$package_location")
 
 log "scp $package_location to tmp dir:${tmp_dir}"
-scp "$common_ssh_options" -P "$from_ssh_port" "root@$from_ssh_server_ip:$package_location" "$tmp_dir/$package_tar_file"
+ssh_command="scp $common_ssh_options -P $from_ssh_port root@$from_ssh_server_ip:$package_location $tmp_dir/$package_tar_file"
+$ssh_command
 
 # Copy the file from the docker demo server or repo lab
 for server in ${to_server_list}
@@ -100,14 +101,21 @@ do
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
 
-    ssh "$common_ssh_options" -p "$ssh_port" "root@$ssh_server_ip" [ -d "$package_new_location" ] || mkdir -p "$package_new_location"
-    scp "$common_ssh_options" -P "$ssh_port" "$tmp_dir/$package_tar_file" "root@$ssh_server_ip:${package_new_location}"
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip [ -d $package_new_location ] || mkdir -p $package_new_location"
+    $ssh_command
 
-    ssh "$common_ssh_options" -p "$ssh_port" "root@${ssh_server_ip}" "tar zxf \${package_new_location}/\${package_tar_file} -C \${package_new_location}/"
+    ssh_command="scp $common_ssh_options -P $ssh_port $tmp_dir/$package_tar_file root@$ssh_server_ip:${package_new_location}"
+    $ssh_command
 
-    ssh "$common_ssh_options" -p "$ssh_port" "root@${ssh_server_ip}" "rm -f \${package_new_location}/\${package_tar_file}"
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@${ssh_server_ip} tar zxf ${package_new_location}/${package_tar_file} -C ${package_new_location}/"
+    $ssh_command
 
-    ssh "$common_ssh_options" -p "$ssh_port" "root@${ssh_server_ip}" "chmod -R 755 \${package_new_location}"
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@${ssh_server_ip} rm -f ${package_new_location}/${package_tar_file}"
+    $ssh_command
+
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@${ssh_server_ip} chmod -R 755 ${package_new_location}"
+    $ssh_command
+
     log "scp to server:$server ok"
 done
 

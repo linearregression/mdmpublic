@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-27 10:42:38>
+## Updated: Time-stamp: <2016-04-28 10:22:51>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -61,14 +61,18 @@ function bindhosts() {
     local server_list=${1?}
 
     local hosts_list=""
+    local ssh_args="-i $ssh_key_file -o StrictHostKeyChecking=no"
 
     for server in ${server_list}
     do
         server_split=(${server//:/ })
         ssh_server_ip=${server_split[0]}
         ssh_port=${server_split[1]}
-        ip=$(ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip ifconfig eth0 | grep "inet addr:" | awk '{print $2}' | cut -c 6-)
-        hostname=$(ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip hostname)
+        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip ifconfig eth0 | grep 'inet addr:' | awk '{print $2}' | cut -c 6-"
+        ip=$($ssh_command)
+
+        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip hostname"
+        hostname=$($ssh_command)
         hosts_list="${hosts_list},${ip}:${hostname}"
     done
 
@@ -95,8 +99,11 @@ EOF
         server_split=(${server//:/ })
         ssh_server_ip=${server_split[0]}
         ssh_port=${server_split[1]}
-        scp "$ssh_scp_args" -P $ssh_port /tmp/deploy_cluster_bindhosts.sh root@$ssh_server_ip:/tmp/deploy_cluster_bindhosts.sh
-        ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip bash -xe /tmp/deploy_cluster_bindhosts.sh "\$hosts_list"
+        ssh_command="scp $ssh_args -P $ssh_port /tmp/deploy_cluster_bindhosts.sh root@$ssh_server_ip:/tmp/deploy_cluster_bindhosts.sh"
+        $ssh_command
+
+        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip bash -xe /tmp/deploy_cluster_bindhosts.sh $hosts_list"
+        $ssh_command
     done
 }
 
@@ -112,11 +119,16 @@ function deploy() {
     echo "${chef_client_rb}" > /tmp/client.rb
     echo -e "{\n\"run_list\": [${deploy_run_list}],\n$chef_json\n}" > /tmp/client.json
 
-    scp "$ssh_scp_args" -P $ssh_port /tmp/client.rb root@$ssh_server_ip:/root/client.rb
-    scp "$ssh_scp_args" -P $ssh_port /tmp/client.json root@$ssh_server_ip:/root/client.json
+    
+    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client.rb root@$ssh_server_ip:/root/client.rb"
+    $ssh_command
+
+    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client.json root@$ssh_server_ip:/root/client.json"
+    $ssh_command
 
     log "Apply chef update"
-    ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip "\$CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json"
+    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json"
+    $ssh_command
 
     log "Deploy $server end"
 }
@@ -133,11 +145,15 @@ function init_cluster() {
     echo "$chef_client_rb" > /tmp/client_init.rb
     echo -e "{\n\"run_list\": [${init_run_list}],\n$chef_json\n}" > /tmp/client_init.json
 
-    scp "$ssh_scp_args" -P $ssh_port /tmp/client_init.rb root@$ssh_server_ip:/root/client_init.rb
-    scp "$ssh_scp_args" -P $ssh_port /tmp/client_init.json root@$ssh_server_ip:/root/client_init.json
+    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client_init.rb root@$ssh_server_ip:/root/client_init.rb"
+    $ssh_command
+
+    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client_init.json root@$ssh_server_ip:/root/client_init.json"
+    $ssh_command
 
     log "Apply chef update"
-    ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip "\$CHEF_BINARY_CMD --config /root/client_init.rb -j /root/client_init.json"
+    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client_init.rb -j /root/client_init.json"
+    $ssh_command
 
     log "Initialize $server end"
 }
@@ -149,7 +165,8 @@ function check_command() {
     local ssh_server_ip=${server_split[0]}
     local ssh_port=${server_split[1]}
     log "check server:${ssh_server_ip}:${ssh_port}"
-    ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip "\$check_command"
+    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $check_command"
+    $ssh_command
 }
 
 ##########################################################################################
@@ -208,12 +225,14 @@ do
     if ${KILL_RUNNING_CHEF_UPDATE}; then
         log "ps -ef | grep ${CHEF_BINARY_CMD} || killall -9 ${CHEF_BINARY_CMD}"
         # TODO: what if $CHEF_BINARY_CMD has whitespace?
-        ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip "killall -9 \$CHEF_BINARY_CMD || true"
+        ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip killall -9 $CHEF_BINARY_CMD || true"
+        $ssh_command
     fi
 
     if [ -n "${CODE_SH}" ]; then
         log "Update git codes"
-        ssh "$ssh_scp_args" -p $ssh_port root@$ssh_server_ip "\$CODE_SH \$code_dir \$git_repo_url \$devops_branch_name"
+        ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $devops_branch_name"
+        $ssh_command
     fi
 done
 
