@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-26 22:52:48>
+## Updated: Time-stamp: <2016-04-29 16:57:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,7 +36,7 @@ function exec_kitchen_cmd() {
     shift
     cmd=$1
     shift
-    options=$@
+    options=$*
 
     if [ -a "${hooks_dir}/pre-$cmd" ];then
         log "start to exec kitchen hook: pre-$cmd"

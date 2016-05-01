@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-26 23:11:19>
+## Updated: Time-stamp: <2016-05-01 09:48:55>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -47,7 +47,7 @@ cron_job_list=$(string_strip_comments "$cron_job_list")
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 IFS=$'\n'
-for cron_job in "${cron_job_list[@]}"
+for cron_job in ${cron_job_list[*]}
 do
     unset IFS
 

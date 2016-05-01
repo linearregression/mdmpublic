@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-04-28 11:43:57>
+## Updated: Time-stamp: <2016-05-01 10:28:19>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -55,7 +55,7 @@ function data_retention() {
     local keep_day=${1?}
     local server_list=${2?}
     echo "=============== Remove old files to clean up disk"
-    for server in "${server_list[@]}"
+    for server in ${server_list[*]}
     do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
@@ -120,7 +120,7 @@ function collect_files() {
     local server_list=${1?}
     local files_list=${2?}
 
-    for server in "${server_list[@]}"
+    for server in ${server_list[*]}
     do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
@@ -191,9 +191,9 @@ if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
 fi
 
 # Connect server and collect files
-collect_files "${server_list[*]}" "${files_list[*]}" $KEEP_DAY
+collect_files "$server_list" "$files_list" $KEEP_DAY
 
-data_retention $KEEP_DAY "${server_list[*]}"
+data_retention $KEEP_DAY "$server_list"
 
 if [ -n "$SERVER_REMOTE_COPY" ]; then
     echo "=============== Copy collected files to remote server"
