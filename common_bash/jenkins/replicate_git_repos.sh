@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-04-26 23:14:04>
+## Updated: Time-stamp: <2016-05-02 07:46:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -69,10 +69,14 @@ function replicate_git_repo() {
     local git_branch_dst=${4?}
     local working_dir=${5?}
 
+    local intermediate_dir
+    local git_repo_src_name
+    local git_repo_dst_name
+
     [ -d "$working_dir" ] || mkdir -p "$working_dir"
-    local intermediate_dir="$working_dir/$git_branch_dst/intermediate"
-    local git_repo_src_name=$(echo "${git_repo_src_url%.git}" | awk -F '/' '{print $2}')
-    local git_repo_dst_name=$(echo "${git_repo_dst_url%.git}" | awk -F '/' '{print $2}')
+    intermediate_dir="$working_dir/$git_branch_dst/intermediate"
+    git_repo_src_name=$(echo "${git_repo_src_url%.git}" | awk -F '/' '{print $2}')
+    git_repo_dst_name=$(echo "${git_repo_dst_url%.git}" | awk -F '/' '{print $2}')
 
     echo "Update source git repo"
     git_update_code "$git_branch_src" "$working_dir" "$git_repo_src_url"
@@ -111,7 +115,7 @@ git_username="Jenkins Auto"
 
 repo_list=$(string_strip_comments "$repo_list")
 for repo in $repo_list; do
-    repo=$(echo "$repo" | sed 's/,/ /g')
+    repo=${repo//,/ }
     item=($repo)
     git_repo_src=${item[0]}
     git_branch_src=${item[1]}

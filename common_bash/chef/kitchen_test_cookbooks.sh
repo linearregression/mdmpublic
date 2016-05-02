@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-28 11:48:47>
+## Updated: Time-stamp: <2016-05-02 07:45:21>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -37,7 +37,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function get_cookbooks() {
@@ -50,7 +50,7 @@ function get_cookbooks() {
         cookbooks=$(ls -1 .)
         cookbooks="$cookbooks"
     else
-        cookbooks=$(echo "$cookbook_list" | sed "s/,/ /g")
+        cookbooks=${cookbook_list//,/ }
     fi
 
     # skip_cookbook_list
@@ -66,7 +66,7 @@ function get_cookbooks() {
         must_cookbooks=$(ls -1 .)
         must_cookbooks="$must_cookbooks"
     else
-        must_cookbooks=$(echo "$must_cookbook_list" | sed "s/,/ /g")
+        must_cookbooks=${must_cookbook_list//,/ }
     fi
 
     for cookbook in $must_cookbooks; do

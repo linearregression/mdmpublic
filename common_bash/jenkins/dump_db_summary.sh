@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-04-26 23:12:58>
+## Updated: Time-stamp: <2016-05-02 08:00:12>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -95,8 +95,8 @@ function dump_mongodb_summary()
 
     mongodb_connect="${db_ip}:${db_port}/${db_name}"
 
-    if [ -n "${db_user}" -a -n "${db_pwd}" ];then
-        mongodb_connect="${mongodb_connect} -u ${db_user} -p ${db_pwd}"
+    if [ -n "$db_user" ] && [ -n "$db_pwd" ];then
+        mongodb_connect="$mongodb_connect -u $db_user -p $db_pwd"
     fi
 
     # TODO:Summary items: collectionNames; dataSum; dataSize; indexSum; indexSize; storageEngine
@@ -148,14 +148,15 @@ function dump_ldap_summary()
     # The baseDN of ldap , e.g. : dc=jingantech,dc=com
     local baseDn=${3?}
 
+    local config_path
+    local ldap_bin_path
     # TODO:Summary items: dataSum; dataSize; indexSum; indexSize; storageEngine
 
     # Get the path of config.ldif from the process. e.g.:/usr/local/ldap/config/config.ldif
-    local config_path=$(ps -aux | grep ldap | grep -o 'configFile .*config.ldif' | awk '{print $2}' )
+    config_path=$(pgrep -a -f 'configFile .*config.ldif' | grep ldap | awk '{print $1}' )
     ldap_bin_path=$(echo $(dirname $(dirname "$config_path"))/bin)
 
     dataSum=$("${ldap_bin_path}/ldapsearch" -h "$host" --port "$serverPort" --baseDN "$baseDn" '(uid=*)' -d | grep -c "^dn:")
-
 
     log "*******************${db_service} SUMMARY*******START**********************"
     log "The total number of the ldap's baseDN '${baseDn}' : ${dataSum}"
@@ -173,7 +174,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 # Define a return code constant : 99
 RETURN_CODE=99
 
-if [ "x$1" == "x-h" -o "x$1" == "x--help" ];then
+if [ "x$1" == "x-h" ] || [ "x$1" == "x--help" ];then
     usage
     exit ${RETURN_CODE}
 fi

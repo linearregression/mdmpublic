@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-01 10:28:19>
+## Updated: Time-stamp: <2016-05-02 07:48:12>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
@@ -125,12 +125,14 @@ function collect_files() {
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
+        local server_hostname
+        local file_count
 
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
 
         echo "=============== Collect files from $server_ip:$server_port"
         if [ "x$(check_ssh_available "$server_ip" "$server_port")" = "xyes" ]; then
-            local server_hostname=$($ssh_connect "hostname")
+            server_hostname=$($ssh_connect "hostname")
 
             local dir_by_hostname="${JOB_NAME}-${server_hostname}-${server_ip}-${server_port}"
             local dir_by_time="${JOB_NAME}-${server_ip}-${server_port}-${collect_time}"
@@ -138,7 +140,7 @@ function collect_files() {
             $ssh_connect "[ -d $work_path ] || mkdir -p $work_path"
             collect_files_by_host "$server_ip" "$server_port" "$work_path" "$files_list"
 
-            local file_count=$($ssh_connect "ls $work_path | wc -l")
+            file_count=$($ssh_connect "ls $work_path | wc -l")
             if [ "$file_count" -gt 0 ]; then
                 # Compress named:hostname-server_ip-server_port-current_time files
                 echo "Compress collected files at $server"

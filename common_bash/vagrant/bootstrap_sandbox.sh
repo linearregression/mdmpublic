@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-04-26 22:51:54>
+## Updated: Time-stamp: <2016-05-02 07:49:49>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -18,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 image_name=${1?"docker image name"}
@@ -29,7 +29,6 @@ function docker_pull_image() {
     local image_repo_name=${1?}
     local image_name=${2?}
     local flag_file=${3?}
-    command="docker pull $image_name"
 
     old_image_id=""
     if docker images | grep "$image_repo_name"; then
@@ -109,7 +108,8 @@ function shell_exit() {
 
 function config_auto_start() {
     local service_name=${1?}
-    local os_release_name=$(os_release)
+    local os_release_name
+    os_release_name=$(os_release)
     if [ "$os_release_name" == "ubuntu" ]; then
         update-rc.d "$service_name" defaults
         update-rc.d "$service_name" enable
@@ -157,12 +157,12 @@ log "Start docker of docker-jenkins"
 flag_file="image.txt"
 
 docker_pull_image "$image_repo_name" "$image_name" "$flag_file"
-image_has_new_version=`cat $flag_file`
+image_has_new_version=$(cat $flag_file)
 
 container_name="docker-jenkins"
 hostname="jenkins"
 container_status=$(is_container_running $container_name)
-if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; then
+if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; then
     log "$image_name has new version, stop old running container: $container_name"
     docker stop $container_name
     docker rm $container_name
@@ -182,7 +182,7 @@ log "Start docker of docker-all-in-one"
 container_name="docker-all-in-one"
 hostname="aio"
 container_status=$(is_container_running $container_name)
-if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; then
+if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; then
     log "$image_name has new version, stop old running container: $container_name"
     docker stop $container_name
     docker rm $container_name
@@ -194,7 +194,7 @@ if [ $container_status = "none" ]; then
     docker run -d -t --privileged --name $container_name -h $hostname \
            -p 10000-10050:10000-10050 -p 80:80 \
            -p 1389:1389 -p 443:443 \
-           -p 6022:22 $image_name /usr/sbin/sshd -D
+           -p 6022:22 "$image_name" /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then
     docker start $container_name
 fi
@@ -202,8 +202,8 @@ fi
 log "Start services inside docker"
 service docker_sandbox start
 
-for d in `ls -d /root/docker/*`; do
-    rm -rf $d/*
+for d in $(ls -d /root/docker/*); do
+    rm -rf "$d"/*
 done
 
 chmod 777 -R /root/docker/

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-04-26 23:14:47>
+## Updated: Time-stamp: <2016-05-02 07:50:39>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 . /etc/profile
@@ -52,13 +52,14 @@ function shellcheck_git_repo(){
     local working_dir=${2?}
     local git_repo_url=${3?}
 
-    local git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    local git_repo
+    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
     local code_dir="$working_dir/$branch_name/$git_repo"
 
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 
     echo "================================ Test: ShellCheck check for $git_repo_url"
-    local command="find $code_dir -name '*.sh' | xargs sudo shellcheck"
+    local command="find $code_dir -name '*.sh' | xargs sudo shellcheck -e $exclude_code_list"
     echo "$command"
     if ! eval "$command"; then
         failed_git_repos="${failed_git_repos} ${git_repo}:${branch_name}"
@@ -86,13 +87,15 @@ done
 unset IFS
 
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/codestyle"
+# http://github.com/koalaman/shellcheck/wiki/SC1091
+[ -n "$exclude_code_list" ] || exclude_code_list="SC1090,SC1091,SC2154"
 
 failed_git_repos=""
 install_shellcheck
 
 git_list=$(string_strip_comments "$git_list")
 for git_repo_url in $git_list; do
-    git_repo_url=$(echo "$git_repo_url" | sed 's/,/ /g')
+    git_repo_url=${git_repo_url//,/ }
     item=($git_repo_url)
     git_repo_url=${item[0]}
     branch_name=${item[1]}

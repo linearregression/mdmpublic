@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-04-28 11:49:13>
+## Updated: Time-stamp: <2016-05-02 07:49:23>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,7 +36,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -87,9 +87,13 @@ function pack_files(){
     # Pack war package.
     local file_dir=${1?}
     local git_repo=${2?}
-    local base_name=$(basename "$repo_dir")
-    local package_name="${base_name}_${git_repo}.tar.gz"
-    local sha1sum_name="${base_name}_${git_repo}.sha1"
+    local base_name
+    local package_name
+    local sha1sum_name
+
+    base_name=$(basename "$repo_dir")
+    package_name="${base_name}_${git_repo}.tar.gz"
+    sha1sum_name="${base_name}_${git_repo}.sha1"
 
     log "Packing the file ${package_name},please wait for a moment..."
     cd "$file_dir"
@@ -152,7 +156,7 @@ else
 fi
 
 # Update code
-git_update_code "$branch_name" "$working_dir" "$git_repo_url" "yes"
+git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 code_dir="$working_dir/$branch_name/$git_repo"
 cd "$code_dir"
 

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-04-26 23:13:47>
+## Updated: Time-stamp: <2016-05-02 07:50:09>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
@@ -22,7 +22,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -46,7 +46,8 @@ function umount_dir()
 
 function original_ubuntu_iso() {
     local working_dir=${1?}
-    local short_iso_filename=$(basename "$fetch_iso_url")
+    local short_iso_filename
+    short_iso_filename=$(basename "$fetch_iso_url")
     echo "$working_dir/../$short_iso_filename"
 }
 

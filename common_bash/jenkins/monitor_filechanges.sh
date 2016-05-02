@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-04-28 11:49:18>
+## Updated: Time-stamp: <2016-05-02 07:47:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,7 +34,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_changed_filelist() {
@@ -52,7 +52,8 @@ function detect_changed_file() {
     local old_sha=${2?}
     local new_sha=${3?}
     local files_to_monitor=${4?}
-    local file_list=$(git_changed_filelist "$src_dir" "$old_sha" "$new_sha")
+    local file_list
+    file_list=$(git_changed_filelist "$src_dir" "$old_sha" "$new_sha")
 
     echo -e "\n\n========== git diff --name-only ${old_sha}..${new_sha}\n"
     echo -e "${file_list}\n"
@@ -120,7 +121,7 @@ else
 fi
 
 # Update code
-git_update_code "$branch_name" "$working_dir" "$git_repo_url" "yes"
+git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 code_dir="$working_dir/$branch_name/$git_repo"
 cd "$code_dir"
 

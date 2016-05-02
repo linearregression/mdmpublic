@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-04-26 23:11:16>
+## Updated: Time-stamp: <2016-05-02 07:45:19>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -23,7 +23,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2993535181"
+bash /var/lib/devops/refresh_common_library.sh "2756010837"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -45,7 +45,7 @@ function shell_exit() {
 function check_jenkins_job_status()
 {
     # The status flag file list for all the jenkins jobs，multiple files, separated by spaces
-    jenkins_job_status_files=${1:-"CommonServerCheck.flag"}
+    local jenkins_job_status_files=${1:-"CommonServerCheck.flag"}
 
     # If status of any one flag file is not OK,the flag value is false, otherwise is true.
     local check_flag=true
@@ -90,5 +90,4 @@ fi
 
 #Check the status of jenkins job:CommonServerCheck.
 check_jenkins_job_status "$JENKINS_JOB_STATUS_FILES"
-
 ## File : pre_check.sh ends
