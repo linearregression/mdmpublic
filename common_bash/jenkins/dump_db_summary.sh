@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-05-02 08:00:12>
+## Updated: Time-stamp: <2016-05-02 15:29:02>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -154,7 +154,9 @@ function dump_ldap_summary()
 
     # Get the path of config.ldif from the process. e.g.:/usr/local/ldap/config/config.ldif
     config_path=$(pgrep -a -f 'configFile .*config.ldif' | grep ldap | awk '{print $1}' )
-    ldap_bin_path=$(echo $(dirname $(dirname "$config_path"))/bin)
+    dir_path=$(dirname "$config_path")
+    dir_path=$(dirname "$dir_path")
+    ldap_bin_path="${dir_path}/bin"
 
     dataSum=$("${ldap_bin_path}/ldapsearch" -h "$host" --port "$serverPort" --baseDN "$baseDn" '(uid=*)' -d | grep -c "^dn:")
 

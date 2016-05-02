@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-02 07:46:42>
+## Updated: Time-stamp: <2016-05-02 15:29:01>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -88,7 +88,7 @@ function replicate_git_repo() {
     rm -rf "$intermediate_dir" && mkdir -p "$intermediate_dir"
     cp -r "$working_dir/$git_branch_dst/$git_repo_dst_name/.git" "$intermediate_dir/"
     src_dir="$working_dir/$git_branch_src/$git_repo_src_name/"
-    for d in $(ls -1a | grep -v "^.git$" | grep -v "^.$" | grep -v "^..$"); do
+    for d in *; do
         cp -r "$src_dir/$d" "$intermediate_dir/"
     done
 

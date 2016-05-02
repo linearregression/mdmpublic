@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-02 07:45:20>
+## Updated: Time-stamp: <2016-05-02 15:29:02>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -56,15 +56,15 @@ function shell_exit() {
     unset common_ssh_options
     if $STOP_CONTAINER; then
         if [ -n "$PRE_STOP_COMMAND" ]; then
-            pre_stop_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$PRE_STOP_COMMAND\""
-            log "$pre_stop_command"
-            eval "$pre_stop_command"
+            ssh_pre_stop_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$PRE_STOP_COMMAND\""
+            log "$ssh_pre_stop_command"
+            eval "$ssh_pre_stop_command"
         fi
 
         log "stop container."
-        stop_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$STOP_COMMAND\""
-        log "$stop_command"
-        eval "$stop_command"
+        ssh_stop_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$STOP_COMMAND\""
+        log "$ssh_stop_command"
+        eval "$ssh_stop_command"
 
     fi
     exit $errcode
@@ -115,16 +115,16 @@ fi
 export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
 if [ -n "$START_COMMAND" ]; then
-    start_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$START_COMMAND\""
-    log "$start_command"
-    eval "$start_command"
+    ssh_start_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$START_COMMAND\""
+    log "$ssh_start_command"
+    eval "$ssh_start_command"
 
     sleep 2
 
     if [ -n "$POST_START_COMMAND" ]; then
-        post_start_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$POST_START_COMMAND\""
-        log "$post_start_command"
-        eval "$post_start_command"
+        ssh_post_start_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$POST_START_COMMAND\""
+        log "$ssh_post_start_command"
+        eval "$ssh_post_start_command"
     fi
 fi
 

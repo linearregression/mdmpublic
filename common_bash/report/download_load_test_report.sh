@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-09-24>
-## Updated: Time-stamp: <2016-05-02 07:45:18>
+## Updated: Time-stamp: <2016-05-02 15:29:00>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -33,7 +33,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -110,7 +110,7 @@ mkdir -p "$report_dir_path"
 scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip:${report_remote_path%/*}/*" "$report_dir_path"
 scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip:$report_check_log" "$report_dir_path"
 cat "$report_dir_path/${report_check_log##*/}"
-result=$(cat "$report_dir_path/${report_check_log##*/}" | grep -w "Check failed" | sed -n '1p')
+result=$(grep -w "Check failed" "$report_dir_path/${report_check_log##*/}" | sed -n '1p')
 
 log "If you want to view all the load test result file, please click the link: $test_report_url/ws/$report_dir_name."
 log "If you only want to view the load test report file, please click the link: $test_report_url/ws/$report_dir_name/$report_file_name."

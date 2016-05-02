@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-05-02 07:50:09>
+## Updated: Time-stamp: <2016-05-02 15:29:01>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
@@ -22,7 +22,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -157,7 +157,7 @@ umount edit/dev
 
 log "Regenerate Manifest"
 chmod +w extract-cd/casper/filesystem.manifest
-chroot edit dpkg-query -W --showformat='${Package} ${Version}\n' > extract-cd/casper/filesystem.manifest
+chroot edit dpkg-query -W --showformat="\${Package} \${Version}\n" > extract-cd/casper/filesystem.manifest
 cp extract-cd/casper/filesystem.manifest extract-cd/casper/filesystem.manifest-desktop
 sed -i '/ubiquity/d' extract-cd/casper/filesystem.manifest-desktop # TODO
 sed -i '/casper/d' extract-cd/casper/filesystem.manifest-desktop # TODO

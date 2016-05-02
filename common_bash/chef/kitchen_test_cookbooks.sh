@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-02 07:45:21>
+## Updated: Time-stamp: <2016-05-02 15:29:03>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -37,7 +37,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function get_cookbooks() {
@@ -99,9 +99,10 @@ function test_cookbook() {
     if [ -n "${TEST_KITCHEN_YAML}" ]; then
         yml_list=(${TEST_KITCHEN_YAML//,/ })
     else
-        all_yml_list=$(ls -a | grep  "^\.kitchen.*\.yml$" || echo)
-        black_yml_list=(${TEST_KITCHEN_YAML_BLACKLIST//,/\\n})
+        all_yml_list=$(ls .kitchen*\.yml)
+        black_yml_list=${TEST_KITCHEN_YAML_BLACKLIST//,/\\n}
         yml_list=$(echo -e "${all_yml_list}\n${black_yml_list}\n${black_yml_list}" | sort | uniq -u )
+        black_yml_list=($black_yml_list)
     fi
 
     echo "yml list is:${yml_list}"

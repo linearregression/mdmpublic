@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # Docker client version gather than 1.9.1
@@ -88,7 +88,7 @@ function main_entry() {
         fi
 
         # Judge black list
-        if [ ${#black_list[@]} -le 0 ] || [ -z "$black_list" ]; then
+        if [ ${#black_list[@]} -le 0 ] || [ -z "${black_list[@]}" ]; then
             log "Docker daemon server[$daemon_ip:$daemon_port]: the black list of the container is empty"
             continue
         fi

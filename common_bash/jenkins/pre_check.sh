@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-05-02 07:45:19>
+## Updated: Time-stamp: <2016-05-02 15:29:01>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -23,7 +23,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -45,12 +45,12 @@ function shell_exit() {
 function check_jenkins_job_status()
 {
     # The status flag file list for all the jenkins jobs，multiple files, separated by spaces
-    local jenkins_job_status_files=${1:-"CommonServerCheck.flag"}
+    local status_files=${1:-"CommonServerCheck.flag"}
 
     # If status of any one flag file is not OK,the flag value is false, otherwise is true.
     local check_flag=true
 
-    for flag_file_name in ${jenkins_job_status_files[*]}
+    for flag_file_name in ${status_files[*]}
     do
         local flag_file="/var/lib/jenkins/$flag_file_name"
         if test -f "$flag_file" ;then

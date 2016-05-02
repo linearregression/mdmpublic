@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-05-02 07:45:18>
+## Updated: Time-stamp: <2016-05-02 15:29:00>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -39,7 +39,7 @@ function get_effort_summary() {
     start_pattern=${2?}
     end_pattern=${3?}
     result=""
-    for f in $(find "$git_dir" -name "effort.md"); do
+    for f in ${git_dir}/*/effort.md; do
         if ! grep "$end_pattern" "$f" >/dev/null 2>&1 ; then
             end_pattern="$(date +'%Y')-"
             echo "Warning: Failed to find $end_pattern in $f. Choose another pattern: $end_pattern"

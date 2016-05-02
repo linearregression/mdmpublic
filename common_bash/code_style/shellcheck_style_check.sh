@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-05-02 07:50:39>
+## Updated: Time-stamp: <2016-05-02 15:29:03>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 . /etc/profile
@@ -88,7 +88,7 @@ unset IFS
 
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/codestyle"
 # http://github.com/koalaman/shellcheck/wiki/SC1091
-[ -n "$exclude_code_list" ] || exclude_code_list="SC1090,SC1091,SC2154"
+[ -n "$exclude_code_list" ] || exclude_code_list="SC1090,SC1091,SC2154,SC2001"
 
 failed_git_repos=""
 install_shellcheck

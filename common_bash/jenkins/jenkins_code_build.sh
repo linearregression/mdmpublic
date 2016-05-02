@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-02 07:49:23>
+## Updated: Time-stamp: <2016-05-02 15:29:02>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,7 +36,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2756010837"
+bash /var/lib/devops/refresh_common_library.sh "2192949035"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -61,8 +61,9 @@ function copy_to_reposerver() {
     local repo_dir=${1?}
     shift
 
-    local files_to_copy=($*)
-    files_to_copy="$(remove_hardline "$files_to_copy")"
+    local file_list=$*
+    file_list=$(remove_hardline "$file_list")
+
     cd "$code_dir"
 
     local repo_link="$repo_dir/$branch_name"
@@ -71,15 +72,16 @@ function copy_to_reposerver() {
     [ -d "$dst_dir" ] || mkdir -p "$dst_dir"
     [ -d "$repo_link" ] || mkdir -p "$repo_link"
 
-    for f in ${files_to_copy[*]};do
+    for f in $file_list;do
         cp "$f" "$dst_dir/"
         file_name=$(basename "$f")
-        rm -rf "$repo_link/$file_name"
+        rm -rf "${repo_link:?}/$file_name"
         ln -s "$dst_dir/$file_name" "$repo_link/$file_name"
     done
 
     log "Just keep $leave_old_count old builds for $repo_dir/$branch_name_code"
-    ls -d -t "$repo_dir/*" | grep "${branch_name}_code" | head -n "$leave_old_count" | xargs touch
+    folders=$(ls -d -t "$repo_dir/*")
+    echo "$folders" | grep "${branch_name}_code" | head -n "$leave_old_count" | xargs touch
     find "$repo_dir" -type d -name "${branch_name}_code*" -and -mtime +1 -exec rm -r {} +
 }
 
@@ -213,5 +215,4 @@ if [ -n "$files_to_copy" ] && ! $SKIP_COPY; then
         pack_files "${repo_dir}/${branch_name}_code_${new_sha}" "$git_repo"
     fi
 fi
-
 ## File : jenkins_code_build.sh ends
