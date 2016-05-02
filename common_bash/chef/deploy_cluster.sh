@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-02 15:29:04>
+## Updated: Time-stamp: <2016-05-02 21:31:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -53,7 +53,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2192949035"
+bash /var/lib/devops/refresh_common_library.sh "555331144"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function bindhosts() {
@@ -223,8 +223,8 @@ do
     ssh_port=${server_split[1]}
 
     if ${KILL_RUNNING_CHEF_UPDATE}; then
-        log "ps -ef | grep ${CHEF_BINARY_CMD} || killall -9 ${CHEF_BINARY_CMD}"
         # TODO: what if $CHEF_BINARY_CMD has whitespace?
+        log "ps -ef | grep ${CHEF_BINARY_CMD} || killall -9 ${CHEF_BINARY_CMD}"
         ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip killall -9 $CHEF_BINARY_CMD || true"
         $ssh_command
     fi
@@ -240,7 +240,7 @@ if [ -n "$backup_run_list" ]; then
     log "Start to backup"
     for server in ${server_list}
     do
-        echo "TODO"
+        echo "TODO: implement logic"
     done
     log "Backup End"
 fi
@@ -266,7 +266,7 @@ fi
 if [ -n "$restart_run_list" ]; then
     for server in ${server_list}
     do
-        echo "TODO"
+        echo "TODO: implement logic"
     done
 fi
 

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-05-02 15:29:01>
+## Updated: Time-stamp: <2016-05-02 21:31:23>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
@@ -22,7 +22,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2192949035"
+bash /var/lib/devops/refresh_common_library.sh "555331144"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
@@ -84,7 +84,6 @@ function customize_ubuntu_image() {
     log "Install docker. This may take several minutes"
     chroot "$chroot_dir" bash -c "wget -qO- https://get.docker.com/ | sh"
 
-    # TODO:
     # log "Enable docker autostart"
     # chroot "$chroot_dir" bash -c "update-rc.d docker defaults"
     # chroot "$chroot_dir" bash -c "update-rc.d docker enable"
@@ -144,7 +143,7 @@ chroot edit apt-get -y update
 chroot edit apt-get install -y aptitude
 chroot edit aptitude clean
 chroot edit rm -rf /tmp/* ~/.bash_history
-# TODO
+
 # chroot edit rm -rf /etc/resolv.conf
 # chroot edit rm -rf /var/lib/dbus/machine-id
 # chroot edit rm -rf /sbin/initctl
@@ -159,8 +158,9 @@ log "Regenerate Manifest"
 chmod +w extract-cd/casper/filesystem.manifest
 chroot edit dpkg-query -W --showformat="\${Package} \${Version}\n" > extract-cd/casper/filesystem.manifest
 cp extract-cd/casper/filesystem.manifest extract-cd/casper/filesystem.manifest-desktop
-sed -i '/ubiquity/d' extract-cd/casper/filesystem.manifest-desktop # TODO
-sed -i '/casper/d' extract-cd/casper/filesystem.manifest-desktop # TODO
+
+sed -i '/ubiquity/d' extract-cd/casper/filesystem.manifest-desktop
+sed -i '/casper/d' extract-cd/casper/filesystem.manifest-desktop
 
 log "Compress to SquashFS Filesystem. This shall take several minutes"
 [ ! -f extract-cd/casper/filesystem.squashfs ] || rm extract-cd/casper/filesystem.squashfs

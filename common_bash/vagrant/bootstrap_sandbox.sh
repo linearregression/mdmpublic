@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-05-02 15:29:00>
+## Updated: Time-stamp: <2016-05-02 21:31:22>
 ##-------------------------------------------------------------------
 ################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -18,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2192949035"
+bash /var/lib/devops/refresh_common_library.sh "555331144"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 image_name=${1?"docker image name"}
@@ -190,7 +190,6 @@ if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; 
 fi
 
 if [ $container_status = "none" ]; then
-    # TODO:
     docker run -d -t --privileged --name $container_name -h $hostname \
            -p 10000-10050:10000-10050 -p 80:80 \
            -p 1389:1389 -p 443:443 \

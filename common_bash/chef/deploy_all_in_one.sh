@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-02 15:29:02>
+## Updated: Time-stamp: <2016-05-02 21:32:49>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -40,15 +40,13 @@
 ##
 ## Hook points: START_COMMAND -> POST_START_COMMAND -> PRE_STOP_COMMAND -> STOP_COMMAND
 ################################################################################################
-# TODO: move this script to ../chef/ directory
-################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2192949035"
+bash /var/lib/devops/refresh_common_library.sh "555331144"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -111,7 +109,6 @@ if [ -z "$SSH_SERVER_PORT" ]; then
     SSH_SERVER_PORT=22
 fi
 
-# TODO: ensure_variable_isset "chef_client_rb must be set" "$chef_client_rb"
 export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
 if [ -n "$START_COMMAND" ]; then

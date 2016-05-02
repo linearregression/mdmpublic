@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-02 15:29:03>
+## Updated: Time-stamp: <2016-05-02 21:31:25>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2192949035"
+bash /var/lib/devops/refresh_common_library.sh "555331144"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
@@ -150,7 +150,7 @@ function collect_files() {
                 echo "scp ${work_path}.tar.gz to Jenkins node $transfer_dst_path/"
                 ssh_command="scp -P $server_port -i $ssh_key_file -o StrictHostKeyChecking=no root@$server_ip:/${work_path}.tar.gz $transfer_dst_path/"
                 $ssh_command
-                # TODO:
+                # TODO: improve werid logic
                 tar_list+=("\n${work_path}.tar.gz")
             fi
         else
@@ -171,7 +171,6 @@ unset IFS
 
 ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
 ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
-# TODO:
 ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAME"
 
 collect_time=$(date +'%Y%m%d-%H%M%S')

@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-05-02 15:29:02>
+## Updated: Time-stamp: <2016-05-02 21:31:24>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2192949035"
+bash /var/lib/devops/refresh_common_library.sh "555331144"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -99,7 +99,7 @@ function dump_mongodb_summary()
         mongodb_connect="$mongodb_connect -u $db_user -p $db_pwd"
     fi
 
-    # TODO:Summary items: collectionNames; dataSum; dataSize; indexSum; indexSize; storageEngine
+    # Summary items: collectionNames; dataSum; dataSize; indexSum; indexSize; storageEngine
     # Get the collectionNames
     collectionNames=$(echo "show collections" | mongo "$mongodb_connect" | sed -n "3,$ {$ ! p}")
     collectionNames="$collectionNames"
@@ -150,7 +150,8 @@ function dump_ldap_summary()
 
     local config_path
     local ldap_bin_path
-    # TODO:Summary items: dataSum; dataSize; indexSum; indexSize; storageEngine
+
+    # Summary items: dataSum; dataSize; indexSum; indexSize; storageEngine
 
     # Get the path of config.ldif from the process. e.g.:/usr/local/ldap/config/config.ldif
     config_path=$(pgrep -a -f 'configFile .*config.ldif' | grep ldap | awk '{print $1}' )
