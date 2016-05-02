@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-15>
-## Updated: Time-stamp: <2016-05-02 08:11:27>
+## Updated: Time-stamp: <2016-05-02 08:13:11>
 ##-------------------------------------------------------------------
 working_dir=${1?}
 git_repo_url=${2?}
@@ -32,7 +32,7 @@ function git_update_code() {
     fi
 
     cd $working_dir/$branch_name/$git_repo
-    git checkout origin $branch_name
+    git checkout "origin/${branch_name}"
     git reset --hard
 }
 
