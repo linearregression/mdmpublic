@@ -51,3 +51,4 @@ exec git diff-index --check --cached $against --
 echo "run pre_commit: `pwd`" >> /tmp/pre-commit_chefstyle.log
 cd ./cookbooks
 ls -1 | xargs rubocop
+
