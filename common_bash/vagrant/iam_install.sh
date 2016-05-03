@@ -9,7 +9,7 @@
 ## Description:
 ## --
 ## Created: <2016-01-06>
-## Updated: Time-stamp: <2016-05-02 21:31:22>
+## Updated: Time-stamp: <2016-05-03 07:56:30>
 ##--------------------------------------------------------
 
 ################################################################################################
@@ -19,7 +19,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "555331144"
+bash /var/lib/devops/refresh_common_library.sh "1141491927"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function start_docker_daemon() {

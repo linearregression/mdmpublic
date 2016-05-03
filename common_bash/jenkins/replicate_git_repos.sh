@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-02 21:31:23>
+## Updated: Time-stamp: <2016-05-03 09:24:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "555331144"
+bash /var/lib/devops/refresh_common_library.sh "1141491927"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -78,10 +78,7 @@ function replicate_git_repo() {
     git_repo_src_name=$(echo "${git_repo_src_url%.git}" | awk -F '/' '{print $2}')
     git_repo_dst_name=$(echo "${git_repo_dst_url%.git}" | awk -F '/' '{print $2}')
 
-    echo "Update source git repo"
     git_update_code "$git_branch_src" "$working_dir" "$git_repo_src_url"
-
-    echo "Update destination git repo"
     git_update_code "$git_branch_dst" "$working_dir" "$git_repo_dst_url"
 
     echo "Update intermediate directory: $intermediate_dir"
