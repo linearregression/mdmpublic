@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 09:38:05>
+## Updated: Time-stamp: <2016-05-04 20:27:00>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -35,7 +35,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2101530904"
+bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -131,14 +131,7 @@ code_dir=$working_dir/$branch_name/$git_repo
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
-# Global variables needed to enable the current script
-env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(string_strip_comments "$env_parameters")
-IFS=$'\n'
-for env_variable in $env_parameters; do
-    eval "$env_variable"
-done
-unset IFS
+source_string "$env_parameters"
 
 log "env variables. CLEAN_START: $CLEAN_START, SKIP_COPY: $SKIP_COPY, FORCE_BUILD: $FORCE_BUILD, build_command: $build_command"
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 09:24:17>
+## Updated: Time-stamp: <2016-05-04 20:26:47>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -35,7 +35,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2101530904"
+bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function start_sonar_server() {
@@ -105,13 +105,7 @@ EOF
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
 
-env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(string_strip_comments "$env_parameters")
-IFS=$'\n'
-for env_variable in $env_parameters; do
-    eval "$env_variable"
-done
-unset IFS
+source_string "$env_parameters"
 
 [ -n "$SONAR_BASE_URL" ] || SONAR_BASE_URL=$JENKINS_URL
 

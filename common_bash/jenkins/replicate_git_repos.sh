@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-04 09:24:16>
+## Updated: Time-stamp: <2016-05-04 20:27:15>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2101530904"
+bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -85,8 +85,8 @@ function replicate_git_repo() {
     rm -rf "$intermediate_dir" && mkdir -p "$intermediate_dir"
     cp -r "$working_dir/$git_branch_dst/$git_repo_dst_name/.git" "$intermediate_dir/"
     src_dir="$working_dir/$git_branch_src/$git_repo_src_name/"
-    for d in *; do
-        cp -r "$src_dir/$d" "$intermediate_dir/"
+    for d in "${src_dir}/"*; do
+        cp -r "$d" "$intermediate_dir/"
     done
 
     git_directory_commit "$intermediate_dir" "$git_branch_dst"
@@ -94,14 +94,7 @@ function replicate_git_repo() {
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
-# Global variables needed to enable the current script
-env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(string_strip_comments "$env_parameters")
-IFS=$'\n'
-for env_variable in $env_parameters; do
-    eval "$env_variable"
-done
-unset IFS
+source_string "$env_parameters"
 
 ########################################################
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code"

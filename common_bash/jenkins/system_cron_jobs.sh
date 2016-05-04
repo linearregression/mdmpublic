@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-04 09:24:15>
+## Updated: Time-stamp: <2016-05-04 20:27:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,20 +29,12 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2101530904"
+bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 
-# Global variables needed to enable the current script
-env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(string_strip_comments "$env_parameters")
-IFS=$'\n'
-for env_variable in $env_parameters; do
-    eval "$env_variable"
-done
-unset IFS
+source_string "$env_parameters"
 
-########################################################
 cron_job_list=$(string_strip_comments "$cron_job_list")
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 09:24:18>
+## Updated: Time-stamp: <2016-05-04 20:26:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -53,7 +53,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2101530904"
+bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function bindhosts() {
@@ -175,13 +175,7 @@ function check_command() {
 server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
 
-env_parameters=$(remove_hardline "$env_parameters")
-env_parameters=$(string_strip_comments "$env_parameters")
-IFS=$'\n'
-for env_variable in $env_parameters; do
-    eval "$env_variable"
-done
-unset IFS
+source_string "$env_parameters"
 
 if [ -z "${ssh_key_file}" ]; then
     ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
