@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-03 14:03:44>
+## Updated: Time-stamp: <2016-05-04 09:38:05>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,7 +18,6 @@
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
 ##      branch_name: dev
 ##      branch_name: dev
-##      revision: HEAD
 ##      files_to_copy: gateway/war/build/libs/gateway-war-1.0-SNAPSHOT.war oauth2/rest-service/build/libs/oauth2-rest-1.0-SNAPSHOT.war
 ##      env_parameters:
 ##           export CLEAN_START=true
@@ -36,7 +35,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1664449641"
+bash /var/lib/devops/refresh_common_library.sh "2101530904"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -165,7 +164,7 @@ cd "$code_dir"
 new_sha=$(current_git_sha "$code_dir")
 log "old_sha: $old_sha, new_sha: $new_sha"
 if ! $FORCE_BUILD; then
-    if [ "$revision" = "HEAD" ] && [ "$old_sha" = "$new_sha" ]; then
+    if [ "$old_sha" = "$new_sha" ]; then
         log "No new commit, since previous build"
         if [ -f "$flag_file" ] && [[ $(cat "$flag_file") = "ERROR" ]]; then
             log "Previous build has failed"
@@ -177,7 +176,6 @@ if ! $FORCE_BUILD; then
 fi
 
 cd "$code_dir"
-git checkout "$revision"
 
 log "================= Build Environment ================="
 env
