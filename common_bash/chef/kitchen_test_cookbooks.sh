@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 09:24:17>
+## Updated: Time-stamp: <2016-05-04 15:34:38>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -163,7 +163,7 @@ if [ -d "$code_dir" ]; then
     fi
 fi
 
-if [ -z "$SKIP_CODE_UPDATE" ] || [ ! "$SKIP_CODE_UPDATE" ]; then
+if [ -z "$SKIP_CODE_UPDATE" ] || [ "$SKIP_CODE_UPDATE" = "false" ]; then
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 fi
 
