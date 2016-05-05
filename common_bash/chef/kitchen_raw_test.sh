@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-05 10:19:54>
+## Updated: Time-stamp: <2016-05-05 13:32:22>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -33,6 +33,9 @@ bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function exec_kitchen_cmd() {
+    export LANG="en_US.UTF-8"
+    export LC_ALL="en_US.UTF-8"
+
     hooks_dir="$1/.kitchen.hooks"
     shift
     cmd=$1
