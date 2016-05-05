@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-05 10:09:42>
+## Updated: Time-stamp: <2016-05-05 14:13:03>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -160,7 +160,6 @@ function collect_files() {
 
 
 ########################################################################
-trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
 ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
