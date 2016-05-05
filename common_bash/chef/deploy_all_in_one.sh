@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-05 13:48:20>
+## Updated: Time-stamp: <2016-05-05 10:18:43>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -81,7 +81,7 @@ fi
 
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
-kill_chef_command="killall -9 chef-client || true"
+kill_chef_command="killall -9 chef-solo || true"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$code_dir" ] || code_dir="/root/test"
@@ -136,8 +136,8 @@ scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no /tmp/client.rb "
 scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no /tmp/client.json "root@$ssh_server_ip:/root/client.json"
 
 log "Apply chef update"
-log "ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip chef-client --config /root/client.rb -j /root/client.json --local-mode"
-ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" chef-client --config /root/client.rb -j /root/client.json --local-mode
+log "ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip chef-solo --config /root/client.rb -j /root/client.json"
+ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" chef-solo --config /root/client.rb -j /root/client.json
 
 if [ -n "$check_command" ]; then
     log "$check_command"
