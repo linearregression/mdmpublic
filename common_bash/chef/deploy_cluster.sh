@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-05 10:19:49>
+## Updated: Time-stamp: <2016-05-05 13:49:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -44,7 +44,7 @@
 ##       devops_branch_name: master
 ##       env_parameters:
 ##             export KILL_RUNNING_CHEF_UPDATE=false
-##             export CHEF_BINARY_CMD=chef-solo
+##             export CHEF_BINARY_CMD=chef-client
 ##             export CODE_SH="/root/mydevops/misc/git_update.sh"
 ################################################################################################
 . /etc/profile
@@ -128,7 +128,7 @@ function deploy() {
     $ssh_command
 
     log "Apply chef update"
-    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json"
+    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json --local-mode"
     $ssh_command
 
     log "Deploy $server end"
@@ -176,7 +176,7 @@ server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
 
 [ -n "${ssh_key_file}" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
-[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
+[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
 [ -n "$code_dir" ] || code_dir="/root/test"
 
 ssh_scp_args=" -i $ssh_key_file -o StrictHostKeyChecking=no "
