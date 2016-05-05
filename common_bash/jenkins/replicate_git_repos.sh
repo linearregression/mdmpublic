@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-04 20:27:15>
+## Updated: Time-stamp: <2016-05-05 10:07:54>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -23,7 +23,7 @@
 ##             export working_dir=
 ################################################################################################
 . /etc/profile
-################################################################################################
+
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -93,10 +93,8 @@ function replicate_git_repo() {
 }
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0
-
-source_string "$env_parameters"
-
 ########################################################
+source_string "$env_parameters"
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code"
 [ -d "$working_dir" ] || mkdir -p $working_dir
 

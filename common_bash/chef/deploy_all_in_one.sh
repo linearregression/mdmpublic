@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-04 20:26:27>
+## Updated: Time-stamp: <2016-05-05 10:18:43>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -40,6 +40,7 @@
 ##
 ## Hook points: START_COMMAND -> POST_START_COMMAND -> PRE_STOP_COMMAND -> STOP_COMMAND
 ################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -70,10 +71,9 @@ function shell_exit() {
 
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
+source_string "$env_parameters"
 
 echo "Deploy to ${ssh_server_ip}:${ssh_port}"
-
-source_string "$env_parameters"
 
 if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
     ensure_variable_isset "When STOP_CONTAINER is set, STOP_COMMAND must be given " "$STOP_COMMAND"
@@ -81,16 +81,14 @@ fi
 
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
-[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
-
 kill_chef_command="killall -9 chef-solo || true"
+
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$code_dir" ] || code_dir="/root/test"
+[ -n "$SSH_SERVER_PORT" ] || SSH_SERVER_PORT=22
 
 if [ -n "$CODE_SH" ]; then
     ensure_variable_isset "Error: when CODE_SH is not empty, git_repo_url can't be empty" "$git_repo_url"
-fi
-
-if [ -z "$code_dir" ]; then
-    code_dir="/root/test"
 fi
 
 if [ -z "$chef_client_rb" ]; then
@@ -98,10 +96,6 @@ if [ -z "$chef_client_rb" ]; then
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 else
     chef_client_rb=$(echo "$chef_client_rb" | sed -e "s/ +/ /g")
-fi
-
-if [ -z "$SSH_SERVER_PORT" ]; then
-    SSH_SERVER_PORT=22
 fi
 
 export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "

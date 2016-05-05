@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-09-24>
-## Updated: Time-stamp: <2016-05-04 20:27:51>
+## Updated: Time-stamp: <2016-05-05 10:12:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -26,7 +26,7 @@
 ##       devops_branch_name: master
 ##       env_parameters:
 ################################################################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -62,10 +62,9 @@ function shell_exit() {
 
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
+source_string "$env_parameters"
 
 echo "Deploy to ${ssh_server_ip}:${ssh_port}"
-
-source_string "$env_parameters"
 
 log "Start to copy the remote report file..."
 

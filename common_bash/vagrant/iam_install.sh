@@ -9,10 +9,9 @@
 ## Description:
 ## --
 ## Created: <2016-01-06>
-## Updated: Time-stamp: <2016-05-04 20:25:11>
+## Updated: Time-stamp: <2016-05-05 10:11:52>
 ##--------------------------------------------------------
-
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -34,9 +33,7 @@ function load_docker_image() {
     log "docker load image:$docker_tar"
     docker load -i "./$docker_tar"
 }
-
-################################################################################
-
+################################################################################################
 case "$1" in
     load-image)
         fail_unless_root

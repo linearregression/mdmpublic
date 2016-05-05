@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-05-04 20:25:12>
+## Updated: Time-stamp: <2016-05-05 10:12:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,7 +22,6 @@
 ##      start_weekday:"2015-10-12"
 ################################################################################################
 . /etc/profile
-################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -32,7 +31,6 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-
 function get_effort_summary() {
     #set -xe
     git_dir=${1?}

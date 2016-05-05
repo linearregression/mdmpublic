@@ -6,9 +6,7 @@
 # * Filename      : domain.sh
 # * Description   :
 ################################################################################################
-
-############################## Function Start ##################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -64,10 +62,7 @@ function check_domain() {
         log "Currently no expiration domain\nCurrent domain expires instructions:${current_domain[*]}"
     fi
 }
-
-############################## Function End ####################################################
-
-############################## Shell Start #####################################################
+################################################################################################
 fail_unless_os "ubuntu"
 
 # Jenkins parameter
@@ -86,4 +81,4 @@ else
 fi
 
 check_domain "${domain_list[@]}"
-############################## Shell End #######################################################
+## File : monitor_domain.sh ends

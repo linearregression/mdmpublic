@@ -9,15 +9,13 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 20:26:47>
+## Updated: Time-stamp: <2016-05-05 10:16:57>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      working_dir: /var/lib/jenkins/code
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
 ##      branch_name: dev
-##      branch_name: dev
-##      revision: HEAD
 ##      env_parameters:
 ##         export SONAR_BASE_URL=http://localhost:9000
 ##         export SONAR_SOURCES=
@@ -102,10 +100,10 @@ EOF
 }
 
 ################################################################################################
+source_string "$env_parameters"
+
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
-
-source_string "$env_parameters"
 
 [ -n "$SONAR_BASE_URL" ] || SONAR_BASE_URL=$JENKINS_URL
 
@@ -114,7 +112,6 @@ git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 code_dir="$working_dir/$branch_name/$git_repo"
 
 cd "$code_dir"
-git checkout "$revision"
 
 # start SonarQube
 start_sonar_server

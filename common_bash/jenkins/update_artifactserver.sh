@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-04 20:27:33>
+## Updated: Time-stamp: <2016-05-05 10:07:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,8 @@
 ##       dst_dir:/var/www/repo/dev
 ##       tmp_dir:/tmp/artifact
 ################################################################################################
-################################################################################################
+. /etc/profile
+
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -33,28 +34,12 @@ bash /var/lib/devops/refresh_common_library.sh "2520035396"
 ################################################################################################
 source_string "$env_parameters"
 
-log "env variables. kill_running_chef_update: $kill_running_chef_update, STOP_CONTAINER: $STOP_CONTAINER"
-
 # ssh_server_ip
-if [ -z "$tmp_dir" ]; then
-    tmp_dir="/root/artifact/"
-fi
-
-if [ -z "$src_dir" ]; then
-    src_dir="/var/www/repo/dev"
-fi
-
-if [ -z "$dst_dir" ]; then
-    dst_dir="/var/www/repo/dev"
-fi
-
-if [ -z "$ssh_key_file" ]; then
-    ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
-fi
-
-if [ -z "$ssh_port" ]; then
-    ssh_port="22"
-fi
+[ -n "$tmp_dir" ] || tmp_dir="/root/artifact/"
+[ -n "$src_dir" ] || src_dir="/var/www/repo/dev"
+[ -n "$dst_dir" ] || dst_dir="/var/www/repo/dev"
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$ssh_port" ] || ssh_port="22"
 
 ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" mkdir -p $tmp_dir
 

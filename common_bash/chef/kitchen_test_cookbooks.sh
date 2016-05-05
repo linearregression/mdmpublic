@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 20:26:37>
+## Updated: Time-stamp: <2016-05-05 10:20:12>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -30,7 +30,6 @@
 ##         export TEST_KITCHEN_YAML_BLACKLIST=".kitchen.vagrant.yml,.kitchen.digitalocean.yml"
 ################################################################################################
 . /etc/profile
-################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -137,10 +136,10 @@ function shell_exit() {
     exit $errcode
 }
 ########################################################################
+source_string "$env_parameters"
+
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
-
-source_string "$env_parameters"
 
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then
     [ ! -d "$code_dir" ] || sudo rm -rf "$code_dir"

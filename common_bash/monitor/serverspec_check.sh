@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-05-04 20:25:12>
+## Updated: Time-stamp: <2016-05-05 10:15:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,7 @@
 ##          end
 ##
 ################################################################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -134,7 +134,7 @@ EOF
 echo "Perform serverspec check"
 rake spec -v
 
-################################### remote excute start ##########################
+# TODO: integrate below bash section into serverspec
 #$remote_list
 # 0 remote server ip
 # 1 remote server ssh port
@@ -158,6 +158,4 @@ if [ -n "$remote_list" ]; then
         exit 1
     fi
 fi
-################################### remote excute end ##########################
-
 ## File : serverspec_check.sh ends

@@ -9,9 +9,9 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-05-04 20:25:12>
+## Updated: Time-stamp: <2016-05-05 10:11:29>
 ##-------------------------------------------------------------------
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -140,7 +140,7 @@ install_docker
 
 create_enough_loop_device
 
-if ! service docker status 1>/dev/null 2>/dev/null; then
+if ! service docker status 1>/dev/null 2>&1; then
     service docker start
 fi
 

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-02>
-## Updated: Time-stamp: <2016-05-04 20:27:42>
+## Updated: Time-stamp: <2016-05-05 10:12:51>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,6 +22,7 @@
 ##         export HISTORY_DIR="/root/monitor_process/"
 ##
 ################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -31,7 +32,6 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-
 function shell_exit() {
     errcode=$?
     exit $errcode

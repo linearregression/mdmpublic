@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-05-04 20:27:09>
+## Updated: Time-stamp: <2016-05-05 10:08:23>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -16,7 +16,7 @@
 ##         export WEBSITE_LIST="https://bitbucket.org http://baidu.com"
 ##         export JENKINS_JOB_STATUS_FILES="CommonServerCheck.flag"
 ################################################################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -68,11 +68,8 @@ function check_jenkins_job_status()
         exit 1
     fi
 }
-
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
-
-echo "Check the env befor operating..."
 
 source_string "$env_parameters"
 

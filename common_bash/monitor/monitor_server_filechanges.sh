@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-05-04 20:27:46>
+## Updated: Time-stamp: <2016-05-05 10:12:40>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -24,6 +24,7 @@
 ##           export start_inotifywait_when_stopped=true
 ##           export BACKUP_OLD_DIR=/root/monitor_backup
 ################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \

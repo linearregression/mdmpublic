@@ -9,9 +9,8 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-04-27 10:25:29>
+## Updated: Time-stamp: <2016-05-05 10:17:47>
 ##-------------------------------------------------------------------
-
 base_dir=$(basename "$(pwd)")
 # get default env parameter
 if [ -z "$CURRENT_COOKBOOK" ]; then

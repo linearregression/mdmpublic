@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-04 20:27:37>
+## Updated: Time-stamp: <2016-05-05 10:13:23>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,6 +28,7 @@
 ##         export CLEAN_START=false
 ##
 ################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -79,13 +80,12 @@ function shell_exit() {
 
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
+source_string "$env_parameters"
 
 log "env variables. CLEAN_START: $CLEAN_START"
 
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
-
-source_string "$env_parameters"
 
 filelist_to_monitor=$(string_strip_comments "$filelist_to_monitor")
 if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
@@ -99,18 +99,18 @@ if [ -f "$flag_file" ] && [[ "$(cat "$flag_file")" = "ERROR" ]]; then
 fi
 
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then
-  [ ! -d "$code_dir" ] || rm -rf "$code_dir"
+    [ ! -d "$code_dir" ] || rm -rf "$code_dir"
 fi
 
 if [ ! -d "$working_dir" ]; then
-   mkdir -p "$working_dir"
-   chown -R jenkins:jenkins "$working_dir"
+    mkdir -p "$working_dir"
+    chown -R jenkins:jenkins "$working_dir"
 fi
 
 if [ -d "$code_dir" ]; then
-  old_sha=$(current_git_sha "$code_dir")
+    old_sha=$(current_git_sha "$code_dir")
 else
-  old_sha=""
+    old_sha=""
 fi
 
 # Update code

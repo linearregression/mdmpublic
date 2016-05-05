@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 20:27:00>
+## Updated: Time-stamp: <2016-05-05 10:06:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@
 ##      build_command: make
 ################################################################################################
 . /etc/profile
-################################################################################################
+
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -55,33 +55,18 @@ function copy_to_reposerver() {
     shift
     local code_dir=${1?}
     shift
-    local revision_sha=${1?}
-    shift
-    local repo_dir=${1?}
+    local dst_dir=${1?}
     shift
 
-    local file_list=$*
-    file_list=$(remove_hardline "$file_list")
-
+    local files_list=$*
     cd "$code_dir"
 
-    local repo_link="$repo_dir/$branch_name"
-    local dst_dir="$repo_dir/${branch_name}_code_${revision_sha}"
-
     [ -d "$dst_dir" ] || mkdir -p "$dst_dir"
-    [ -d "$repo_link" ] || mkdir -p "$repo_link"
-
-    for f in $file_list;do
+    for f in $files_list; do
+        #if [[ "$f" == "$git_repo/"* ]]; then
         cp "$f" "$dst_dir/"
-        file_name=$(basename "$f")
-        rm -rf "${repo_link:?}/$file_name"
-        ln -s "$dst_dir/$file_name" "$repo_link/$file_name"
+        #fi
     done
-
-    log "Just keep $leave_old_count old builds for $repo_dir/$branch_name_code"
-    folders=$(ls -d -t "$repo_dir/*")
-    echo "$folders" | grep "${branch_name}_code" | head -n "$leave_old_count" | xargs touch
-    find "$repo_dir" -type d -name "${branch_name}_code*" -and -mtime +1 -exec rm -r {} +
 }
 
 function pack_files(){
@@ -124,7 +109,6 @@ function shell_exit() {
 }
 
 ########################################################################
-leave_old_count=1 # only keep one days' build by default
 # Build Repo
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
@@ -194,16 +178,17 @@ if [ -z "$repo_dir" ]; then
     repo_dir="/var/www/repo"
 fi
 
+dst_dir="${repo_dir}/${branch_name}"
 if [ -n "$files_to_copy" ] && ! $SKIP_COPY; then
     log "================= Generate Packages ================="
-    copy_to_reposerver "$git_repo" "$branch_name" "$code_dir" "$new_sha" "$repo_dir" "$files_to_copy"
+    copy_to_reposerver "$git_repo" "$branch_name" "$code_dir" "$dst_dir" "$files_to_copy"
 
     log "================= Generate checksum ================="
-    generate_checksum "${repo_dir}/${branch_name}_code_${new_sha}"
+    generate_checksum "${dst_dir}"
 
     if [ -n "$IS_PACK_FILE" ] && $IS_PACK_FILE ;then
         log "================= Pack war file =================="
-        pack_files "${repo_dir}/${branch_name}_code_${new_sha}" "$git_repo"
+        pack_files "${dst_dir}" "$git_repo"
     fi
 fi
 ## File : jenkins_code_build.sh ends

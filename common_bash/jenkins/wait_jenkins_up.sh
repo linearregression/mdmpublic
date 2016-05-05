@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-04-27 10:17:54>
+## Updated: Time-stamp: <2016-05-05 09:30:10>
 ##-------------------------------------------------------------------
 jenkins_url=${1:-"http://127.0.0.1:28080/jnlpJars/jenkins-cli.jar/"}
 max_wait_seconds=${2:-600}
@@ -19,7 +19,7 @@ sleep_seconds=5
 for((i=0; i<max_wait_seconds; i=i+sleep_seconds)); do {
     output=$(curl --noproxy 127.0.0.1 -I "$jenkins_url")
 
-    if echo "$output" | grep 'HTTP/1.1 200 OK' 1>/dev/null 2>/dev/null; then
+    if echo "$output" | grep 'HTTP/1.1 200 OK' 1>/dev/null 2>&1; then
         echo "Jenkins is up"
         exit 0
     fi

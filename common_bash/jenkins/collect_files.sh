@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-04 20:25:14>
+## Updated: Time-stamp: <2016-05-05 10:09:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,6 @@
 ##
 ################################################################################################
 . /etc/profile
-################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -159,15 +158,9 @@ function collect_files() {
     done
 }
 
-############################## Function End ####################################################
 
-############################## Shell Start #####################################################
-# evaulate env
-IFS=$'\n'
-for env_variable in $env_parameters; do
-    eval "$env_variable"
-done
-unset IFS
+########################################################################
+trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
 ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
@@ -215,4 +208,4 @@ fi
 if [ -n "$JENKINS_BASEURL" ]; then
     echo -e "=============== Download link:\n${JENKINS_BASEURL}/job/${JOB_NAME}/ws/"
 fi
-############################## Shell End #######################################################
+## File : collect_files.sh ends

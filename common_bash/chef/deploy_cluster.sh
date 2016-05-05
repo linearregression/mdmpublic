@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 20:26:33>
+## Updated: Time-stamp: <2016-05-05 10:19:49>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -47,6 +47,7 @@
 ##             export CHEF_BINARY_CMD=chef-solo
 ##             export CODE_SH="/root/mydevops/misc/git_update.sh"
 ################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -170,31 +171,21 @@ function check_command() {
 }
 
 ##########################################################################################
-## bash start
-##########################################################################################
+source_string "$env_parameters"
 server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
 
-source_string "$env_parameters"
-
-if [ -z "${ssh_key_file}" ]; then
-    ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
-fi
+[ -n "${ssh_key_file}" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
+[ -n "$code_dir" ] || code_dir="/root/test"
 
 ssh_scp_args=" -i $ssh_key_file -o StrictHostKeyChecking=no "
-
-if [ -z "${CHEF_BINARY_CMD}" ]; then
-    CHEF_BINARY_CMD=chef-solo
-fi
 
 if [ -z "$git_repo_url" ]; then
     echo "Error: git_repo_url can't be empty"
 fi
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 
-if [ -z "$code_dir" ]; then
-    code_dir="/root/test"
-fi
 
 if [ -z "${chef_client_rb}" ]; then
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
@@ -272,3 +263,4 @@ if [ -n "$check_command" ]; then
     done
     log "Check End"
 fi
+## File : deploy_cluster.sh ends

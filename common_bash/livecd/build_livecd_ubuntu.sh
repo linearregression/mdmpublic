@@ -9,13 +9,13 @@
 ## Description :
 ## --
 ## Created : <2016-01-05>
-## Updated: Time-stamp: <2016-05-04 20:25:12>
+## Updated: Time-stamp: <2016-05-05 10:20:41>
 ##-------------------------------------------------------------------
 
 # How to build liveCD of ubuntu: http://customizeubuntu.com/ubuntu-livecd
 # Note: above instruction only support desktop version of ubuntu, instead of server version
-
 ################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -25,13 +25,11 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-
 working_dir=${1:-"/root/work/"}
 fetch_iso_url=${2:-"http://releases.ubuntu.com/14.04/ubuntu-14.04.3-desktop-amd64.iso"}
 livecd_image_name=${3:-"my-ubuntu-14.04.3.iso"}
 volume_id=${4:-"DevOps Ubuntu"}
 
-############################################################################
 function umount_dir()
 {
     local dir=${1?}

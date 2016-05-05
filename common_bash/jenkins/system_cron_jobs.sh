@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-04 20:27:26>
+## Updated: Time-stamp: <2016-05-05 10:07:35>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,7 +22,7 @@
 ##         export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
-################################################################################################
+
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -32,12 +32,12 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-
 source_string "$env_parameters"
+
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
 cron_job_list=$(string_strip_comments "$cron_job_list")
 
-[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 IFS=$'\n'
 for cron_job in ${cron_job_list[*]}
 do

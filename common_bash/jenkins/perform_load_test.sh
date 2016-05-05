@@ -8,10 +8,9 @@
 ## Description :
 ## --
 ## Created : <2015-11-19>
-## Updated: Time-stamp: <2016-05-04 20:25:13>
+## Updated: Time-stamp: <2016-05-05 10:10:40>
 ##-------------------------------------------------------------------
-
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \

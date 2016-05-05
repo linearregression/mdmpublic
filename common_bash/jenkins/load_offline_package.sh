@@ -10,7 +10,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-05-04 20:27:04>
+## Updated: Time-stamp: <2016-05-05 10:09:55>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,7 @@
 ##       package_location: /root/install_file/XXX.tar.gz
 ##       package_new_location: /var/www/repo/download
 ################################################################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -51,6 +51,8 @@ function shell_exit() {
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
+source_string "$env_parameters"
+
 log "Deploy to ${ssh_server_ip}:${ssh_port}"
 log "From server: ${from_server}"
 
@@ -59,8 +61,6 @@ from_ssh_server_ip=${from_server_split[0]}
 from_ssh_port=${from_server_split[1]}
 
 START=$(date +%s)
-
-source_string "$env_parameters"
 
 log "The parameter :package_location=${package_location}, package_new_location=${package_new_location}"
 ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
@@ -113,3 +113,4 @@ do
 done
 
 log "Load package successfully."
+## File : load_offline_package.sh ends

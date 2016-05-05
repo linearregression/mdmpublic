@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-04-27 10:17:29>
+## Updated: Time-stamp: <2016-05-05 09:30:28>
 ##-------------------------------------------------------------------
 jenkins_job=${1?}
 jenkins_cli_jar=${2?}
@@ -22,12 +22,12 @@ for((i=0; i<max_wait_seconds; i=i+sleep_seconds)); do {
     output=$(java -jar "$jenkins_cli_jar" -s "$jenkins_url" console "$jenkins_job" -n 10)
     echo "$output"
 
-    if echo "$output" | grep 'Finished: FAILURE' 1>/dev/null 2>/dev/null; then
+    if echo "$output" | grep 'Finished: FAILURE' 1>/dev/null 2>&1; then
         echo "Jenkins job failed: $jenkins_job"
         exit 1
     fi
 
-    if echo "$output" | grep 'Finished: SUCCESS' 1>/dev/null 2>/dev/null; then
+    if echo "$output" | grep 'Finished: SUCCESS' 1>/dev/null 2>&1; then
         echo "Jenkins job success: $jenkins_job"
         exit 0
     fi

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-04 20:25:13>
+## Updated: Time-stamp: <2016-05-05 10:10:24>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,7 +22,6 @@
 ##               /var/lib/jenkins/code/codestylemustpass/,git@XXX:XXX/XXX.git,dev
 ################################################################################################
 . /etc/profile
-################################################################################################
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -38,7 +37,6 @@ function shell_exit() {
 }
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0
-
 ########################################################################
 git_pull_list=$(string_strip_comments "$git_pull_list")
 for git_pull in $git_pull_list; do

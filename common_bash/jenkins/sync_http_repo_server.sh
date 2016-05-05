@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-23>
-## Updated: Time-stamp: <2016-05-04 20:25:13>
+## Updated: Time-stamp: <2016-05-05 10:11:00>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,7 @@
 ##               configuration/rest/build/libs/XXX.war
 ##               gateway/war/build/libs/XXX.war
 ################################################################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -31,8 +31,6 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "2520035396"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-. /etc/profile
-
 fail_unless_os "ubuntu/redhat/centos/osx"
 
 # calculate checksum: cksum * > checksum.txt
