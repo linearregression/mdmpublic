@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-06 08:07:16>
+## Updated: Time-stamp: <2016-05-06 14:26:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -37,6 +37,7 @@
 ##             export STOP_COMMAND="docker stop longrun-aio"
 ##             export CODE_SH=""
 ##             export SSH_SERVER_PORT=22
+##             export CHEF_BINARY_CMD=chef-client
 ##
 ## Hook points: START_COMMAND -> POST_START_COMMAND -> PRE_STOP_COMMAND -> STOP_COMMAND
 ################################################################################################
@@ -81,7 +82,11 @@ fi
 
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
 
-kill_chef_command="killall -9 chef-solo || true"
+# TODO: use chef-zero, instead of chef-solo
+#[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
+[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
+
+kill_chef_command="killall -9 $CHEF_BINARY_CMD || true"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$code_dir" ] || code_dir="/root/test"
@@ -140,8 +145,12 @@ scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no /tmp/client.rb "
 scp -i $ssh_key_file -P "$ssh_port" -o StrictHostKeyChecking=no /tmp/client.json "root@$ssh_server_ip:/root/client.json"
 
 log "Apply chef update"
-log "ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip chef-solo --config /root/client.rb -j /root/client.json"
-ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" chef-solo --config /root/client.rb -j /root/client.json
+# TODO: use chef-zero, instead of chef-solo
+# ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json --local-mode"
+ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json"
+
+log $ssh_command
+$ssh_command
 
 if [ -n "$check_command" ]; then
     log "$check_command"
