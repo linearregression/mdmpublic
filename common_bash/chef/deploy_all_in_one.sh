@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-06 14:26:14>
+## Updated: Time-stamp: <2016-05-06 16:06:28>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -149,7 +149,7 @@ log "Apply chef update"
 # ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json --local-mode"
 ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json"
 
-log $ssh_command
+log "$ssh_command"
 $ssh_command
 
 if [ -n "$check_command" ]; then

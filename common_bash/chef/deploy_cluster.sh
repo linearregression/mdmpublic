@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-06 14:23:34>
+## Updated: Time-stamp: <2016-05-07 08:55:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -69,11 +69,11 @@ function bindhosts() {
         server_split=(${server//:/ })
         ssh_server_ip=${server_split[0]}
         ssh_port=${server_split[1]}
-        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip ifconfig eth0 | grep 'inet addr:' | awk '{print $2}' | cut -c 6-"
-        ip=$("$ssh_command")
+        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip ifconfig eth0 | grep 'inet addr:' | awk '{print \$2}' | cut -c 6-"
+        ip=$(eval "$ssh_command")
 
         ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip hostname"
-        hostname=$("$ssh_command")
+        hostname=$(eval "$ssh_command")
         hosts_list="${hosts_list},${ip}:${hostname}"
     done
 

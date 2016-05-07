@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-05 10:07:54>
+## Updated: Time-stamp: <2016-05-06 16:34:59>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -62,6 +62,40 @@ function git_directory_commit() {
     fi
 }
 
+function git_update_dst_repo() {
+    local branch_name=${1?}
+    local working_dir=${2?}
+    local git_repo_url=${3?}
+
+    local git_repo
+    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+
+    local code_dir="$working_dir/$branch_name/$git_repo"
+    echo "Git update code for $git_repo_url to $code_dir"
+    if [ ! -d "$working_dir/$branch_name/$git_repo" ]; then
+        mkdir -p "$working_dir/$branch_name"
+        cd "$working_dir/$branch_name"
+        git clone "$git_repo_url"
+        cd "$code_dir"
+        git config --global user.email "jenkins@devops.com"
+        git config --global user.name "Jenkins Auto"
+    else
+        cd "$code_dir"
+        git ls-remote --tags
+        git config remote.origin.url "$git_repo_url"
+        git config --global user.email "jenkins@devops.com"
+        git config --global user.name "Jenkins Auto"
+        # add retry for network turbulence
+        git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
+    fi
+
+    if git branch | grep "^* $branch_name" 1>/dev/null; then
+        git checkout "$branch_name"
+    else
+        git checkout -b "$branch_name"
+    fi
+}
+
 function replicate_git_repo() {
     local git_repo_src_url=${1?}
     local git_branch_src=${2?}
@@ -79,7 +113,7 @@ function replicate_git_repo() {
     git_repo_dst_name=$(echo "${git_repo_dst_url%.git}" | awk -F '/' '{print $2}')
 
     git_update_code "$git_branch_src" "$working_dir" "$git_repo_src_url"
-    git_update_code "$git_branch_dst" "$working_dir" "$git_repo_dst_url"
+    git_update_dst_repo "$git_branch_dst" "$working_dir" "$git_repo_dst_url"
 
     echo "Update intermediate directory: $intermediate_dir"
     rm -rf "$intermediate_dir" && mkdir -p "$intermediate_dir"
