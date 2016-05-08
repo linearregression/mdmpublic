@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-23>
-## Updated: Time-stamp: <2016-05-05 10:11:00>
+## Updated: Time-stamp: <2016-05-07 09:53:27>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2520035396"
+bash /var/lib/devops/refresh_common_library.sh "3038936287"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 fail_unless_os "ubuntu/redhat/centos/osx"
