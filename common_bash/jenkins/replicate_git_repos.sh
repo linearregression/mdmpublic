@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-07 09:53:27>
+## Updated: Time-stamp: <2016-05-09 09:27:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -20,7 +20,7 @@
 ##
 ##       env_parameters:
 ##             export CLEAN_START=false
-##             export working_dir=
+##             export working_dir="/var/lib/jenkins/code/replicate_git_repo"
 ################################################################################################
 . /etc/profile
 
@@ -43,12 +43,12 @@ function git_directory_commit() {
     local branch_name=${2?}
 
     cd "$code_dir"
-    echo "Commit changes detected in intermediate directory"
     git_status=$(git status)
     if echo "$git_status" | grep "nothing to commit, working directory clean" 1>/dev/null 2>&1; then
         echo "No change"
     else
-        git_commit_message="Robot Push: Sync Git Repo"
+        echo "Commit changes detected in intermediate directory"
+        git_commit_message="Auto Push: Sync Code"
 
         echo "=========== Jenkins Robot push changes: $git_commit_message"
         echo "git_status: $git_status"
@@ -129,8 +129,12 @@ function replicate_git_repo() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 ########################################################
 source_string "$env_parameters"
-[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code"
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/replicate_git_repo"
 [ -d "$working_dir" ] || mkdir -p $working_dir
+
+if [ -n "$CLEAN_START" ] && $CLEAN_START; then
+    echo "Since clean_start is true, delete working_dir first: $working_dir"
+fi
 
 git_email="jenkins.auto@dennyzhang.com"
 git_username="Jenkins Auto"

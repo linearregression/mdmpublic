@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-05-07 09:53:28>
+## Updated: Time-stamp: <2016-05-11 21:49:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -14,7 +14,7 @@
 ##       job_run_id:
 ##       env_parameters:
 ##           export JENKINS_BASEURL="http://jenkins.dennyzhang.com"
-##           export TOP_COUNT=20
+##           export TOP_COUNT=40
 ##           export CONSOLE_FILE="/tmp/console.log"
 ##           export SQLITE_FILE="/tmp/console.sqlite"
 ##           export context_count=0
@@ -31,7 +31,7 @@ bash /var/lib/devops/refresh_common_library.sh "3038936287"
 ################################################################################################
 source_string "$env_parameters"
 
-[ -n "$TOP_COUNT" ] || export TOP_COUNT="20"
+[ -n "$TOP_COUNT" ] || export TOP_COUNT="40"
 [ -n "$CONSOLE_FILE" ] || export CONSOLE_FILE="/tmp/console.log"
 [ -n "$SQLITE_FILE" ] || export SQLITE_FILE="/tmp/console.sqlite"
 [ -n "$JENKINS_BASEURL" ] || export JENKINS_BASEURL="$JENKINS_URL"

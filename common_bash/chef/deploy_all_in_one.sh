@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-07 09:53:29>
+## Updated: Time-stamp: <2016-05-08 22:18:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -153,7 +153,8 @@ log "$ssh_command"
 $ssh_command
 
 if [ -n "$check_command" ]; then
-    log "$check_command"
-    ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "\$check_command"
+    log "Run Check Command: $check_command"
+    ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $check_command"
+    $ssh_command
 fi
 ## File : deploy_all_in_one.sh ends
