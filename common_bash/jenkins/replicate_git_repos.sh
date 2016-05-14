@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-09 09:27:16>
+## Updated: Time-stamp: <2016-05-14 08:14:32>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3038936287"
+bash /var/lib/devops/refresh_common_library.sh "538154310"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -53,8 +53,8 @@ function git_directory_commit() {
         echo "=========== Jenkins Robot push changes: $git_commit_message"
         echo "git_status: $git_status"
 
-        git config --global user.email "$git_email"
-        git config --global user.name "$git_username"
+        git config user.email "$git_email"
+        git config user.name "$git_username"
         git add ./*
 
         git commit -am "$git_commit_message"
@@ -77,14 +77,14 @@ function git_update_dst_repo() {
         cd "$working_dir/$branch_name"
         git clone "$git_repo_url"
         cd "$code_dir"
-        git config --global user.email "jenkins@devops.com"
-        git config --global user.name "Jenkins Auto"
+        git config user.email "jenkins@devops.com"
+        git config user.name "Jenkins Auto"
     else
         cd "$code_dir"
         git ls-remote --tags
         git config remote.origin.url "$git_repo_url"
-        git config --global user.email "jenkins@devops.com"
-        git config --global user.name "Jenkins Auto"
+        git config user.email "jenkins@devops.com"
+        git config user.name "Jenkins Auto"
         # add retry for network turbulence
         git pull origin "$branch_name" || (sleep 2 && git pull origin "$branch_name")
     fi
