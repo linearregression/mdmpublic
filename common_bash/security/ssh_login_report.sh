@@ -7,19 +7,21 @@
 ## File : ssh_login_report.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
+##        TODO: known issues
+##              no message to /var/log/secure
+##              no ending time for some ssh session
+##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-05-14 08:14:31>
+## Updated: Time-stamp: <2016-05-15 21:12:59>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      ssh_server: 192.168.1.3:2704
 ##      env_parameters:
 ##           export HAS_INIT_ANALYSIS=false
-##           export AUTH_LOG_PATH=/var/log/auth.log  # For Ubuntu/Debian
-##           export AUTH_LOG_PATH=/var/log/secure # For CentOS
 ##           export WORKING_DIR=/tmp/auth
-##           export PARSE_MAXIMUM_ENTRIES="500"
+##           export PARSE_MAXIMUM_ENTRIES="5000"
 ##           export GET_CITY_FROM_IP=false
 ################################################################################################
 . /etc/profile
@@ -32,32 +34,71 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "538154310"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
+function compare_two_timestamp() {
+    # Sample:
+    #   From: Apr 19 12:01:43 -- Apr 19 12:18:23
+    #   To: 16m40s
+    start_time=${1?}
+    end_time=${2?}
+    return_str=$(date -d @$(( $(date -d "$end_time" +%s) - $(date -d "$start_time" +%s) )) -u +'%Hh:%Mm:%Ss')
+    return_str=${return_str#00h:}
+    return_str=${return_str#00m:}
+    return_str=${return_str#0}
+    echo "$return_str"
+}
+
 function prepare_auth_log_files() {
     local working_dir=${1?}
-    local auth_log_dir="$working_dir/auth_log"
-    command="rm -rf $working_dir && mkdir -p $auth_log_dir"
-    $SSH_CONNECT "$command"
-    echo "Copy ${AUTH_LOG_PATH}* to $auth_log_dir"
-    $SSH_CONNECT cp "${AUTH_LOG_PATH}*" "$auth_log_dir"
-    if [ "$AUTH_LOG_PATH" = "/var/log/auth.log" ]; then
-        $SSH_CONNECT gzip -d "$auth_log_dir/auth.log.*.gz"
-    fi
+    cat > /tmp/copy_auth_files.sh <<EOF
+#!/bin/bash -e
+working_dir="$working_dir"
+auth_log_dir="\$working_dir/auth_log"
+auth_log_file="\$auth_log_dir/raw_ssh_login.log"
+
+rm -rf \$working_dir
+mkdir -p \$auth_log_dir
+cd /var/log
+if [ -f auth.log ]; then
+    echo "Copy /var/log/auth.log* to \$auth_log_dir"
+    for f in \$(ls -rt auth.log*); do
+        cp \$f \$auth_log_dir/
+        if [[ "\${f}" == *.gz ]]; then
+            gzip -d \$auth_log_dir/\$f
+            f=\${f%.gz}
+        fi
+        cat \$auth_log_dir/\$f >> \$auth_log_file
+    done
+else
+    for f in \$(ls -rt secure*); do
+        cp \$f \$auth_log_dir/
+        cat \$auth_log_dir/\$f >> \$auth_log_file
+    done
+fi
+EOF
+    echo "Upload /tmp/copy_auth_files.sh"
+    scp -i "$ssh_key_file" -P "$server_port" -o StrictHostKeyChecking=no /tmp/copy_auth_files.sh "root@$server_ip:/tmp/copy_auth_files.sh"
+
+    $SSH_CONNECT "bash -e /tmp/copy_auth_files.sh"
 }
 
 function generate_ssh_login_log() {
     local working_dir=${1?}
-    local ssh_login_logfile=${2?}
 
-    local auth_log_dir="$working_dir/auth_log"
+    local ssh_login_logfile="$working_dir/ssh_login.log"
+    local ssh_raw_logfile="$working_dir/auth_log/raw_ssh_login.log"
+
     echo "Dump ssh logs to $ssh_login_logfile"
-    grep_command="grep -C 5 -h -R 'sshd.*session opened' $auth_log_dir"
+    grep_command="grep -C 5 -h 'sshd.*session opened' $ssh_raw_logfile"
     # TODO: sort by time, instead of alph characters
-    command="$grep_command | sort | tail -n $PARSE_MAXIMUM_ENTRIES > $ssh_login_logfile"
+    command="$grep_command | grep sshd | grep -v 'Address already in use' | grep -v 'cannot listen to port'"
+    command="$command | tail -n $PARSE_MAXIMUM_ENTRIES > $ssh_login_logfile"
     $SSH_CONNECT "$command"
 }
 
 function generate_fingerprint() {
-    local fingerprint_file=${1?}
+    local working_dir=${1?}
+
+    local fingerprint_file="$working_dir/fingerprint"
     echo "generate fingerprint for public key files to $fingerprint_file"
     command="cat /root/.ssh/authorized_keys /home/*/.ssh/authorized_keys | grep '^ssh-rsa'"
     current_filename=$(basename "${0}")
@@ -131,7 +172,19 @@ function parse_ssh_session() {
         client_port=$(echo "$client_port" | awk -F' ' '{print $1}')
     fi
 
-    output_prefix="sshd[$session_id] ${start_time} -- ${end_time} client(${client_ip}:${client_port}) ${ssh_username}"
+    output_prefix="sshd[$session_id] ${start_time}"
+    if [ -n "$end_time" ]; then
+        time_offset=$(compare_two_timestamp "$start_time" "$end_time")
+        if [ "$time_offset" == "0s" ]; then
+            output_prefix="$output_prefix -- 0s"
+        else
+            output_prefix="$output_prefix -- duration($time_offset)"
+        fi
+    else
+        output_prefix="$output_prefix -- $end_time"
+    fi
+
+    output_prefix="$output_prefix client(${client_ip}:${client_port}) ${ssh_username}"
     if [ "$auth_method" = "publickey" ]; then
         output_prefix="${output_prefix} ${auth_method}(${fingerprint})"
     fi
@@ -181,12 +234,8 @@ source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$WORKING_DIR" ] || WORKING_DIR=/tmp/auth
 [ -n "$HAS_INIT_ANALYSIS" ] || HAS_INIT_ANALYSIS=false
-[ -n "$AUTH_LOG_PATH" ] || AUTH_LOG_PATH=/var/log/auth.log
-[ -n "$PARSE_MAXIMUM_ENTRIES" ] || PARSE_MAXIMUM_ENTRIES="500"
+[ -n "$PARSE_MAXIMUM_ENTRIES" ] || PARSE_MAXIMUM_ENTRIES="5000"
 [ -n "$GET_CITY_FROM_IP" ] || GET_CITY_FROM_IP=false
-
-SSH_LOGIN_LOGFILE="$WORKING_DIR/ssh_login.log"
-FINGERPRINT_FILE="$WORKING_DIR/fingerprint"
 
 server_split=(${ssh_server//:/ })
 server_ip=${server_split[0]}
@@ -196,12 +245,12 @@ SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no ro
 
 if [ "$HAS_INIT_ANALYSIS" = "false" ]; then
     prepare_auth_log_files $WORKING_DIR
-    generate_ssh_login_log $WORKING_DIR $SSH_LOGIN_LOGFILE
-    generate_fingerprint $FINGERPRINT_FILE
+    generate_ssh_login_log $WORKING_DIR
+    generate_fingerprint $WORKING_DIR
 fi
 
-ssh_raw_log=$($SSH_CONNECT "tail -n $PARSE_MAXIMUM_ENTRIES $SSH_LOGIN_LOGFILE")
-fingerprint_list=$($SSH_CONNECT "cat $FINGERPRINT_FILE")
+ssh_raw_log=$($SSH_CONNECT "tail -n $PARSE_MAXIMUM_ENTRIES $WORKING_DIR/ssh_login.log")
+fingerprint_list=$($SSH_CONNECT "cat $WORKING_DIR/fingerprint")
 
 echo -e "===================== SSH Login Events On $ssh_server:"
 ssh_login_events "$ssh_raw_log" "$fingerprint_list"

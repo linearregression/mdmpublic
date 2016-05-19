@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-14 08:14:32>
+## Updated: Time-stamp: <2016-05-14 09:39:24>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -45,7 +45,7 @@ for git_pull in $git_pull_list; do
     working_dir=${item[0]}
     git_repo_url=${item[1]}
     branch_name=${item[2]}
-    log "git pull in working_dir"
+    log "git pull in $working_dir"
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 done
 ## File : jenkins_code_pull.sh ends

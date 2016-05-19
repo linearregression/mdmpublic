@@ -8,9 +8,16 @@
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
-## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-14 08:14:33>
+## Created : <2016-04-25>
+## Updated: Time-stamp: <2016-05-19 12:01:04>
 ##-------------------------------------------------------------------
+################################################################################################
+## env variables:
+##      git_list:
+##           git@github.com:DennyZhang/devops_public.git,master
+##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,master
+##      env_parameters:
+##           export working_dir="/var/lib/jenkins/code/codestyle"
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -22,17 +29,65 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "538154310"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-# get default env parameter
-base_dir=$(basename "$(pwd)")
-if [ -z "$CURRENT_COOKBOOK" ]; then
-    export COOKBOOK="../${base_dir}"
-else
-    export COOKBOOK="../$CURRENT_COOKBOOK"
-fi
+function chefcheck_git_repo(){
+    local branch_name=${1?}
+    local working_dir=${2?}
+    local git_repo_url=${3?}
 
-log "foodcritic $COOKBOOK"
-foodcritic "$COOKBOOK"
+    local git_repo
+    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    local code_dir="$working_dir/$branch_name/$git_repo"
 
-log "rubocop $COOKBOOK"
-rubocop "$COOKBOOK"
+    git_update_code "$branch_name" "$working_dir" "$git_repo_url"
+
+    cd "$code_dir"
+    cd cookbooks
+
+    for cookbook in *; do
+        if [ -d "$cookbook" ]; then
+            command="foodcritic $cookbook"
+            echo "======================== test $command"
+            if ! eval "$command"; then
+                failed_git_repos="${failed_git_repos}\nfoodcritic: ${git_repo}:${branch_name}:${cookbook}"
+            fi
+        fi
+    done
+
+    for cookbook in *; do
+        if [ -d "$cookbook" ]; then
+            command="rubocop $cookbook"
+            echo "======================== test $command"
+            if ! eval "$command"; then
+                failed_git_repos="${failed_git_repos}\nrubocop: ${git_repo}:${branch_name}:${cookbook}"
+            fi
+        fi
+    done
+}
+
+function shell_exit() {
+    errcode=$?
+    if [ "$failed_git_repos" != "" ]; then
+        echo -e "Failed Git Repos: $failed_git_repos"
+        exit 1
+    fi
+    exit $errcode
+}
+
+################################################################################
+trap shell_exit SIGHUP SIGINT SIGTERM 0
+
+source_string "$env_parameters"
+
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/codestyle"
+
+failed_git_repos=""
+
+git_list=$(string_strip_comments "$git_list")
+for git_repo_url in $git_list; do
+    git_repo_url=${git_repo_url//,/ }
+    item=($git_repo_url)
+    git_repo_url=${item[0]}
+    branch_name=${item[1]}
+    chefcheck_git_repo "$branch_name" "$working_dir" "$git_repo_url"
+done
 ## File : chef_style_check.sh ends

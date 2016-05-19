@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-05-14 08:14:33>
+## Updated: Time-stamp: <2016-05-19 12:02:39>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -62,14 +62,14 @@ function shellcheck_git_repo(){
     local command="find $code_dir -name '*.sh' | xargs sudo shellcheck -e $exclude_code_list"
     echo "$command"
     if ! eval "$command"; then
-        failed_git_repos="${failed_git_repos} ${git_repo}:${branch_name}"
+        failed_git_repos="${failed_git_repos}\n${git_repo}:${branch_name}"
     fi
 }
 
 function shell_exit() {
     errcode=$?
     if [ "$failed_git_repos" != "" ]; then
-        echo "Failed Git Repos: $failed_git_repos"
+        echo -e "Failed Git Repos: $failed_git_repos"
         exit 1
     fi
     exit $errcode
