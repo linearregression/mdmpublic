@@ -9,14 +9,14 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-14 08:14:32>
+## Updated: Time-stamp: <2016-05-20 09:34:54>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
 ##      cron_job_list:
-##        172.17.0.1:22:echo hello
-##        172.17.0.1:23:rm /tmp/npm-*
+##        root:172.17.0.1:22:echo hello
+##        root:172.17.0.1:23:rm /tmp/npm-*
 ##
 ##       env_parameters:
 ##         export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
@@ -47,12 +47,13 @@ do
     item=($cron_job)
     unset IFS
 
-    server_ip=${item[0]}
-    server_port=${item[1]}
-    string_prefix="$server_ip:$server_port:"
+    ssh_username=${item[0]}
+    server_ip=${item[1]}
+    server_port=${item[2]}
+    string_prefix="$ssh_username:$server_ip:$server_port:"
     cron_command="${cron_job#${string_prefix}}"
 
-    ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
+    ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
     echo "=============== $ssh_connect $cron_command"
     $ssh_connect "$cron_command"
 done
