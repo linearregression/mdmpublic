@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-20 10:39:05>
+## Updated: Time-stamp: <2016-05-20 14:05:50>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,7 +36,7 @@
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export REMOVE_PREVIOUS_DOWNLOAD=false
 ##          export KEEP_DAY=7
-##          export SERVER_REMOTE_COPY="root:104.236.159.226:22:/data/backup/server1"
+##          export SERVER_REMOTE_COPY="104.236.159.226:22:root/data/backup/server1"
 ##          export JENKINS_BASEURL="http://123.57.240.189:58080"
 ##
 ################################################################################################
@@ -196,9 +196,9 @@ data_retention $KEEP_DAY "$server_list"
 if [ -n "$SERVER_REMOTE_COPY" ]; then
     echo "=============== Copy collected files to remote server"
     my_list=(${SERVER_REMOTE_COPY//:/ })
-    remote_ssh_username=${my_list[0]}
-    remote_server_ip=${my_list[1]}
-    remote_server_port=${my_list[2]}
+    remote_server_ip=${my_list[0]}
+    remote_server_port=${my_list[1]}
+    remote_ssh_username=${my_list[2]}
     remote_dst_dir=${my_list[3]}
 
     ssh_command="ssh -o StrictHostKeyChecking=no -p $remote_server_port $remote_ssh_username@$remote_server_ip mkdir -p $remote_dst_dir"
