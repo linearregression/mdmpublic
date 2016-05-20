@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-05-14 08:14:31>
+## Updated: Time-stamp: <2016-05-20 20:45:29>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -134,28 +134,28 @@ EOF
 echo "Perform serverspec check"
 rake spec -v
 
-# TODO: integrate below bash section into serverspec
-#$remote_list
-# 0 remote server ip
-# 1 remote server ssh port
-# 2 remote server ssh key
-# 3 command 1: "get cpu loadavg" < 20
-# 4 command 2: "get docker container number" < 15
-if [ -n "$remote_list" ]; then
-    remote_list=(${remote_list// / })
+# # TODO: integrate below bash section into serverspec
+# #$remote_list
+# # 0 remote server ip
+# # 1 remote server ssh port
+# # 2 remote server ssh key
+# # 3 command 1: "get cpu loadavg" < 20
+# # 4 command 2: "get docker container number" < 15
+# if [ -n "$remote_list" ]; then
+#     remote_list=(${remote_list// / })
 
-    ssh_connect="ssh -p ${remote_list[1]} -i ${remote_list[2]} -o stricthostkeychecking=no root@${remote_list[0]}"
-    loadavg_va=$($ssh_connect "cat /proc/loadavg | awk '{print \$1}'")
-    container_num=$($ssh_connect "docker ps | sed '1d' | wc -l")
+#     ssh_connect="ssh -p ${remote_list[1]} -i ${remote_list[2]} -o stricthostkeychecking=no root@${remote_list[0]}"
+#     loadavg_va=$($ssh_connect "cat /proc/loadavg | awk '{print \$1}'")
+#     container_num=$($ssh_connect "docker ps | sed '1d' | wc -l")
 
-    # compare loadavg value
-    if [ "$(echo "$loadavg_va > ${remote_list[3]}" | bc)" = "1" ]; then
-        exit 1
-    fi
+#     # compare loadavg value
+#     if [ "$(echo "$loadavg_va > ${remote_list[3]}" | bc)" = "1" ]; then
+#         exit 1
+#     fi
 
-    # compare the number of containers
-    if [ "$container_num" -gt "${remote_list[4]}" ]; then
-        exit 1
-    fi
-fi
+#     # compare the number of containers
+#     if [ "$container_num" -gt "${remote_list[4]}" ]; then
+#         exit 1
+#     fi
+# fi
 ## File : serverspec_check.sh ends

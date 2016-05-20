@@ -13,11 +13,11 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-05-15 21:12:59>
+## Updated: Time-stamp: <2016-05-20 20:46:09>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
-##      ssh_server: 192.168.1.3:2704
+##      ssh_server: 192.168.1.3:2704:root
 ##      env_parameters:
 ##           export HAS_INIT_ANALYSIS=false
 ##           export WORKING_DIR=/tmp/auth
@@ -49,6 +49,10 @@ function compare_two_timestamp() {
 
 function prepare_auth_log_files() {
     local working_dir=${1?}
+    local server_ip=${2?}
+    local server_port=${3?}
+    local ssh_username=${4?}
+
     cat > /tmp/copy_auth_files.sh <<EOF
 #!/bin/bash -e
 working_dir="$working_dir"
@@ -76,7 +80,8 @@ else
 fi
 EOF
     echo "Upload /tmp/copy_auth_files.sh"
-    scp -i "$ssh_key_file" -P "$server_port" -o StrictHostKeyChecking=no /tmp/copy_auth_files.sh "root@$server_ip:/tmp/copy_auth_files.sh"
+    scp -i "$ssh_key_file" -P "$server_port" -o StrictHostKeyChecking=no /tmp/copy_auth_files.sh \
+        "$ssh_username@$server_ip:/tmp/copy_auth_files.sh"
 
     $SSH_CONNECT "bash -e /tmp/copy_auth_files.sh"
 }
@@ -89,7 +94,6 @@ function generate_ssh_login_log() {
 
     echo "Dump ssh logs to $ssh_login_logfile"
     grep_command="grep -C 5 -h 'sshd.*session opened' $ssh_raw_logfile"
-    # TODO: sort by time, instead of alph characters
     command="$grep_command | grep sshd | grep -v 'Address already in use' | grep -v 'cannot listen to port'"
     command="$command | tail -n $PARSE_MAXIMUM_ENTRIES > $ssh_login_logfile"
     $SSH_CONNECT "$command"
@@ -240,11 +244,12 @@ source_string "$env_parameters"
 server_split=(${ssh_server//:/ })
 server_ip=${server_split[0]}
 server_port=${server_split[1]}
+ssh_username=${server_split[2]}
 
-SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
+SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 
 if [ "$HAS_INIT_ANALYSIS" = "false" ]; then
-    prepare_auth_log_files $WORKING_DIR
+    prepare_auth_log_files $WORKING_DIR "$server_ip" "$server_port" "$ssh_username"
     generate_ssh_login_log $WORKING_DIR
     generate_fingerprint $WORKING_DIR
 fi

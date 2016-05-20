@@ -9,17 +9,17 @@
 ## Description :
 ## --
 ## Created : <2016-05-02>
-## Updated: Time-stamp: <2016-05-14 08:14:31>
+## Updated: Time-stamp: <2016-05-20 19:01:58>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
 ##      process_list:
-##          $server_ip:$server_port:pid:123
-##          $server_ip:$server_port:cmdpattern:xxxx
+##          $server_ip:$server_port:root:pid:123
+##          $server_ip:$server_port:root:cmdpattern:xxxx
 ##      env_parameters:
 ##         export UPDATE_SERVER_SCRIPT=true
-##         export HISTORY_DIR="/root/monitor_process/"
+##         export HISTORY_DIR="/opt/monitor_process/"
 ##
 ################################################################################################
 . /etc/profile
@@ -64,10 +64,11 @@ EOF
 function monitor_remote_process() {
     local server_ip=${1?}
     local server_port=${2?}
-    local process_pattern=${3?}
-    local process_id=${4?}
+    local ssh_username=${3?}
+    local process_pattern=${4?}
+    local process_id=${5?}
 
-    ssh_connect="ssh -p $server_port -o StrictHostKeyChecking=no root@$server_ip"
+    ssh_connect="ssh -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
     # get process pid
     local pid
     case "$process_pattern" in
@@ -93,7 +94,7 @@ function monitor_remote_process() {
     if $UPDATE_SERVER_SCRIPT; then
         echo "upload monitor_process.sh to $HISTORY_DIR"
         scp -P "$server_port" -o "StrictHostKeyChecking=no" "$monitor_process_path" \
-            "root@$server_ip:$monitor_process_path"
+            "$ssh_username@$server_ip:$monitor_process_path"
     else
         echo "Skip upload monitor_process.sh"
     fi
@@ -107,7 +108,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
 
 # set default variables
-[ -n "$HISTORY_DIR" ] || HISTORY_DIR="/root/monitor_process"
+[ -n "$HISTORY_DIR" ] || HISTORY_DIR="/opt/monitor_process"
 [ -n "$SHOW_OS_UTILIZATION" ] || SHOW_OS_UTILIZATION=true
 [ -n "$UPDATE_SERVER_SCRIPT" ] || UPDATE_SERVER_SCRIPT=true
 
@@ -125,9 +126,10 @@ for process in ${process_list[*]}; do
 
     server_ip=${item[0]}
     server_port=${item[1]}
-    process_pattern=${item[2]}
-    process_id=${item[3]}
+    ssh_username=${item[2]}
+    process_pattern=${item[3]}
+    process_id=${item[4]}
 
-    monitor_remote_process "$server_ip" "$server_port" "$process_pattern" "$process_id"
+    monitor_remote_process "$server_ip" "$server_port" "$ssh_username" "$process_pattern" "$process_id"
 done
 ## File : monitor_remote_process.sh ends

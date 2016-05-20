@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-20 14:05:50>
+## Updated: Time-stamp: <2016-05-20 20:20:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -100,6 +100,8 @@ function collect_files_by_host() {
             fi
             set -e
         else
+            # remove tailing /: /opt/devops/ --> /opt/devops
+            t_file=${t_file%/}
             echo "Collect files:$t_file"
             ssh_result=$($ssh_connect test -r "$t_file" && echo yes || echo no)
             if [ "x$ssh_result" == "xno" ]; then
@@ -110,10 +112,9 @@ function collect_files_by_host() {
             # copy files
             file_parent_dir=${t_file%/*}
             save_pathname=${file_parent_dir#*/}
-            file_name=${t_file##*/}
 
             $ssh_connect "mkdir -p $work_path/$save_pathname"
-            $ssh_connect "cp -r $t_file $work_path/$save_pathname/$file_name"
+            $ssh_connect "cp -r $t_file $work_path/$save_pathname/"
         fi
     done
 }

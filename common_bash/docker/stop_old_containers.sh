@@ -4,13 +4,14 @@
 ## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-# * Author        : doungni
-# * Email         : doungni@doungni.com
-# * Last modified : 2015-12-03 15:08
-# * Filename      : stop_old_containers.sh
-# * Description   : stop old containers
-################################################################################################
-
+## File : stop_old_containers.sh
+## Author: doungni
+## Co-Author : Denny <denny@dennyzhang.com>
+## Description : Stop old long-run docker containers, to save OS resource
+## --
+## Created : <2015-12-03>
+## Updated: Time-stamp: <2016-05-20 20:29:35>
+##-------------------------------------------------------------------
 ################################################################################################
 # * By Jenkins config
 #       keep_days : Over a given period of time will be stop
@@ -21,10 +22,7 @@
 #       stop_container_list flag count_v container_name container_start_sd
 #       container_start_ts server_current_ts
 ################################################################################################
-
-# TODO: Need to reduce code duplication in between stop_old_containers.sh and stop_black_containers.sh
-############################## Function Start ##################################################
-################################################################################################
+. /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh \
@@ -34,7 +32,9 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "538154310"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-# Docker client version gather than 1.7.1
+# TODO: Code quality of this file is low, need to refine or even re-write
+
+# Docker client version should newer than 1.7.1
 function stop_expired_container() {
     # Save running container names
     running_container_names=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d'))
@@ -81,59 +81,9 @@ function stop_expired_container() {
        fi
     done
 }
-
-# main entry function
-function main_entry() {
-
-    for ip_port in "${docker_ip_port[@]}"
-    do
-        daemon_ip_port=(${ip_port//:/ })
-        daemon_ip=${daemon_ip_port[0]}
-        daemon_port=${daemon_ip_port[1]}
-
-        # Server Ip:Port connect judge
-        nc_return=$(nc -w 1 "$daemon_ip" "$daemon_port" 1>/dev/null 2>&1 && echo yes || echo no)
-        if [ "x$nc_return" == "xno" ]; then
-            log "Can not connect docker daemon server $daemon_ip:$daemon_port"
-            exit 1
-        fi
-
-        # SSH connect parameter
-        ssh_connect="ssh -p $daemon_port -i $ssh_identity_file -o StrictHostKeyChecking=no root@$daemon_ip"
-
-        if [ ${#regular_white_list[@]} -gt 0 ]; then
-            for regular in "${regular_white_list[@]}"
-            do
-                regular_list=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d' | grep -e "^$regular"))||true
-                white_list+=("${regular_list[@]}")
-            done
-
-            log "Docker daemon $daemon_ip:$daemon_port white list[${#white_list[@]}]:\n${white_list[*]}"
-        fi
-
-        # Call stop expired container function
-        stop_expired_container
-
-        log "Docker daemon server: $daemon_ip:$daemon_port operation is completed!"
-        stop_container_list+=("\n${daemon_ip}:${daemon_port} stop container list:\n${stop_container[@]}")
-
-        # Empty current ip:port white list
-        unset white_list[@]
-    done
-
-    if [ ${#stop_container[@]} -gt 0 ]; then
-        log "${stop_container_list[@]}"
-        exit 1
-    else
-        log "Did not stop any containers"
-    fi
-}
-
-############################## Function End ####################################################
-
 ############################## Shell Start #####################################################
-
 ssh_identity_file="/var/lib/jenkins/.ssh/id_rsa"
+ensure_variable_isset "docker_ip_port parameter must be set" "$docker_ip_port"
 
 # Jenkins parameter judge
 if [ "$keep_days" -lt 0 ]; then
@@ -141,18 +91,53 @@ if [ "$keep_days" -lt 0 ]; then
     exit 1
 fi
 
-if [ -z "$docker_ip_port" ]; then
-    log "$docker_ip_port can not find"
-    exit 1
-fi
 docker_ip_port=(${docker_ip_port// / })
-
 if [ -n "$regular_white_list" ]; then
     regular_white_list=(${regular_white_list// / })
 else
     log "Regular white list is empty, will stop over than $keep_days all containers"
 fi
 
-# Call main entry function
-main_entry
+for ip_port in "${docker_ip_port[@]}"
+do
+    daemon_ip_port=(${ip_port//:/ })
+    daemon_ip=${daemon_ip_port[0]}
+    daemon_port=${daemon_ip_port[1]}
+
+    # Server Ip:Port connect judge
+    nc_return=$(nc -w 1 "$daemon_ip" "$daemon_port" 1>/dev/null 2>&1 && echo yes || echo no)
+    if [ "x$nc_return" == "xno" ]; then
+        log "Error: Can not connect docker daemon server $daemon_ip:$daemon_port"
+        exit 1
+    fi
+
+    # SSH connect parameter
+    ssh_connect="ssh -p $daemon_port -i $ssh_identity_file -o StrictHostKeyChecking=no root@$daemon_ip"
+
+    if [ ${#regular_white_list[@]} -gt 0 ]; then
+        for regular in "${regular_white_list[@]}"
+        do
+            regular_list=($($ssh_connect docker ps | awk '{print $NF}' | sed '1d' | grep -e "^$regular"))||true
+            white_list+=("${regular_list[@]}")
+        done
+
+        log "Docker daemon $daemon_ip:$daemon_port white list[${#white_list[@]}]:\n${white_list[*]}"
+    fi
+
+    # Call stop expired container function
+    stop_expired_container
+
+    log "Docker daemon server: $daemon_ip:$daemon_port operation is completed!"
+    stop_container_list+=("\n${daemon_ip}:${daemon_port} stop container list:\n${stop_container[@]}")
+
+    # Empty current ip:port white list
+    unset white_list[@]
+done
+
+if [ ${#stop_container[@]} -gt 0 ]; then
+    log "${stop_container_list[@]}"
+    exit 1
+else
+    log "Did not stop any containers"
+fi
 ############################## Shell End #######################################################

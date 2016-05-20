@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-05-19 12:02:39>
+## Updated: Time-stamp: <2016-05-20 17:17:27>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -18,6 +18,10 @@
 ##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,master
 ##      env_parameters:
 ##           export working_dir="/var/lib/jenkins/code/codestyle"
+##           export EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001"
+##           export SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"
+##               ##  Use SHELLCHECK_IGNORE_FILE to skip checks for certain files
+##               ##  The logic is similar like .gitignore for git
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -47,10 +51,25 @@ function install_shellcheck() {
     fi
 }
 
+function should_skip_file() {
+    local check_file=${1?}
+    local ignore_patterns=${2?}
+    for pattern in $ignore_patterns; do
+        if [[ "$check_file" == *${pattern}* ]]; then
+            echo "yes"
+            return
+        fi
+    done
+    echo "no"
+}
+
 function shellcheck_git_repo(){
     local branch_name=${1?}
     local working_dir=${2?}
     local git_repo_url=${3?}
+
+    local check_fail=false
+    local skip_content=""
 
     local git_repo
     git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
@@ -59,9 +78,28 @@ function shellcheck_git_repo(){
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 
     echo "================================ Test: ShellCheck check for $git_repo_url"
-    local command="find $code_dir -name '*.sh' | xargs sudo shellcheck -e $exclude_code_list"
-    echo "$command"
-    if ! eval "$command"; then
+    cd "$code_dir"
+    echo "cd $code_dir"
+
+    if [ -f "$SHELLCHECK_IGNORE_FILE" ]; then
+        skip_content=$(cat "$SHELLCHECK_IGNORE_FILE")
+    fi
+
+    while IFS= read -r -d '' file
+    do
+        if [ -n "$skip_content" ] && \
+               [ "$(should_skip_file "$file" "$skip_content")" = "yes" ]; then
+           continue
+        fi
+
+        command="sudo shellcheck -e $EXCLUDE_CODE_LIST $file"
+        echo "shellcheck $file"
+        if ! eval "$command"; then
+            check_fail=true
+        fi
+    done < <(find . -name '*.sh' -print0)
+
+    if $check_fail; then
         failed_git_repos="${failed_git_repos}\n${git_repo}:${branch_name}"
     fi
 }
@@ -81,8 +119,10 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
 
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/codestyle"
+[ -n "$SHELLCHECK_IGNORE_FILE" ] || SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"
+
 # http://github.com/koalaman/shellcheck/wiki/SC1091
-[ -n "$exclude_code_list" ] || exclude_code_list="SC1090,SC1091,SC2154,SC2001"
+[ -n "$EXCLUDE_CODE_LIST" ] || EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001"
 
 failed_git_repos=""
 install_shellcheck
