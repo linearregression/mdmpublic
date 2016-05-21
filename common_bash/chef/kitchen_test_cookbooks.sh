@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-14 08:14:33>
+## Updated: Time-stamp: <2016-05-21 10:16:54>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -108,10 +108,10 @@ function test_cookbook() {
     echo "======================== test cookbook: $cookbook"
     echo "======================== cd $(pwd)"
     echo "======================== export INSTANCE_NAME=$INSTANCE_NAME"
-    echo "$test_command"
     # TODO: implement black_yml_list logic
     for yml in ${yml_list[*]}; do
         echo "======================== export KITCHEN_YAML=${yml}"
+        echo "$test_command"
         export KITCHEN_YAML=${yml}
         if ! eval "$test_command"; then
             echo "ERROR $cookbook"
