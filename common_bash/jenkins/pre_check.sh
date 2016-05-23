@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-05-14 08:14:32>
+## Updated: Time-stamp: <2016-05-23 14:39:37>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -23,7 +23,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "538154310"
+bash /var/lib/devops/refresh_common_library.sh "2549425636"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {

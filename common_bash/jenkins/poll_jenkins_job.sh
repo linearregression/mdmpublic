@@ -9,11 +9,11 @@
 ## Description :
 ## --
 ## Created : <2015-06-02>
-## Updated: Time-stamp: <2016-05-05 09:30:28>
+## Updated: Time-stamp: <2016-05-23 18:25:56>
 ##-------------------------------------------------------------------
-jenkins_job=${1?}
-jenkins_cli_jar=${2?}
-jenkins_url=${3:-"http://localhost:18080/"}
+jenkins_cli_jar=${1?}
+jenkins_url=${2:-"http://localhost:18080/"}
+jenkins_job=${3?}
 max_wait_seconds=${4:-3600}
 
 sleep_seconds=5
