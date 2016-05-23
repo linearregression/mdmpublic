@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-21 10:16:54>
+## Updated: Time-stamp: <2016-05-23 11:14:22>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -110,14 +110,18 @@ function test_cookbook() {
     echo "======================== export INSTANCE_NAME=$INSTANCE_NAME"
     # TODO: implement black_yml_list logic
     for yml in ${yml_list[*]}; do
-        echo "======================== export KITCHEN_YAML=${yml}"
-        echo "$test_command"
-        export KITCHEN_YAML=${yml}
-        if ! eval "$test_command"; then
-            echo "ERROR $cookbook"
-            failed_cookbooks="${failed_cookbooks} ${cookbook}:${yml}"
+        if [ -f "$yml" ]; then
+            echo "======================== export KITCHEN_YAML=${yml}"
+            echo "$test_command"
+            export KITCHEN_YAML=${yml}
+            if ! eval "$test_command"; then
+                echo "ERROR $cookbook"
+                failed_cookbooks="${failed_cookbooks} ${cookbook}:${yml}"
+            fi
+            echo "failed_cookbooks=$failed_cookbooks"
+        else
+            echo "Warning: $yml not found in $(pwd)"
         fi
-        echo "failed_cookbooks=$failed_cookbooks"
     done
     unset INSTANCE_NAME
 }
