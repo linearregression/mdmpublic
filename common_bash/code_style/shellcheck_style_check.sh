@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-05-23 14:39:38>
+## Updated: Time-stamp: <2016-05-24 08:15:05>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -41,8 +41,14 @@ function install_shellcheck() {
             sudo apt-get install -y cabal-install
             sudo cabal update
             sudo cabal install shellcheck
-            if [ ! -f /usr/sbin/shellcheck ]; then
-                sudo ln -s /root/.cabal/bin/shellcheck /usr/sbin/shellcheck
+            if [ ! -f /usr/sbin/shellcheck ] ; then
+                if [ -f /root/.cabal/bin/shellcheck ]; then
+                    sudo ln -s /root/.cabal/bin/shellcheck /usr/sbin/shellcheck
+                else
+                    if [ -f /var/lib/jenkins/.cabal/bin/shellcheck ]; then
+                       sudo ln -s /var/lib/jenkins/.cabal/bin/shellcheck /usr/sbin/shellcheck
+                    fi
+                fi
             fi
         else
             echo "Error: not implemented supported for OS: $os_version"
