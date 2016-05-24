@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-23 14:39:38>
+## Updated: Time-stamp: <2016-05-24 18:12:13>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -27,6 +27,7 @@
 ##         export REMOVE_BERKSFILE_LOCK=false
 ##         export CLEAN_START=false
 ##         export TEST_KITCHEN_YAML=
+##               To test for *kitchen*.yml, set TEST_KITCHEN_YAML as ALL
 ##         export TEST_KITCHEN_YAML_BLACKLIST=".kitchen.vagrant.yml,.kitchen.digitalocean.yml"
 ################################################################################################
 . /etc/profile
@@ -95,13 +96,13 @@ function test_cookbook() {
         fi
     fi
 
-    if [ -n "${TEST_KITCHEN_YAML}" ]; then
-        yml_list=(${TEST_KITCHEN_YAML//,/ })
-    else
+    if [ "$TEST_KITCHEN_YAML" = "ALL" ]; then
         all_yml_list=$(ls .kitchen*\.yml)
         black_yml_list=${TEST_KITCHEN_YAML_BLACKLIST//,/\\n}
         yml_list=$(echo -e "${all_yml_list}\n${black_yml_list}\n${black_yml_list}" | sort | uniq -u )
         black_yml_list=($black_yml_list)
+    else
+        yml_list=(${TEST_KITCHEN_YAML//,/ })
     fi
 
     echo "yml list is:${yml_list[*]}"
@@ -145,6 +146,8 @@ source_string "$env_parameters"
 
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 code_dir=$working_dir/$branch_name/$git_repo
+
+[ -n "$TEST_KITCHEN_YAML" ] || TEST_KITCHEN_YAML=".kitchen.yml"
 
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then
     [ ! -d "$code_dir" ] || sudo rm -rf "$code_dir"
