@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-20>
-## Updated: Time-stamp: <2016-05-25 21:01:29>
+## Updated: Time-stamp: <2016-05-25 21:03:18>
 ##-------------------------------------------------------------------
 function configure_jenkins_port() {
     port=${1?}
@@ -69,13 +69,11 @@ function grant_jenkins_privilege() {
     fi
 }
 
-# jenkins_port=18080
-jenkins_port=8080
+jenkins_port=18080
 
 grant_jenkins_privilege
 install_jenkins
-# TODO: temporarily disable
-# configure_jenkins_port $jenkins_port
+configure_jenkins_port $jenkins_port
 setup_jenkins_jobs
 
 # TODO: use real ip
