@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-23 14:39:38>
+## Updated: Time-stamp: <2016-05-25 17:22:34>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -42,6 +42,8 @@
 ##
 ##       check_command: enforce_all_nagios_check.sh "check_.*_log|check_.*_cpu"
 ##       devops_branch_name: master
+##       ssh_private_key: XXX
+##           # ssh id_rsa private key to login servers without password
 ##       env_parameters:
 ##             export KILL_RUNNING_CHEF_UPDATE=false
 ##             export CHEF_BINARY_CMD=chef-client
@@ -180,12 +182,17 @@ source_string "$env_parameters"
 server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
 
-[ -n "${ssh_key_file}" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "${ssh_key_file}" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
 
 # TODO: use chef-zero, instead of chef-solo
 #[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
 [ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
 [ -n "$code_dir" ] || code_dir="/root/test"
+
+if [ -n "$ssh_private_key" ]; then
+    echo "$ssh_private_key" > "$ssh_key_file"
+    chmod 400 "$ssh_key_file"
+fi
 
 ssh_scp_args=" -i $ssh_key_file -o StrictHostKeyChecking=no "
 
