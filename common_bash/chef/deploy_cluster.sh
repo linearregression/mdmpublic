@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-25 17:22:34>
+## Updated: Time-stamp: <2016-05-25 17:36:45>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -190,6 +190,7 @@ echo "server_list: ${server_list}"
 [ -n "$code_dir" ] || code_dir="/root/test"
 
 if [ -n "$ssh_private_key" ]; then
+    mkdir -p /var/lib/jenkins/.ssh/
     echo "$ssh_private_key" > "$ssh_key_file"
     chmod 400 "$ssh_key_file"
 fi
