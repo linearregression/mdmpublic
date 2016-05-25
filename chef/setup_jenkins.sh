@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-20>
-## Updated: Time-stamp: <2016-05-25 20:39:02>
+## Updated: Time-stamp: <2016-05-25 21:01:29>
 ##-------------------------------------------------------------------
 function configure_jenkins_port() {
     port=${1?}
@@ -30,9 +30,9 @@ function install_jenkins() {
         # apt-get -y update
         # apt-get install -y jenkins
 
-        if ! which java 1>/dev/null 2&1; then
-            echo "apt-get install -y openjdk-7-jre openjdk-7-jdk"
-            apt-get install -y openjdk-7-jre openjdk-7-jdk
+        if ! which java 1>/dev/null 2>&1; then
+            echo "Install java"
+            apt-get install -y java-common
         fi
 
         apt-get install daemon
