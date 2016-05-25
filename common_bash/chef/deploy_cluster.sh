@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-25 18:20:44>
+## Updated: Time-stamp: <2016-05-25 19:22:59>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -79,6 +79,9 @@ function bindhosts() {
         hosts_list="${hosts_list},${ip}:${hostname}"
     done
 
+    # Fix acl issue
+    sudo touch /tmp/deploy_cluster_bindhosts.sh
+    sudo chmod 777 /tmp/deploy_cluster_bindhosts.sh
     cat << "EOF" > /tmp/deploy_cluster_bindhosts.sh
 #!/bin/bash -xe
 
