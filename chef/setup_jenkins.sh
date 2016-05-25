@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-20>
-## Updated: Time-stamp: <2016-05-25 21:03:18>
+## Updated: Time-stamp: <2016-05-25 21:15:52>
 ##-------------------------------------------------------------------
 function configure_jenkins_port() {
     port=${1?}
@@ -32,10 +32,10 @@ function install_jenkins() {
 
         if ! which java 1>/dev/null 2>&1; then
             echo "Install java"
-            apt-get install -y java-common
+            apt-get install -y java-common openjdk-7-jre-headless default-jre-headless
         fi
 
-        apt-get install daemon
+        apt-get install -y daemon
         # TODO: host the file
         curl -o /tmp/jenkins_1.658_all.deb http://mirror.xmission.com/jenkins/debian/jenkins_1.658_all.deb
         dpkg -i /tmp/jenkins_1.658_all.deb
