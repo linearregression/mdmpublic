@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-25 17:36:45>
+## Updated: Time-stamp: <2016-05-25 18:20:44>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -191,6 +191,9 @@ echo "server_list: ${server_list}"
 
 if [ -n "$ssh_private_key" ]; then
     mkdir -p /var/lib/jenkins/.ssh/
+    if [ -f "$ssh_key_file" ]; then
+        chmod 777 "$ssh_key_file"
+    fi
     echo "$ssh_private_key" > "$ssh_key_file"
     chmod 400 "$ssh_key_file"
 fi
