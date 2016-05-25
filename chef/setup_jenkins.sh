@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-20>
-## Updated: Time-stamp: <2016-05-25 21:15:52>
+## Updated: Time-stamp: <2016-05-26 06:38:48>
 ##-------------------------------------------------------------------
 function configure_jenkins_port() {
     port=${1?}
@@ -35,9 +35,11 @@ function install_jenkins() {
             apt-get install -y java-common openjdk-7-jre-headless default-jre-headless
         fi
 
-        apt-get install -y daemon
+        apt-get install -y daemon psmisc
         # TODO: host the file
-        curl -o /tmp/jenkins_1.658_all.deb http://mirror.xmission.com/jenkins/debian/jenkins_1.658_all.deb
+        if [ ! -f /tmp/jenkins_1.658_all.deb ]; then
+            curl -o /tmp/jenkins_1.658_all.deb http://mirror.xmission.com/jenkins/debian/jenkins_1.658_all.deb
+        fi
         dpkg -i /tmp/jenkins_1.658_all.deb
     fi
 }
