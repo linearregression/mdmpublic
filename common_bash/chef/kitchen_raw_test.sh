@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-23 14:39:38>
+## Updated: Time-stamp: <2016-05-26 11:43:07>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -42,9 +42,9 @@ function exec_kitchen_cmd() {
     shift
     options=$*
 
-    if [ -a "${hooks_dir}/pre-$cmd" ];then
-        log "start to exec kitchen hook: pre-$cmd"
-        bash -e "${hooks_dir}/pre-$cmd" && log "kitchen hook: pre-$cmd exec done!"
+    if [ -a "${hooks_dir}/pre-$cmd.sh" ];then
+        log "start to exec kitchen hook: pre-$cmd.sh"
+        bash -e "${hooks_dir}/pre-$cmd.sh" && log "kitchen hook: pre-$cmd.sh exec done!"
         exit_if_error
     fi
 
@@ -53,9 +53,9 @@ function exec_kitchen_cmd() {
     eval "$command"
     exit_if_error
 
-    if [ -a "${hooks_dir}/post-$cmd" ];then
-        log "start to exec kitchen hook: post-$cmd"
-        bash -e "${hooks_dir}/post-$cmd" && log "kitchen hook: post-$cmd exec done!"
+    if [ -a "${hooks_dir}/post-$cmd.sh" ];then
+        log "start to exec kitchen hook: post-$cmd.sh"
+        bash -e "${hooks_dir}/post-$cmd.sh" && log "kitchen hook: post-$cmd.sh exec done!"
         exit_if_error
     fi
 }
