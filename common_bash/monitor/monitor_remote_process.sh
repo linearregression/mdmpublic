@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-02>
-## Updated: Time-stamp: <2016-05-23 14:39:36>
+## Updated: Time-stamp: <2016-05-30 17:42:46>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -111,6 +111,9 @@ source_string "$env_parameters"
 [ -n "$HISTORY_DIR" ] || HISTORY_DIR="/opt/monitor_process"
 [ -n "$SHOW_OS_UTILIZATION" ] || SHOW_OS_UTILIZATION=true
 [ -n "$UPDATE_SERVER_SCRIPT" ] || UPDATE_SERVER_SCRIPT=true
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT:STRING:STRING:STRING" "$process_list"
 
 process_list=$(string_strip_comments "$process_list")
 monitor_process_path="/tmp/monitor_process.sh"

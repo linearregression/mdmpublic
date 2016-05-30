@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-05-23 14:39:36>
+## Updated: Time-stamp: <2016-05-30 17:43:10>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -31,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function monitor_server_filechanges() {
@@ -90,6 +90,9 @@ source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
 [ -n "$BACKUP_OLD_DIR" ] || BACKUP_OLD_DIR=/root/monitor_backup
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT" "$server_list"
 
 log_file="/root/monitor_server_filechanges.log"
 server_list=$(string_strip_comments "$server_list")

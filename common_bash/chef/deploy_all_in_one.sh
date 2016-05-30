@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-23 14:39:38>
+## Updated: Time-stamp: <2016-05-30 17:38:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -95,6 +95,10 @@ kill_chef_command="killall -9 $CHEF_BINARY_CMD || true"
 if [ -n "$CODE_SH" ]; then
     ensure_variable_isset "Error: when CODE_SH is not empty, git_repo_url can't be empty" "$git_repo_url"
 fi
+
+# Input Parameters check
+check_list_fields "IP" "$ssh_server_ip"
+check_list_fields "TCP_PORT" "$ssh_port"
 
 if [ -z "$chef_client_rb" ]; then
     git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')

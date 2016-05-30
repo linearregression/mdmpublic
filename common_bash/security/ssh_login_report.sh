@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-05-23 14:39:36>
+## Updated: Time-stamp: <2016-05-30 17:43:38>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -31,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function compare_two_timestamp() {
@@ -240,6 +240,9 @@ source_string "$env_parameters"
 [ -n "$HAS_INIT_ANALYSIS" ] || HAS_INIT_ANALYSIS=false
 [ -n "$PARSE_MAXIMUM_ENTRIES" ] || PARSE_MAXIMUM_ENTRIES="5000"
 [ -n "$GET_CITY_FROM_IP" ] || GET_CITY_FROM_IP=false
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT:STRING" "$ssh_server"
 
 server_split=(${ssh_server//:/ })
 server_ip=${server_split[0]}

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-25 19:22:59>
+## Updated: Time-stamp: <2016-05-30 17:39:12>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -56,7 +56,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function bindhosts() {
@@ -191,6 +191,9 @@ echo "server_list: ${server_list}"
 #[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
 [ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
 [ -n "$code_dir" ] || code_dir="/root/test"
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT" "$server_list"
 
 if [ -n "$ssh_private_key" ]; then
     mkdir -p /var/lib/jenkins/.ssh/

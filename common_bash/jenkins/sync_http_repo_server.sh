@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-23>
-## Updated: Time-stamp: <2016-05-30 10:23:08>
+## Updated: Time-stamp: <2016-05-30 17:36:19>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 fail_unless_os "ubuntu/redhat/centos/osx"
@@ -86,14 +86,14 @@ for f in $download_files; do
             if [ "$remote_checksum" != "$local_checksum" ]; then
                 log "Re-download $f, since it is changed in server side"
                 # Resume http Download
-                wget -c -O "$f" "$repo_server/$f"
+                wget -O "$f" "$repo_server/$f"
                 has_file_changed=true
                 update_local_checksum "$dst_path" "$f" "$local_checksum_file"
             fi
         fi
     else
         log "Download $f, since it's missing in local drive"
-        wget -c -O "$f" "$repo_server/$f"
+        wget -O "$f" "$repo_server/$f"
         has_file_changed=true
         update_local_checksum "$dst_path" "$f" "$local_checksum_file"
     fi

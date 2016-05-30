@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-23 14:39:38>
+## Updated: Time-stamp: <2016-05-30 17:40:57>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -47,7 +47,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
@@ -183,6 +183,9 @@ files_list=$(string_strip_comments "$files_list")
 
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
 [ -n "$save_path" ] || save_path="/tmp/"
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT:STRING" "$server_list"
 
 if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
     echo "Remove previous files: $transfer_dst_path"

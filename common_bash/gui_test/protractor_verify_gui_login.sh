@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-05-30 12:34:31>
+## Updated: Time-stamp: <2016-05-30 17:40:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -19,7 +19,7 @@
 ##      conf_js:
 ##
 ##      env_parameters:
-##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+##          export REMOVE_TMP_FILES=true
 ##
 ################################################################################################
 . /etc/profile
@@ -29,12 +29,14 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
     errcode=$?
-    rm "$tmp_file" "$tmp_conf_file"
+    if $REMOVE_TMP_FILES; then
+        rm "$tmp_file" "$tmp_conf_file"
+    fi
     echo "If Snapshot images are generated, check http://${protractor_rest_server}/get_image/\$file_name"
     exit $errcode
 }
@@ -47,6 +49,11 @@ ensure_variable_isset "ERROR wrong parameter: protractor_testcase_js can't be em
 tmp_file="/tmp/testcase_$$.js"
 tmp_conf_file="/tmp/conf_$$.js"
 
+[ -n "$REMOVE_TMP_FILES" ] || REMOVE_TMP_FILES=true
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT" "$protractor_rest_server"
+
 cat > "$tmp_conf_file" <<EOF
 $conf_js
 EOF
@@ -55,6 +62,7 @@ cat > "$tmp_file" <<EOF
 $protractor_testcase_js
 EOF
 
+# How to run protractor REST API server: https://github.com/DennyZhang/devops_public/tree/master/protractor 
 echo "============ Run Protractor Test by API"
 echo "curl -F conf_js=@$tmp_conf_file -F protractor_js=@$tmp_file http://$protractor_rest_server/protractor_request"
 output=$(curl -F "conf_js=@$tmp_conf_file" -F "protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")

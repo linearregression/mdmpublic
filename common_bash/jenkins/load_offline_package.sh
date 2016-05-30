@@ -10,7 +10,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-05-23 14:39:37>
+## Updated: Time-stamp: <2016-05-30 17:41:42>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2549425636"
+bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -52,6 +52,10 @@ function shell_exit() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 source_string "$env_parameters"
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT" "$from_server"
+check_list_fields "IP:TCP_PORT" "$to_server_list"
 
 log "Deploy to ${ssh_server_ip}:${ssh_port}"
 log "From server: ${from_server}"
