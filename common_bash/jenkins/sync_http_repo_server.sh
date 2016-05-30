@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-23>
-## Updated: Time-stamp: <2016-05-23 14:39:37>
+## Updated: Time-stamp: <2016-05-30 10:23:08>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -85,14 +85,15 @@ for f in $download_files; do
             local_checksum=$(get_local_checksum "$dst_path" "$f" "$local_checksum_file")
             if [ "$remote_checksum" != "$local_checksum" ]; then
                 log "Re-download $f, since it is changed in server side"
-                wget -O "$f" "$repo_server/$f"
+                # Resume http Download
+                wget -c -O "$f" "$repo_server/$f"
                 has_file_changed=true
                 update_local_checksum "$dst_path" "$f" "$local_checksum_file"
             fi
         fi
     else
         log "Download $f, since it's missing in local drive"
-        wget -O "$f" "$repo_server/$f"
+        wget -c -O "$f" "$repo_server/$f"
         has_file_changed=true
         update_local_checksum "$dst_path" "$f" "$local_checksum_file"
     fi

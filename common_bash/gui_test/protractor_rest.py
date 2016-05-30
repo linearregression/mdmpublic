@@ -10,7 +10,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-05-30 09:14:39>
+## Updated: Time-stamp: <2016-05-30 11:00:24>
 ##-------------------------------------------------------------------
 # pip install flask
 # export FLASK_DEBUG=1
@@ -46,7 +46,7 @@ def make_tree(path):
                 tree['children'].append(dict(name=name))
     return tree
 #################################################################################
-# curl -v -F upload=@/etc/hosts  http://127.0.0.1:5000/protractor_request
+# curl -v -F conf_js=@/tmp/conf.js protractor_js=@/tmp/protractor.js  http://127.0.0.1:5000/protractor_request
 @app.route("/protractor_request", methods=['POST'])
 def protractor_request():
     print "Accept request"
@@ -57,10 +57,12 @@ def protractor_request():
     protractor_js = "%s/%s.js" % (WORKING_DIR, tmp_request_id)
     conf_js = "%s/%s-conf.js" % (WORKING_DIR, tmp_request_id)
 
-    f = request.files['upload']
+    f = request.files['protractor_js']
     f.save(protractor_js)
 
-    open(conf_js, "wab").write(get_conf_js_content(protractor_js))
+    f = request.files['conf_js']
+    f.save(conf_js %(protractor_js))
+
     # Run command: protractor conf.js
     cmd = "protractor %s" % (conf_js)
     # cmd = "cat %s" % (conf_js)
