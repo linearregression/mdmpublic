@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-05-30 11:30:18>
+## Updated: Time-stamp: <2016-05-30 12:34:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,8 +34,7 @@ bash /var/lib/devops/refresh_common_library.sh "2549425636"
 ################################################################################################
 function shell_exit() {
     errcode=$?
-    rm "$tmp_file"
-    rm "$tmp_conf_file"
+    rm "$tmp_file" "$tmp_conf_file"
     echo "If Snapshot images are generated, check http://${protractor_rest_server}/get_image/\$file_name"
     exit $errcode
 }
@@ -58,7 +57,7 @@ EOF
 
 echo "============ Run Protractor Test by API"
 echo "curl -F conf_js=@$tmp_conf_file -F protractor_js=@$tmp_file http://$protractor_rest_server/protractor_request"
-output=$(curl -F "conf_js=@$tmp_conf_file" -F "conf_protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")
+output=$(curl -F "conf_js=@$tmp_conf_file" -F "protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")
 
 echo "$output"
 if echo "$output" | grep "0 failures" 1>/dev/null 2>&1; then
