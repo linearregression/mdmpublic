@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-20>
-## Updated: Time-stamp: <2016-05-30 12:47:40>
+## Updated: Time-stamp: <2016-05-30 12:59:31>
 ##-------------------------------------------------------------------
 ################################################################
 # How To Use
@@ -146,59 +146,9 @@ if [ -z "$ssh_public_key" ] && [ -f "$ssh_public_key_file" ]; then
     ssh_public_key=$(cat "$ssh_public_key_file")
 fi
 
-# Use this key to checkout mdm devops code
-if [ -z "$git_deploy_key" ]; then
-    export git_deploy_key="-----BEGIN RSA PRIVATE KEY-----
-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
------END RSA PRIVATE KEY-----"
+if [ -z "$git_deploy_key" ] && [ -f "$git_deploy_key_file" ]; then
+    export git_deploy_key
+    git_deploy_key=$(cat "$git_deploy_key_file")
 fi
 
 enable_chef_deployment
