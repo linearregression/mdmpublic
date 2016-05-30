@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-05-30 11:19:02>
+## Updated: Time-stamp: <2016-05-30 11:24:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -56,8 +56,8 @@ $protractor_testcase_js
 EOF
 
 echo "============ Run Protractor Test by API"
-echo "curl -F conf_js=@$tmp_conf_file protractor_js=@tmp_file http://$protractor_rest_server/protractor_request"
-output=$(curl -F "conf_js=@$tmp_conf_file" "conf_protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")
+echo "curl -F conf_js=@$tmp_conf_file -F protractor_js=@$tmp_file http://$protractor_rest_server/protractor_request"
+output=$(curl -F "conf_js=@$tmp_conf_file" -F "conf_protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")
 
 echo "$output"
 if echo "$output" | grep "0 failures" 1>/dev/null 2>&1; then
