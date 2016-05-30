@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-05-30 11:24:21>
+## Updated: Time-stamp: <2016-05-30 11:30:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -35,6 +35,7 @@ bash /var/lib/devops/refresh_common_library.sh "2549425636"
 function shell_exit() {
     errcode=$?
     rm "$tmp_file"
+    rm "$tmp_conf_file"
     echo "If Snapshot images are generated, check http://${protractor_rest_server}/get_image/\$file_name"
     exit $errcode
 }

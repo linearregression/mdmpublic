@@ -10,7 +10,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-05-30 11:00:24>
+## Updated: Time-stamp: <2016-05-30 11:45:34>
 ##-------------------------------------------------------------------
 # pip install flask
 # export FLASK_DEBUG=1
@@ -26,11 +26,11 @@ app = Flask(__name__)
 WORKING_DIR = '/opt/protractor'
 
 #################################################################################
-def get_conf_js_content(request_js_file):
-    return '''exports.config = {
-    seleniumAddress: 'http://localhost:4444/wd/hub',
-    specs: ['%s']
-    };''' % (request_js_file)
+def update_conf_js(conf_js, protract_js_file):
+    import re
+    conf_js = re.sub(r"\n *specs:.*",
+                     " specs: ['%s']" % protract_js_file, conf_js)
+    return conf_js
 
 def make_tree(path):
     tree = dict(name=os.path.basename(path), children=[])
@@ -54,25 +54,25 @@ def protractor_request():
         os.mkdir(WORKING_DIR)
 
     tmp_request_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    protractor_js = "%s/%s.js" % (WORKING_DIR, tmp_request_id)
-    conf_js = "%s/%s-conf.js" % (WORKING_DIR, tmp_request_id)
+    protractor_js_file = "%s/%s.js" % (WORKING_DIR, tmp_request_id)
+    conf_js_file = "%s/%s-conf.js" % (WORKING_DIR, tmp_request_id)
 
     f = request.files['protractor_js']
-    f.save(protractor_js)
+    f.save(protractor_js_file)
 
     f = request.files['conf_js']
-    f.save(conf_js %(protractor_js))
+    conf_js = update_conf_js(f.read(), protractor_js_file)
+    open(conf_js_file, "wab").write(conf_js)
 
-    # Run command: protractor conf.js
-    cmd = "protractor %s" % (conf_js)
-    # cmd = "cat %s" % (conf_js)
+    # Run protractor Command
+    cmd = "protractor %s" % (conf_js_file)
     print cmd
     os.chdir(WORKING_DIR)
     status, output = commands.getstatusoutput(cmd)
 
     # remove temporarily files
-    os.remove(conf_js)
-    os.remove(protractor_js)
+    os.remove(conf_js_file)
+    os.remove(protractor_js_file)
 
     # TODO: return http code
     return output
