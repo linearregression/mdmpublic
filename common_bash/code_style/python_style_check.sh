@@ -4,13 +4,13 @@
 ## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-## File : chef_style_check.sh
+## File : python_style_check.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
-##      Demo: http://jenkinscn.dennyzhang.com:18088/job/ChefCodeQualityCheck/
+##      Demo: http://jenkinscn.dennyzhang.com:18088/job/PythonCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-05-30 09:28:02>
+## Updated: Time-stamp: <2016-05-30 09:27:21>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -30,10 +30,27 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "2549425636"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-function chefcheck_git_repo(){
+function install_pylint() {
+    if ! which pylint 1>/dev/null 2>&1; then
+        os_version=$(os_release)
+        if [ "$os_version" == "ubuntu" ]; then
+            echo "Install pylint"
+            sudo apt-get install -y --force-yes python-dev
+            sudo pip install pylint
+        else
+            echo "Error: not implemented supported for OS: $os_version"
+            exit 1
+        fi
+    fi
+}
+
+function pythoncheck_git_repo(){
     local branch_name=${1?}
     local working_dir=${2?}
     local git_repo_url=${3?}
+
+    local check_fail=false
+    local skip_content=""
 
     local git_repo
     git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
@@ -41,28 +58,27 @@ function chefcheck_git_repo(){
 
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 
+    echo "================================ Test: Python check for $git_repo_url"
     cd "$code_dir"
-    cd cookbooks
+    echo "cd $code_dir"
 
-    for cookbook in *; do
-        if [ -d "$cookbook" ]; then
-            command="foodcritic $cookbook"
-            echo "======================== test $command"
-            if ! eval "$command"; then
-                failed_git_repos="${failed_git_repos}\nfoodcritic: ${git_repo}:${branch_name}:${cookbook}"
-            fi
+    while IFS= read -r -d '' file
+    do
+        if [ -n "$skip_content" ] && \
+               [ "$(should_skip_file "$file" "$skip_content")" = "yes" ]; then
+           continue
         fi
-    done
 
-    for cookbook in *; do
-        if [ -d "$cookbook" ]; then
-            command="rubocop $cookbook"
-            echo "======================== test $command"
-            if ! eval "$command"; then
-                failed_git_repos="${failed_git_repos}\nrubocop: ${git_repo}:${branch_name}:${cookbook}"
-            fi
+        command="pylint -E $file"
+        echo "$command"
+        if ! eval "$command"; then
+            check_fail=true
         fi
-    done
+    done < <(find . -name '*.py' -print0)
+
+    if $check_fail; then
+        failed_git_repos="${failed_git_repos}\n${git_repo}:${branch_name}"
+    fi
 }
 
 function shell_exit() {
@@ -82,6 +98,7 @@ source_string "$env_parameters"
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/codestyle"
 
 failed_git_repos=""
+install_pylint
 
 git_list=$(string_strip_comments "$git_list")
 for git_repo_url in $git_list; do
@@ -89,6 +106,6 @@ for git_repo_url in $git_list; do
     item=($git_repo_url)
     git_repo_url=${item[0]}
     branch_name=${item[1]}
-    chefcheck_git_repo "$branch_name" "$working_dir" "$git_repo_url"
+    pythoncheck_git_repo "$branch_name" "$working_dir" "$git_repo_url"
 done
-## File : chef_style_check.sh ends
+## File : python_style_check.sh ends

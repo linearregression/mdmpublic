@@ -7,9 +7,10 @@
 ## File : shellcheck_style_check.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
+##      Demo: http://jenkinscn.dennyzhang.com:18088/job/BashCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-05-24 08:15:05>
+## Updated: Time-stamp: <2016-05-30 09:28:17>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
