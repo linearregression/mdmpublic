@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-01 10:52:53>
+## Updated: Time-stamp: <2016-06-01 11:32:37>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -206,10 +206,10 @@ if [ -n "$SERVER_REMOTE_COPY" ]; then
     remote_ssh_username=${my_list[2]}
     remote_dst_dir=${my_list[3]}
 
-    ssh_command="ssh -o StrictHostKeyChecking=no -p $remote_server_port $remote_ssh_username@$remote_server_ip mkdir -p $remote_dst_dir"
+    ssh_command="ssh -o StrictHostKeyChecking=no -p $remote_server_port -i $ssh_key_file $remote_ssh_username@$remote_server_ip mkdir -p $remote_dst_dir"
     $ssh_command
 
-    ssh_command="scp -P $remote_server_port -r $transfer_dst_path/* $remote_ssh_username@$remote_server_ip:$remote_dst_dir"
+    ssh_command="scp -P $remote_server_port -i $ssh_key_file -r $transfer_dst_path/* $remote_ssh_username@$remote_server_ip:$remote_dst_dir"
     echo "$ssh_command"
     $ssh_command
 fi
