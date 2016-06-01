@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-31 08:38:26>
+## Updated: Time-stamp: <2016-06-01 10:46:57>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,7 +22,7 @@
 ##         # Atlassian: JIRA/Confluence
 ##         172.17.0.3:22:root
 ##
-##      files_list:
+##      file_list:
 ##         # Jenkins backup
 ##         eval: find /var/lib/jenkins/jobs -name config.xml
 ##         # Confluence backup
@@ -78,13 +78,13 @@ function collect_files_by_host() {
     local server_port=${2?}
     local ssh_username=${3?}
     local work_path=${4?}
-    local files_list=${5?}
+    local file_list=${5?}
 
     local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 
-    # loop files_list
+    # loop file_list
     IFS=$'\n'
-    for t_file in ${files_list[*]}
+    for t_file in ${file_list[*]}
     do
         unset IFS
         if [[ "$t_file" = "eval: "* ]]; then
@@ -121,7 +121,7 @@ function collect_files_by_host() {
 
 function collect_files() {
     local server_list=${1?}
-    local files_list=${2?}
+    local file_list=${2?}
 
     for server in ${server_list[*]}
     do
@@ -142,7 +142,7 @@ function collect_files() {
             local dir_by_time="${JOB_NAME}-${server_ip}-${server_port}-${collect_time}"
             local work_path="${save_path}/${dir_by_hostname}/${dir_by_time}"
             $ssh_connect "[ -d $work_path ] || mkdir -p $work_path"
-            collect_files_by_host "$server_ip" "$server_port" "$ssh_username" "$work_path" "$files_list"
+            collect_files_by_host "$server_ip" "$server_port" "$ssh_username" "$work_path" "$file_list"
 
             file_count=$($ssh_connect "ls $work_path | wc -l")
             if [ "$file_count" -gt 0 ]; then
@@ -168,14 +168,14 @@ function collect_files() {
 source_string "$env_parameters"
 
 ensure_variable_isset "ERROR wrong parameter: server_list can't be empty" "$server_list"
-ensure_variable_isset "ERROR wrong parameter: files_list can't be empty" "$files_list"
+ensure_variable_isset "ERROR wrong parameter: file_list can't be empty" "$file_list"
 ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAME"
 
 collect_time=$(date +'%Y%m%d-%H%M%S')
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
 server_list=$(string_strip_comments "$server_list")
-files_list=$(string_strip_comments "$files_list")
+file_list=$(string_strip_comments "$file_list")
 # Input Parameters check
 check_list_fields "IP:TCP_PORT:STRING" "$server_list"
 
@@ -192,7 +192,7 @@ if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
 fi
 
 # Connect server and collect files
-collect_files "$server_list" "$files_list" $KEEP_DAY
+collect_files "$server_list" "$file_list" $KEEP_DAY
 
 data_retention $KEEP_DAY "$server_list"
 
