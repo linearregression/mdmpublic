@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-01 14:18:26>
+## Updated: Time-stamp: <2016-06-01 16:51:57>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,6 +34,13 @@ fi
 bash /var/lib/devops/refresh_common_library.sh "1788082022"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
+function shell_exit() {
+    errcode=$?
+    rm "$tmp_file"
+    exit $errcode
+}
+################################################################################################
+trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
@@ -44,6 +51,13 @@ command=$(string_strip_comments "$command")
 # Input Parameters check
 check_list_fields "STRING:TCP_PORT" "$server_list"
 
+# Dump bash command to scripts
+current_filename=$(basename "${0}")
+tmp_file="/tmp/${current_filename}_$$"
+cat > "$tmp_file" <<EOF
+$command_list
+EOF
+
 IFS=$'\n'
 for server in ${server_list}
 do
@@ -53,12 +67,12 @@ do
     ssh_port=${server_split[1]}
     ssh_username=${server_split[2]}
     [ -n "$ssh_username" ] || ssh_username="root"
-    IFS=$'\n'
-    for bash_command in ${command_list}; do
-        unset IFS
-        ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
-        echo "=============== $ssh_connect $bash_command"
-        $ssh_connect "$bash_command"
-    done
+    
+    ssh_command="scp -P $ssh_port -i $ssh_key_file -o StrictHostKeyChecking=no $tmp_file $ssh_username@$ssh_server_ip:/$tmp_file"
+    $ssh_command
+
+    ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
+    echo "=============== Run Command"
+    $ssh_connect "bash -ex $tmp_file"
 done
 ## File : run_command_on_servers.sh ends
