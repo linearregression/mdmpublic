@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-02 07:16:32>
+## Updated: Time-stamp: <2016-06-02 07:17:41>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,7 +22,7 @@
 ##       chef_json:
 ##        {"os_basic_auth":
 ##                {"enable_firewall": "0",
-##                "repo_server": "reppo.fluigdata.com:18000"},
+##                "repo_server": "repo.fluigdata.com:18000"},
 ##        "common_auth":
 ##                {"package_url": "http://172.17.42.1:28000/dev",
 ##                "rubygem_source": "http://rubygems.org/",
