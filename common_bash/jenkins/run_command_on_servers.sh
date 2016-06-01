@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-01 14:10:41>
+## Updated: Time-stamp: <2016-06-01 14:18:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -17,7 +17,7 @@
 ##       server_list: ip-1:port-1:root
 ##                    ip-2:port-2:root
 ##       command_list:
-##        echo /etc/hosts
+##        cat /etc/hosts
 ##        ls /opt/
 ##
 ##       env_parameters:
@@ -47,12 +47,15 @@ check_list_fields "STRING:TCP_PORT" "$server_list"
 IFS=$'\n'
 for server in ${server_list}
 do
+    unset IFS
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
     ssh_username=${server_split[2]}
     [ -n "$ssh_username" ] || ssh_username="root"
+    IFS=$'\n'
     for bash_command in ${command_list}; do
+        unset IFS
         ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
         echo "=============== $ssh_connect $bash_command"
         $ssh_connect "$bash_command"
