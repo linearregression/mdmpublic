@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-30 17:39:12>
+## Updated: Time-stamp: <2016-05-31 12:14:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -184,6 +184,7 @@ function check_command() {
 source_string "$env_parameters"
 server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
+check_list_fields "IP:TCP_PORT" "$server_list"
 
 [ -n "${ssh_key_file}" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
 
@@ -191,9 +192,6 @@ echo "server_list: ${server_list}"
 #[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
 [ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
 [ -n "$code_dir" ] || code_dir="/root/test"
-
-# Input Parameters check
-check_list_fields "IP:TCP_PORT" "$server_list"
 
 if [ -n "$ssh_private_key" ]; then
     mkdir -p /var/lib/jenkins/.ssh/

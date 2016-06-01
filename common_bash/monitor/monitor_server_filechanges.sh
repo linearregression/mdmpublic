@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-05-30 17:43:10>
+## Updated: Time-stamp: <2016-05-31 08:41:14>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -91,12 +91,13 @@ source_string "$env_parameters"
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
 [ -n "$BACKUP_OLD_DIR" ] || BACKUP_OLD_DIR=/root/monitor_backup
 
-# Input Parameters check
-check_list_fields "IP:TCP_PORT" "$server_list"
-
 log_file="/root/monitor_server_filechanges.log"
 server_list=$(string_strip_comments "$server_list")
 file_list=$(string_strip_comments "$file_list")
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT" "$server_list"
+
 has_error="0"
 
 # check files

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-30 17:42:08>
+## Updated: Time-stamp: <2016-05-31 08:38:15>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,10 +36,9 @@ source_string "$env_parameters"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
+cron_job_list=$(string_strip_comments "$cron_job_list")
 # Input Parameters check
 check_list_fields "IP:TCP_PORT:STRING" "$cron_job_list"
-
-cron_job_list=$(string_strip_comments "$cron_job_list")
 
 IFS=$'\n'
 for cron_job in ${cron_job_list[*]}

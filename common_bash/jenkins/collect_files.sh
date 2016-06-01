@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-05-30 17:40:57>
+## Updated: Time-stamp: <2016-05-31 08:38:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -176,6 +176,8 @@ collect_time=$(date +'%Y%m%d-%H%M%S')
 
 server_list=$(string_strip_comments "$server_list")
 files_list=$(string_strip_comments "$files_list")
+# Input Parameters check
+check_list_fields "IP:TCP_PORT:STRING" "$server_list"
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"
@@ -183,9 +185,6 @@ files_list=$(string_strip_comments "$files_list")
 
 [ -n "$transfer_dst_path" ] || transfer_dst_path="/var/lib/jenkins/jobs/$JOB_NAME/workspace"
 [ -n "$save_path" ] || save_path="/tmp/"
-
-# Input Parameters check
-check_list_fields "IP:TCP_PORT:STRING" "$server_list"
 
 if [ -z "$REMOVE_PREVIOUS_DOWNLOAD" ] || $REMOVE_PREVIOUS_DOWNLOAD; then
     echo "Remove previous files: $transfer_dst_path"
