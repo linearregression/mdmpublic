@@ -9,14 +9,14 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-01 11:09:41>
+## Updated: Time-stamp: <2016-06-01 11:17:43>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
 ##      command_list:
-##        root:172.17.0.1:22:echo hello
-##        root:172.17.0.1:23:rm /tmp/npm-*
+##        172.17.0.1:22:root:echo hello
+##        172.17.0.1:23:root:rm /tmp/npm-*
 ##
 ##       env_parameters:
 ##         export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
@@ -38,25 +38,25 @@ source_string "$env_parameters"
 
 command_list=$(string_strip_comments "$command_list")
 # Input Parameters check
-check_list_fields "IP:TCP_PORT:STRING" "$command_list"
+check_list_fields "IP:TCP_PORT:STRING:STRING" "$command_list"
 
 IFS=$'\n'
-for cron_job in ${command_list[*]}
+for command_item in ${command_list[*]}
 do
     unset IFS
 
     IFS=:
-    item=($cron_job)
+    item=($command_item)
     unset IFS
 
-    ssh_username=${item[0]}
-    server_ip=${item[1]}
-    server_port=${item[2]}
+    server_ip=${item[0]}
+    server_port=${item[1]}
+    ssh_username=${item[2]}
     string_prefix="$ssh_username:$server_ip:$server_port:"
-    cron_command="${cron_job#${string_prefix}}"
+    bash_command="${command_item#${string_prefix}}"
 
     ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
-    echo "=============== $ssh_connect $cron_command"
-    $ssh_connect "$cron_command"
+    echo "=============== $ssh_connect $bash_command"
+    $ssh_connect "$bash_command"
 done
 ## File : run_remote_command.sh ends
