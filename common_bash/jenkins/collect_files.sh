@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-01 11:32:37>
+## Updated: Time-stamp: <2016-06-01 11:46:00>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -179,7 +179,7 @@ collect_time=$(date +'%Y%m%d-%H%M%S')
 server_list=$(string_strip_comments "$server_list")
 file_list=$(string_strip_comments "$file_list")
 # Input Parameters check
-check_list_fields "IP:TCP_PORT:STRING" "$server_list"
+check_list_fields "STRING:TCP_PORT:STRING" "$server_list"
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"
