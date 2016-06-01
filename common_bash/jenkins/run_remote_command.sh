@@ -4,17 +4,17 @@
 ## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-## File : system_cron_jobs.sh
+## File : run_remote_command.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-05-31 08:38:15>
+## Updated: Time-stamp: <2016-06-01 11:09:41>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
-##      cron_job_list:
+##      command_list:
 ##        root:172.17.0.1:22:echo hello
 ##        root:172.17.0.1:23:rm /tmp/npm-*
 ##
@@ -36,12 +36,12 @@ source_string "$env_parameters"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
-cron_job_list=$(string_strip_comments "$cron_job_list")
+command_list=$(string_strip_comments "$command_list")
 # Input Parameters check
-check_list_fields "IP:TCP_PORT:STRING" "$cron_job_list"
+check_list_fields "IP:TCP_PORT:STRING" "$command_list"
 
 IFS=$'\n'
-for cron_job in ${cron_job_list[*]}
+for cron_job in ${command_list[*]}
 do
     unset IFS
 
@@ -59,4 +59,4 @@ do
     echo "=============== $ssh_connect $cron_command"
     $ssh_connect "$cron_command"
 done
-## File : system_cron_jobs.sh ends
+## File : run_remote_command.sh ends
