@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-01 16:51:57>
+## Updated: Time-stamp: <2016-06-01 18:38:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -72,7 +72,7 @@ do
     $ssh_command
 
     ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
-    echo "=============== Run Command"
+    echo "=============== Run Command on $ssh_server_ip:$ssh_port"
     $ssh_connect "bash -ex $tmp_file"
 done
 ## File : run_command_on_servers.sh ends
