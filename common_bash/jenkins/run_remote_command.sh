@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-01 11:17:43>
+## Updated: Time-stamp: <2016-06-01 11:20:40>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -52,7 +52,7 @@ do
     server_ip=${item[0]}
     server_port=${item[1]}
     ssh_username=${item[2]}
-    string_prefix="$ssh_username:$server_ip:$server_port:"
+    string_prefix="$server_ip:$server_port:$ssh_username:"
     bash_command="${command_item#${string_prefix}}"
 
     ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
