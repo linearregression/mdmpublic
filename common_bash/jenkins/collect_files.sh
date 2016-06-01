@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-01 10:46:57>
+## Updated: Time-stamp: <2016-06-01 10:52:53>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -60,6 +60,7 @@ function data_retention() {
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
         local ssh_username=${server_split[2]}
+        [ -n "$ssh_username" ] || ssh_username="root"
         local ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
         if [ "x$(check_ssh_available "$server_ip" "$server_port")" = "xyes" ]; then
             echo "Delete expired file in $server"
@@ -129,6 +130,7 @@ function collect_files() {
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
         local ssh_username=${server_split[2]}
+        [ -n "$ssh_username" ] || ssh_username="root"
         local server_hostname
         local file_count
 
