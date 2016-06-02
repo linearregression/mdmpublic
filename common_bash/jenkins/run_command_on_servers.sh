@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-02 12:06:41>
+## Updated: Time-stamp: <2016-06-02 16:43:45>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -36,9 +36,10 @@ bash /var/lib/devops/refresh_common_library.sh "1788082022"
 ################################################################################################
 function shell_exit() {
     errcode=$?
-    rm "$tmp_file"
-    if [ $errcode -eq 0 ]; then
-        echo "Failed server: $failed_servers"
+    rm -rf "$tmp_file"
+    if [ -n "$failed_servers" ]; then
+        echo "=============== Failed server: $failed_servers"
+        exit 1
     fi
     exit $errcode
 }
@@ -76,8 +77,9 @@ do
     $ssh_command
 
     ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
+    ssh_command="$ssh_connect \"bash -ex $tmp_file\""
     echo "=============== Run Command on $ssh_server_ip:$ssh_port"
-    if ! $ssh_connect "bash -ex $tmp_file"; then
+    if ! eval "$ssh_command"; then
         failed_servers="${failed_servers} ${ssh_server_ip}:${ssh_port}"
     fi
 done
