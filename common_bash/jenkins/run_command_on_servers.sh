@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-01 18:38:14>
+## Updated: Time-stamp: <2016-06-02 12:06:41>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -37,6 +37,9 @@ bash /var/lib/devops/refresh_common_library.sh "1788082022"
 function shell_exit() {
     errcode=$?
     rm "$tmp_file"
+    if [ $errcode -eq 0 ]; then
+        echo "Failed server: $failed_servers"
+    fi
     exit $errcode
 }
 ################################################################################################
@@ -51,6 +54,7 @@ command=$(string_strip_comments "$command")
 # Input Parameters check
 check_list_fields "STRING:TCP_PORT" "$server_list"
 
+failed_servers=""
 # Dump bash command to scripts
 current_filename=$(basename "${0}")
 tmp_file="/tmp/${current_filename}_$$"
@@ -73,6 +77,8 @@ do
 
     ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
     echo "=============== Run Command on $ssh_server_ip:$ssh_port"
-    $ssh_connect "bash -ex $tmp_file"
+    if ! $ssh_connect "bash -ex $tmp_file"; then
+        failed_servers="${failed_servers} ${ssh_server_ip}:${ssh_port}"
+    fi
 done
 ## File : run_command_on_servers.sh ends
