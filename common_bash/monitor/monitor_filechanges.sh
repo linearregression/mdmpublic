@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-05-30 17:36:18>
+## Updated: Time-stamp: <2016-06-02 09:57:16>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -78,6 +78,27 @@ function shell_exit() {
     exit $errcode
 }
 
+function git_http_compare_link() {
+    local git_repo_url=${1?}
+    local revision1=${2?}
+    local revision2=${3?}
+
+    # Sample:
+    #   git_repo_url: git@gitlabcn.dennyzhang.com:devops/mydevops.git
+    #       str: gitlabcn.dennyzhang.com:customer
+    #       group_name: devops
+    #       git_repo: mydevops
+    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    str=${git_repo_url%.git}
+    str=${str#git@}
+    str=${str%/*}
+    group_name=$(echo "${git_repo_url%/.*.git}" | awk -F '/' '{print $2}')
+    git_domain_name=$(echo "$str" | awk -F':' '{print $1}')
+    group_name=$(echo "$str" | awk -F':' '{print $2}')
+    http_protocal="https"
+    echo "${http_protocal}://${git_domain_name}/${group_name}/${git_repo}/compare/${revision1}...${revision2}"
+}
+
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
@@ -129,6 +150,7 @@ else
     detect_changed_file "$code_dir" "$old_sha" "$new_sha" "$filelist_to_monitor"
     if [ -n "$changed_file_list" ]; then
         echo -e "\n\n========== git diff ${old_sha} ${new_sha}\n"
+        echo -e "\n\n========== $(git_http_compare_link "$git_repo_url" "$old_sha" "$new_sha")\n"
         echo -e "========== ERROR file changed: \n$(echo "$changed_file_list" | tr ' ' '\n')\n"
         exit 1
     fi
