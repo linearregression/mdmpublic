@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-05-31 12:14:33>
+## Updated: Time-stamp: <2016-06-03 10:15:30>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -97,7 +97,11 @@ do
     domain=${host_split[1]}
     grep ${domain} /tmp/hosts && sed -i "/${domain}/c\\${ip}    ${domain}" /tmp/hosts ||  echo "${ip}    ${domain}" >> /tmp/hosts
 done
-cp -f /tmp/hosts /etc/hosts
+
+if [ "$(cat /tmp/hosts)" != "$(cat /etc/hosts)" ]; then
+    cp -f /tmp/hosts /etc/hosts
+fi
+
 EOF
 
     for server in ${server_list}
