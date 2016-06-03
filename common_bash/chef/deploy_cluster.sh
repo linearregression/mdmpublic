@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-03 10:15:30>
+## Updated: Time-stamp: <2016-06-03 10:26:09>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -196,6 +196,11 @@ check_list_fields "IP:TCP_PORT" "$server_list"
 #[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
 [ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
 [ -n "$code_dir" ] || code_dir="/root/test"
+
+if [ -z "$ssh_private_key" ] && [ ! -f "$ssh_key_file" ]; then
+    echo "ERROR: wrong input: ssh_private_key parameter must be given"
+    exit 1
+fi
 
 if [ -n "$ssh_private_key" ]; then
     mkdir -p /var/lib/jenkins/.ssh/
