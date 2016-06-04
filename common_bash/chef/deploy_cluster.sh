@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-04 09:42:47>
+## Updated: Time-stamp: <2016-06-04 11:46:50>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -46,6 +46,7 @@
 ##           # ssh id_rsa private key to login servers without password
 ##       env_parameters:
 ##             export KILL_RUNNING_CHEF_UPDATE=false
+##             export EXIT_IF_PING_FAIL=true
 ##             export CHEF_BINARY_CMD=chef-client
 ##             export CODE_SH="/root/mydevops/misc/git_update.sh"
 ################################################################################################
@@ -56,7 +57,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2512904374"
+bash /var/lib/devops/refresh_common_library.sh "999962759"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function bindhosts() {
@@ -190,12 +191,14 @@ server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
 check_list_fields "IP:TCP_PORT" "$server_list"
 
-[ -n "${ssh_key_file}" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
+[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
+[ -n "$KILL_RUNNING_CHEF_UPDATE" ] || KILL_RUNNING_CHEF_UPDATE=false
+[ -n "$EXIT_IF_PING_FAIL" ] || EXIT_IF_PING_FAIL=false
+[ -n "$code_dir" ] || code_dir="/root/test"
 
 # TODO: use chef-zero, instead of chef-solo
-#[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
-[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
-[ -n "$code_dir" ] || code_dir="/root/test"
+#[ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-client
+[ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-solo
 
 if [ -z "$ssh_private_key" ] && [ ! -f "$ssh_key_file" ]; then
     echo "ERROR: wrong input: ssh_private_key parameter must be given"
@@ -223,12 +226,28 @@ if [ -z "${chef_client_rb}" ]; then
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 fi
 
+# chef_json parameters
 if [ -n "${chef_json}" ]; then
     chef_json=$(string_strip_comments "$chef_json")
     chef_json="$chef_json"
     chef_json=${chef_json/#\{/}
     chef_json=${chef_json/%\}/}
 fi
+
+# Input parameters check
+echo "ping ip address listed in server_list parameter"
+ip_list_in_serverlist=$(parse_ip_from_string "$server_list")
+if [ -n "$ip_list_in_serverlist" ]; then
+    ip_ping_reachable "$EXIT_IF_PING_FAIL" "$ip_list_in_serverlist"
+fi
+
+# Input parameters check
+echo "ping ip address listed in chef_json parameters"
+ip_list_in_json=$(parse_ip_from_string "$chef_json")
+if [ -n "$ip_list_in_json" ]; then
+    ip_ping_reachable "$EXIT_IF_PING_FAIL" "$ip_list_in_json"
+fi
+################################################################################
 
 log "Start to bind cluster hosts"
 bindhosts "$server_list"
