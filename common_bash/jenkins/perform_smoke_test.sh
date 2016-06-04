@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-16>
-## Updated: Time-stamp: <2016-06-04 11:45:44>
+## Updated: Time-stamp: <2016-06-04 22:07:06>
 ##-------------------------------------------------------------------
 ################################################################################################
 . /etc/profile
@@ -19,7 +19,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "999962759"
+bash /var/lib/devops/refresh_common_library.sh "2205160402"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function prepare_protractor() {

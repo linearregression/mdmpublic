@@ -9,9 +9,8 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-04 11:58:03>
+## Updated: Time-stamp: <2016-06-04 22:07:08>
 ##-------------------------------------------------------------------
-
 ################################################################################################
 ## env variables:
 ##       server_list: ip-1:port-1
@@ -49,6 +48,12 @@
 ##             export EXIT_IF_PING_FAIL=true
 ##             export CHEF_BINARY_CMD=chef-client
 ##             export CODE_SH="/root/mydevops/misc/git_update.sh"
+##             export START_COMMAND="ssh root@172.17.0.1 docker start kitchen-cluster-node1 kitchen-cluster-node2"
+##             export POST_START_COMMAND="sleep 5; service apache2 start; true"
+##             export PRE_STOP_COMMAND="service apache2 stop; true"
+##             export STOP_COMMAND="ssh root@172.17.0.1 docker stop kitchen-cluster-node1 kitchen-cluster-node2"
+##
+## Hook points: START_COMMAND -> POST_START_COMMAND -> PRE_STOP_COMMAND -> STOP_COMMAND
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -57,98 +62,9 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "999962759"
+bash /var/lib/devops/refresh_common_library.sh "2205160402"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
-function bindhosts() {
-    # TODO: make the code general and move to bash_common_library.sh
-    local server_list=${1?}
-
-    local hosts_list=""
-    local ssh_args="-i $ssh_key_file -o StrictHostKeyChecking=no"
-
-    for server in ${server_list}
-    do
-        server_split=(${server//:/ })
-        ssh_server_ip=${server_split[0]}
-        ssh_port=${server_split[1]}
-        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip ifconfig eth0 | grep 'inet addr:' | awk '{print \$2}' | cut -c 6-"
-        ip=$(eval "$ssh_command")
-
-        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip hostname"
-        hostname=$(eval "$ssh_command")
-        hosts_list="${hosts_list},${ip}:${hostname}"
-    done
-
-    # Fix acl issue
-    sudo touch /tmp/deploy_cluster_bindhosts.sh
-    sudo chmod 777 /tmp/deploy_cluster_bindhosts.sh
-    cat << "EOF" > /tmp/deploy_cluster_bindhosts.sh
-#!/bin/bash -xe
-
-hosts_list=${1?}
-cp /etc/hosts /tmp/hosts
-
-hosts_arr=(${hosts_list//,/ })
-
-for host in ${hosts_arr[@]}
-do
-    host_split=(${host//:/ })
-    ip=${host_split[0]}
-    domain=${host_split[1]}
-    grep ${domain} /tmp/hosts && sed -i "/${domain}/c\\${ip}    ${domain}" /tmp/hosts ||  echo "${ip}    ${domain}" >> /tmp/hosts
-done
-
-if [ "$(cat /tmp/hosts)" != "$(cat /etc/hosts)" ]; then
-    cp -f /tmp/hosts /etc/hosts
-fi
-
-EOF
-
-    for server in ${server_list}
-    do
-        server_split=(${server//:/ })
-        ssh_server_ip=${server_split[0]}
-        ssh_port=${server_split[1]}
-        ssh_command="scp $ssh_args -P $ssh_port /tmp/deploy_cluster_bindhosts.sh root@$ssh_server_ip:/tmp/deploy_cluster_bindhosts.sh"
-        $ssh_command
-
-        ssh_command="ssh $ssh_args -p $ssh_port root@$ssh_server_ip bash -xe /tmp/deploy_cluster_bindhosts.sh $hosts_list"
-        $ssh_command
-    done
-}
-
-function deploy() {
-    local server=${1?}
-    log "Deploy to ${server}"
-
-    local server_split=(${server//:/ })
-    local ssh_server_ip=${server_split[0]}
-    local ssh_port=${server_split[1]}
-
-    log "Prepare chef configuration"
-    cat > /tmp/client.rb <<EOF
-file_cache_path "/var/chef/cache"
-$chef_client_rb
-EOF
-    echo -e "{\n\"run_list\": [${deploy_run_list}],\n$chef_json\n}" > /tmp/client.json
-
-    
-    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client.rb root@$ssh_server_ip:/root/client.rb"
-    $ssh_command
-
-    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client.json root@$ssh_server_ip:/root/client.json"
-    $ssh_command
-
-    log "Apply chef update"
-    # TODO: use chef-zero, instead of chef-solo
-    # ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json --local-mode"
-    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client.rb -j /root/client.json"
-    $ssh_command
-
-    log "Deploy $server end"
-}
-
 function init_cluster() {
     local server=${1?}
 
@@ -159,16 +75,16 @@ function init_cluster() {
 
     log "Prepare chef configuration"
     echo "$chef_client_rb" > /tmp/client_init.rb
-    echo -e "{\n\"run_list\": [${init_run_list}],\n$chef_json\n}" > /tmp/client_init.json
+    echo -e "{\n\"run_list\": [${init_run_list}],\n${chef_json}\n}" > /tmp/client_init.json
 
-    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client_init.rb root@$ssh_server_ip:/root/client_init.rb"
+    ssh_command="scp $common_ssh_options -P $ssh_port /tmp/client_init.rb root@$ssh_server_ip:/root/client_init.rb"
     $ssh_command
 
-    ssh_command="scp $ssh_scp_args -P $ssh_port /tmp/client_init.json root@$ssh_server_ip:/root/client_init.json"
+    ssh_command="scp $common_ssh_options -P $ssh_port /tmp/client_init.json root@$ssh_server_ip:/root/client_init.json"
     $ssh_command
 
     log "Apply chef update"
-    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client_init.rb -j /root/client_init.json"
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip $CHEF_BINARY_CMD --config /root/client_init.rb -j /root/client_init.json"
     $ssh_command
 
     log "Initialize $server end"
@@ -181,77 +97,78 @@ function check_command() {
     local ssh_server_ip=${server_split[0]}
     local ssh_port=${server_split[1]}
     log "check server:${ssh_server_ip}:${ssh_port}"
-    ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $check_command"
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip $check_command"
     $ssh_command
 }
 
+function shell_exit() {
+    errcode=$?
+    unset common_ssh_options
+    if $STOP_CONTAINER; then
+        if [ -n "$PRE_STOP_COMMAND" ]; then
+            log "$PRE_STOP_COMMAND"
+            eval "$PRE_STOP_COMMAND"
+        fi
+
+        log "$STOP_COMMAND"
+        eval "$STOP_COMMAND"
+    fi
+    exit $errcode
+}
 ##########################################################################################
+trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
+
 server_list=$(string_strip_comments "$server_list")
 echo "server_list: ${server_list}"
-check_list_fields "IP:TCP_PORT" "$server_list"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
 [ -n "$KILL_RUNNING_CHEF_UPDATE" ] || KILL_RUNNING_CHEF_UPDATE=false
 [ -n "$EXIT_IF_PING_FAIL" ] || EXIT_IF_PING_FAIL=true
 [ -n "$code_dir" ] || code_dir="/root/test"
-
 # TODO: use chef-zero, instead of chef-solo
 #[ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-client
 [ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-solo
-
-if [ -z "$ssh_private_key" ] && [ ! -f "$ssh_key_file" ]; then
-    echo "ERROR: wrong input: ssh_private_key parameter must be given"
-    exit 1
-fi
-
-if [ -n "$ssh_private_key" ]; then
-    mkdir -p /var/lib/jenkins/.ssh/
-    if [ -f "$ssh_key_file" ]; then
-        chmod 777 "$ssh_key_file"
-    fi
-    echo "$ssh_private_key" > "$ssh_key_file"
-    chmod 400 "$ssh_key_file"
-fi
-
-ssh_scp_args=" -i $ssh_key_file -o StrictHostKeyChecking=no "
-
-if [ -z "$git_repo_url" ]; then
-    echo "Error: git_repo_url can't be empty"
-fi
 git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
 
-
-if [ -z "${chef_client_rb}" ]; then
+export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
+if [ -z "$chef_client_rb" ]; then
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 fi
 
-# chef_json parameters
-if [ -n "${chef_json}" ]; then
-    chef_json=$(string_strip_comments "$chef_json")
-    chef_json="$chef_json"
-    chef_json=${chef_json/#\{/}
-    chef_json=${chef_json/%\}/}
+chef_json=$(parse_parameter_chef_json "$chef_json")
+
+if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
+    ensure_variable_isset "When STOP_CONTAINER is set, STOP_COMMAND must be given " "$STOP_COMMAND"
+fi
+if [ -n "$CODE_SH" ]; then
+    ensure_variable_isset "Error: when CODE_SH is not empty, git_repo_url can't be empty" "$git_repo_url"
 fi
 
 # Input parameters check
-echo "ping ip address listed in server_list parameter"
-ip_list_in_serverlist=$(parse_ip_from_string "$server_list")
-if [ -n "$ip_list_in_serverlist" ]; then
-    ip_ping_reachable "$EXIT_IF_PING_FAIL" "$ip_list_in_serverlist"
-fi
+check_list_fields "IP:TCP_PORT" "$server_list"
+enforce_ip_ping_check "$EXIT_IF_PING_FAIL" "chef_json" "$chef_json"
+enforce_ip_ping_check "$EXIT_IF_PING_FAIL" "server_list" "$server_list"
 
-# Input parameters check
-echo "ping ip address listed in chef_json parameters"
-ip_list_in_json=$(parse_ip_from_string "$chef_json")
-if [ -n "$ip_list_in_json" ]; then
-    ip_ping_reachable "$EXIT_IF_PING_FAIL" "$ip_list_in_json"
-fi
 ################################################################################
+log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
+inject_ssh_key "$ssh_private_key" "$ssh_key_file"
 
-log "Start to bind cluster hosts"
-bindhosts "$server_list"
+if [ -n "$START_COMMAND" ]; then
+    log "$START_COMMAND"
+    eval "$START_COMMAND"
 
+    sleep 2
+
+    if [ -n "$POST_START_COMMAND" ]; then
+        log "$POST_START_COMMAND"
+        eval "$POST_START_COMMAND"
+    fi
+fi
+
+bindhosts "$server_list" "$ssh_key_file"
+
+# update code
 for server in ${server_list}
 do
     server_split=(${server//:/ })
@@ -261,17 +178,18 @@ do
     if ${KILL_RUNNING_CHEF_UPDATE}; then
         # TODO: what if $CHEF_BINARY_CMD has whitespace?
         log "ps -ef | grep ${CHEF_BINARY_CMD} || killall -9 ${CHEF_BINARY_CMD}"
-        ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip killall -9 $CHEF_BINARY_CMD || true"
+        ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip killall -9 $CHEF_BINARY_CMD || true"
         $ssh_command
     fi
 
     if [ -n "${CODE_SH}" ]; then
-        log "Update git codes"
-        ssh_command="ssh $ssh_scp_args -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $devops_branch_name"
+        log "Update git code"
+        ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $devops_branch_name"
         $ssh_command
     fi
 done
 
+# perform backup
 if [ -n "$backup_run_list" ]; then
     log "Start to backup"
     for server in ${server_list}
@@ -281,15 +199,17 @@ if [ -n "$backup_run_list" ]; then
     log "Backup End"
 fi
 
+# deployment
 if [ -n "$deploy_run_list" ]; then
     log "Star to Deploy cluster"
     for server in ${server_list}
     do
-        deploy "$server"
+        chef_deploy "$server" "$CHEF_BINARY_CMD" "$deploy_run_list" "$chef_json" "$chef_client_rb"
     done
     log "Deploy End"
 fi
 
+# initialize cluster
 if [ -n "$init_run_list" ]; then
     log "Star to Initialize cluster"
     for server in ${server_list}
@@ -299,6 +219,7 @@ if [ -n "$init_run_list" ]; then
     log "Initialize End"
 fi
 
+# restart services
 if [ -n "$restart_run_list" ]; then
     for server in ${server_list}
     do
@@ -306,6 +227,7 @@ if [ -n "$restart_run_list" ]; then
     done
 fi
 
+# check system status
 if [ -n "$check_command" ]; then
     log "Start to check: $check_command"
     for server in ${server_list}

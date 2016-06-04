@@ -4,12 +4,12 @@
 ## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-## File : longrun_allinone.sh
+## File : deploy_allinone.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-04 14:01:13>
+## Updated: Time-stamp: <2016-06-04 22:07:08>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "999962759"
+bash /var/lib/devops/refresh_common_library.sh "2205160402"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -85,12 +85,11 @@ log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CO
 # TODO: use chef-zero, instead of chef-solo
 #[ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-client
 [ -n "${CHEF_BINARY_CMD}" ] || CHEF_BINARY_CMD=chef-solo
-
-kill_chef_command="killall -9 $CHEF_BINARY_CMD || true"
-
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$code_dir" ] || code_dir="/root/test"
 [ -n "$SSH_SERVER_PORT" ] || SSH_SERVER_PORT=22
+
+kill_chef_command="killall -9 $CHEF_BINARY_CMD || true"
 
 if [ -n "$CODE_SH" ]; then
     ensure_variable_isset "Error: when CODE_SH is not empty, git_repo_url can't be empty" "$git_repo_url"
@@ -109,6 +108,7 @@ fi
 
 export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 
+########################################################################
 if [ -n "$START_COMMAND" ]; then
     ssh_start_command="ssh $common_ssh_options -p $SSH_SERVER_PORT root@$ssh_server_ip \"$START_COMMAND\""
     log "$ssh_start_command"
@@ -136,6 +136,7 @@ if [ -n "$CODE_SH" ]; then
     ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$CODE_SH" "$code_dir" "$git_repo_url" "$devops_branch_name" "all-in-one"
 fi
 
+# TODO: replace deployment logic by chef_deploy function
 chef_json=$(string_strip_comments "$chef_json")
 log "Prepare chef configuration"
 cat > /tmp/client.rb <<EOF
@@ -161,4 +162,4 @@ if [ -n "$check_command" ]; then
     ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $check_command"
     $ssh_command
 fi
-## File : longrun_allinone.sh ends
+## File : deploy_allinone.sh ends

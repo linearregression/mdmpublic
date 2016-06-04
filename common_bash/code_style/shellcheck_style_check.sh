@@ -10,7 +10,7 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/BashCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-04 11:45:45>
+## Updated: Time-stamp: <2016-06-04 22:07:07>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -31,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "999962759"
+bash /var/lib/devops/refresh_common_library.sh "2205160402"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function install_shellcheck() {
