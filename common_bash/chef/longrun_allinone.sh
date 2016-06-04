@@ -4,12 +4,12 @@
 ## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-## File : deploy_all_in_one.sh
+## File : longrun_allinone.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-04 11:45:46>
+## Updated: Time-stamp: <2016-06-04 14:01:13>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -161,4 +161,4 @@ if [ -n "$check_command" ]; then
     ssh_command="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $check_command"
     $ssh_command
 fi
-## File : deploy_all_in_one.sh ends
+## File : longrun_allinone.sh ends
