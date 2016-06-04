@@ -10,7 +10,7 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/ChefCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-04 09:33:04>
+## Updated: Time-stamp: <2016-06-04 10:08:31>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -27,7 +27,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "358800185"
+bash /var/lib/devops/refresh_common_library.sh "2512904374"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function chefcheck_git_repo(){
@@ -42,27 +42,34 @@ function chefcheck_git_repo(){
     git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 
     cd "$code_dir"
-    cd cookbooks
-
-    for cookbook in *; do
-        if [ -d "$cookbook" ]; then
-            command="foodcritic $cookbook"
-            echo "======================== test $command"
-            if ! eval "$command"; then
-                failed_git_repos="${failed_git_repos}\nfoodcritic: ${git_repo}:${branch_name}:${cookbook}"
+    if [ -d cookbooks ]; then
+        cd cookbooks
+        for cookbook in *; do
+            if [ -d "$cookbook" ]; then
+                command="foodcritic $cookbook"
+                echo "======================== test $command"
+                if ! eval "$command"; then
+                    failed_git_repos="${failed_git_repos}\nfoodcritic: ${git_repo}:${branch_name}:${cookbook}"
+                fi
             fi
-        fi
-    done
+        done
 
-    for cookbook in *; do
-        if [ -d "$cookbook" ]; then
-            command="rubocop $cookbook"
-            echo "======================== test $command"
-            if ! eval "$command"; then
-                failed_git_repos="${failed_git_repos}\nrubocop: ${git_repo}:${branch_name}:${cookbook}"
+        for cookbook in *; do
+            if [ -d "$cookbook" ]; then
+                command="rubocop $cookbook"
+                echo "======================== test $command"
+                if ! eval "$command"; then
+                    failed_git_repos="${failed_git_repos}\nrubocop: ${git_repo}:${branch_name}:${cookbook}"
+                fi
             fi
+        done
+    else
+        command="rubocop ."
+        echo "======================== test $command"
+        if ! eval "$command"; then
+            failed_git_repos="${failed_git_repos}\nrubocop: ${git_repo}:${branch_name}"
         fi
-    done
+    fi
 }
 
 function shell_exit() {
