@@ -7,9 +7,9 @@
 ## Description :
 ## --
 ## Created : <2016-01-15>
-## Updated: Time-stamp: <2016-04-10 08:02:43>
+## Updated: Time-stamp: <2016-06-04 13:48:52>
 ##-------------------------------------------------------------------
-import os
+import os, sys
 import re
 import sqlite3
 import time
@@ -69,6 +69,10 @@ def load_job_console_output(sqlite_file, console_file):
 
     conn.commit()
     conn.close()
+
+    if line_id == 0:
+        print "ERROR: no records recognized. Make sure target Jenkins run has Jenkins timstamper plugin enabled."
+        sys.exit(-1)
 
 def time_string_to_seconds(time_str):
     # TODO: defensive coding for unexpected input

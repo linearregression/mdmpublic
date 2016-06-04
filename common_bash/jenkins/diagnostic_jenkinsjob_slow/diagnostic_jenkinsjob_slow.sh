@@ -3,9 +3,10 @@
 ## File : diagnostic_jenkinsjob_slow.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
+##        Note: To run the job, make sure target jenkins run has timestamper plugin properly enabled
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-06-04 11:45:45>
+## Updated: Time-stamp: <2016-06-04 13:40:39>
 ##-------------------------------------------------------------------
 
 ################################################################################################
