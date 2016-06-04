@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-04 11:46:50>
+## Updated: Time-stamp: <2016-06-04 11:58:03>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -193,7 +193,7 @@ check_list_fields "IP:TCP_PORT" "$server_list"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
 [ -n "$KILL_RUNNING_CHEF_UPDATE" ] || KILL_RUNNING_CHEF_UPDATE=false
-[ -n "$EXIT_IF_PING_FAIL" ] || EXIT_IF_PING_FAIL=false
+[ -n "$EXIT_IF_PING_FAIL" ] || EXIT_IF_PING_FAIL=true
 [ -n "$code_dir" ] || code_dir="/root/test"
 
 # TODO: use chef-zero, instead of chef-solo
