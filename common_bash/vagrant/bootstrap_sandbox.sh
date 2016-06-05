@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-06-04 22:07:05>
+## Updated: Time-stamp: <2016-06-05 18:47:31>
 ##-------------------------------------------------------------------
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -18,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2205160402"
+bash /var/lib/devops/refresh_common_library.sh "470245388"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 image_name=${1?"docker image name"}

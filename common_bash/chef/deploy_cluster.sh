@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-04 22:07:08>
+## Updated: Time-stamp: <2016-06-05 18:47:34>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -62,7 +62,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2205160402"
+bash /var/lib/devops/refresh_common_library.sh "470245388"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function init_cluster() {
@@ -97,7 +97,7 @@ function check_command() {
     local ssh_server_ip=${server_split[0]}
     local ssh_port=${server_split[1]}
     log "check server:${ssh_server_ip}:${ssh_port}"
-    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip $check_command"
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$check_command\""
     $ssh_command
 }
 
@@ -136,7 +136,7 @@ if [ -z "$chef_client_rb" ]; then
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 fi
 
-chef_json=$(parse_parameter_chef_json "$chef_json")
+chef_json=$(parse_json "$chef_json")
 
 if [ -n "$STOP_CONTAINER" ] && $STOP_CONTAINER; then
     ensure_variable_isset "When STOP_CONTAINER is set, STOP_COMMAND must be given " "$STOP_COMMAND"

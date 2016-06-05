@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-04 22:07:07>
+## Updated: Time-stamp: <2016-06-05 18:47:33>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -35,7 +35,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "2205160402"
+bash /var/lib/devops/refresh_common_library.sh "470245388"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -184,7 +184,7 @@ if [ -n "$files_to_copy" ] && ! $SKIP_COPY; then
     copy_to_reposerver "$git_repo" "$branch_name" "$code_dir" "$dst_dir" "$files_to_copy"
 
     log "================= Generate checksum ================="
-    generate_checksum "${dst_dir}"
+    generate_dir_checksum "${dst_dir}"
 
     if [ -n "$IS_PACK_FILE" ] && $IS_PACK_FILE ;then
         log "================= Pack war file =================="
