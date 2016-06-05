@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-05 18:47:34>
+## Updated: Time-stamp: <2016-06-05 21:02:20>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -97,8 +97,8 @@ function check_command() {
     local ssh_server_ip=${server_split[0]}
     local ssh_port=${server_split[1]}
     log "check server:${ssh_server_ip}:${ssh_port}"
-    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip \"$check_command\""
-    $ssh_command
+    ssh_command="ssh $common_ssh_options -p $ssh_port root@$ssh_server_ip"
+    $ssh_command "$check_command"
 }
 
 function shell_exit() {
