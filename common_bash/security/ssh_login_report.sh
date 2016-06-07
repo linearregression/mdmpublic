@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-07 20:20:45>
+## Updated: Time-stamp: <2016-06-07 20:27:23>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -208,8 +208,8 @@ function ssh_login_events() {
     local entry
     ssh_session_list=$(echo "$ssh_raw_log" | grep 'session opened' | awk -F' ' '{print $5}')
     for session in $ssh_session_list; do
-        session_id=$(echo "$session" | awk -F'\[' '{print $2}')
-        session_id=$(echo "$session_id" | awk -F'\]' '{print $1}')
+        session_id=$(echo "$session" | awk -F'[' '{print $2}')
+        session_id=$(echo "$session_id" | awk -F']' '{print $1}')
 
         # TODO: what if no matched entries
         start_entry=$(echo "$ssh_raw_log" | grep "sshd\[$session_id\].*session opened" | head -n1)
