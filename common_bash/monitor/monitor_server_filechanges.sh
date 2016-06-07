@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-06 12:20:39>
+## Updated: Time-stamp: <2016-06-07 08:34:20>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -93,7 +93,10 @@ source_string "$env_parameters"
 
 log_file="/root/monitor_server_filechanges.log"
 server_list=$(string_strip_comments "$server_list")
+server_list=$(string_strip_whitespace "$server_list")
+
 file_list=$(string_strip_comments "$file_list")
+file_list=$(string_strip_whitespace "$file_list")
 
 # Input Parameters check
 check_list_fields "IP:TCP_PORT" "$server_list"

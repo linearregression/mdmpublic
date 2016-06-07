@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-06 12:19:35>
+## Updated: Time-stamp: <2016-06-07 08:33:37>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -120,6 +120,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
 
 server_list=$(string_strip_comments "$server_list")
+server_list=$(string_strip_whitespace "$server_list")
 echo "server_list: ${server_list}"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"

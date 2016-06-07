@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-06 12:20:26>
+## Updated: Time-stamp: <2016-06-07 08:33:19>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -50,6 +50,7 @@ source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
 server_list=$(string_strip_comments "$server_list")
+server_list=$(string_strip_whitespace "$server_list")
 command=$(string_strip_comments "$command")
 
 # Input Parameters check

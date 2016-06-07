@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-07 08:09:21>
+## Updated: Time-stamp: <2016-06-07 20:20:45>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -105,11 +105,12 @@ function generate_fingerprint() {
     local fingerprint_file="$working_dir/fingerprint"
     echo "generate fingerprint for public key files to $fingerprint_file"
     command="cat /root/.ssh/authorized_keys /home/*/.ssh/authorized_keys | grep '^ssh-rsa'"
-    current_filename=$(basename "${0}")
-    tmp_file="/tmp/${current_filename}_$$"
+    tmp_file="/tmp/ssh_login_report_$$"
 
     fingerprint_result=""
     output=$($SSH_CONNECT "$command")
+    # escape `, in case it's in files of authorized_keys
+    output=$(echo -e "$output" | sed 's/`//g')
     IFS=$'\n'
     for entry in $output; do
         unset IFS
@@ -225,8 +226,7 @@ function ssh_login_events() {
 
 function shell_exit() {
     errcode=$?
-    current_filename=$(basename "${0}")
-    tmp_file="/tmp/${current_filename}_$$"
+    tmp_file="/tmp/ssh_login_report_$$"
     rm -rf "$tmp_file"
     exit $errcode
 }

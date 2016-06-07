@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-06 12:19:14>
+## Updated: Time-stamp: <2016-06-07 08:34:02>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -175,7 +175,10 @@ collect_time=$(date +'%Y%m%d-%H%M%S')
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
 server_list=$(string_strip_comments "$server_list")
+server_list=$(string_strip_whitespace "$server_list")
+
 file_list=$(string_strip_comments "$file_list")
+file_list=$(string_strip_whitespace "$file_list")
 # Input Parameters check
 check_list_fields "STRING:TCP_PORT:STRING" "$server_list"
 
