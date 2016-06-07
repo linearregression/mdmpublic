@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-05 18:47:32>
+## Updated: Time-stamp: <2016-06-07 08:09:21>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -248,6 +248,8 @@ server_split=(${ssh_server//:/ })
 server_ip=${server_split[0]}
 server_port=${server_split[1]}
 ssh_username=${server_split[2]}
+
+[ -n "$ssh_username" ] || ssh_username="root"
 
 SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 

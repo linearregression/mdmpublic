@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-05 18:47:33>
+## Updated: Time-stamp: <2016-06-06 12:20:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -64,15 +64,15 @@ $command_list
 EOF
 
 IFS=$'\n'
-for server in ${server_list}
-do
+for server in ${server_list}; do
     unset IFS
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
     ssh_username=${server_split[2]}
     [ -n "$ssh_username" ] || ssh_username="root"
-    
+
+    # TODO: support blacklist and whitelist mechanism
     ssh_command="scp -P $ssh_port -i $ssh_key_file -o StrictHostKeyChecking=no $tmp_file $ssh_username@$ssh_server_ip:/$tmp_file"
     $ssh_command
 

@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-05 18:47:33>
+## Updated: Time-stamp: <2016-06-06 12:19:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -54,8 +54,7 @@ function data_retention() {
     local keep_day=${1?}
     local server_list=${2?}
     echo "=============== Remove old files to clean up disk"
-    for server in ${server_list[*]}
-    do
+    for server in ${server_list[*]}; do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}
@@ -85,8 +84,7 @@ function collect_files_by_host() {
 
     # loop file_list
     IFS=$'\n'
-    for t_file in ${file_list[*]}
-    do
+    for t_file in ${file_list[*]}; do
         unset IFS
         if [[ "$t_file" = "eval: "* ]]; then
             echo "Evaluate file list: $t_file"
@@ -125,8 +123,7 @@ function collect_files() {
     local server_list=${1?}
     local file_list=${2?}
 
-    for server in ${server_list[*]}
-    do
+    for server in ${server_list[*]}; do
         local server_split=(${server//:/ })
         local server_ip=${server_split[0]}
         local server_port=${server_split[1]}

@@ -8,7 +8,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-27>
-## Updated: Time-stamp: <2016-06-05 18:47:33>
+## Updated: Time-stamp: <2016-06-06 12:20:17>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -50,8 +50,7 @@ function check_jenkins_job_status()
     # If status of any one flag file is not OK,the flag value is false, otherwise is true.
     local check_flag=true
 
-    for flag_file_name in ${status_files[*]}
-    do
+    for flag_file_name in ${status_files[*]}; do
         local flag_file="/var/lib/jenkins/$flag_file_name"
         if test -f "$flag_file" ;then
             if [ "$(cat "$flag_file")" != "OK" ];then

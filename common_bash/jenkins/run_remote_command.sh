@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-05 18:47:32>
+## Updated: Time-stamp: <2016-06-06 12:20:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,8 +41,7 @@ command_list=$(string_strip_comments "$command_list")
 check_list_fields "STRING:TCP_PORT:STRING:STRING" "$command_list"
 
 IFS=$'\n'
-for command_item in ${command_list[*]}
-do
+for command_item in ${command_list[*]}; do
     unset IFS
 
     IFS=:

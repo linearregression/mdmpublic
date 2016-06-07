@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-05 21:02:20>
+## Updated: Time-stamp: <2016-06-06 12:19:35>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -169,8 +169,7 @@ fi
 bindhosts "$server_list" "$ssh_key_file"
 
 # update code
-for server in ${server_list}
-do
+for server in ${server_list}; do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
@@ -192,8 +191,7 @@ done
 # perform backup
 if [ -n "$backup_run_list" ]; then
     log "Start to backup"
-    for server in ${server_list}
-    do
+    for server in ${server_list}; do
         echo "TODO: implement logic"
     done
     log "Backup End"
@@ -202,8 +200,7 @@ fi
 # deployment
 if [ -n "$deploy_run_list" ]; then
     log "Star to Deploy cluster"
-    for server in ${server_list}
-    do
+    for server in ${server_list}; do
         chef_deploy "$server" "$CHEF_BINARY_CMD" "$deploy_run_list" "$chef_json" "$chef_client_rb"
     done
     log "Deploy End"
@@ -212,8 +209,7 @@ fi
 # initialize cluster
 if [ -n "$init_run_list" ]; then
     log "Star to Initialize cluster"
-    for server in ${server_list}
-    do
+    for server in ${server_list}; do
         init_cluster "$server"
     done
     log "Initialize End"
@@ -221,8 +217,7 @@ fi
 
 # restart services
 if [ -n "$restart_run_list" ]; then
-    for server in ${server_list}
-    do
+    for server in ${server_list}; do
         echo "TODO: implement logic"
     done
 fi
@@ -230,8 +225,7 @@ fi
 # check system status
 if [ -n "$check_command" ]; then
     log "Start to check: $check_command"
-    for server in ${server_list}
-    do
+    for server in ${server_list}; do
         check_command "$server"
     done
     log "Check End"

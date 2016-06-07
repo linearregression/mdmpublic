@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-05 18:47:32>
+## Updated: Time-stamp: <2016-06-06 12:20:39>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -101,8 +101,7 @@ check_list_fields "IP:TCP_PORT" "$server_list"
 has_error="0"
 
 # check files
-for server in ${server_list}
-do
+for server in ${server_list}; do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
