@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-10>
-## Updated: Time-stamp: <2016-06-05 11:30:56>
+## Updated: Time-stamp: <2016-06-08 15:24:53>
 ##-------------------------------------------------------------------
 require 'socket'
 require 'serverspec'
@@ -19,7 +19,10 @@ require 'open3'
 set :backend, :exec
 
 ################################################################################
-def wait_jenkins_up(jenkins_run_cmd)
+# TODO: don't hardcode download link
+def wait_jenkins_up(jenkins_run_cmd, \
+                    url_link_prefix = \
+                    'https://raw.githubusercontent.com/TOTVS/mdmpublic/master/common_bash/jenkins')
   # After Jenkins deployment, it may take time for Jenkins to be up and running
   # TODO: make code more general
   url_link_prefix = \
