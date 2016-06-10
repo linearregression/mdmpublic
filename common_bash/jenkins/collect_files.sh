@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-10 08:28:16>
+## Updated: Time-stamp: <2016-06-10 10:48:44>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -47,7 +47,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3801543898"
+bash /var/lib/devops/refresh_common_library.sh "568033707"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {
@@ -181,6 +181,7 @@ file_list=$(string_strip_comments "$file_list")
 file_list=$(string_strip_whitespace "$file_list")
 # Input Parameters check
 check_list_fields "STRING:TCP_PORT:STRING" "$server_list"
+enforce_ssh_check "false" "$server_list" "$ssh_key_file"
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"

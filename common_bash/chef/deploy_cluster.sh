@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-10 08:28:17>
+## Updated: Time-stamp: <2016-06-10 10:46:49>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -45,7 +45,7 @@
 ##           # ssh id_rsa private key to login servers without password
 ##       env_parameters:
 ##             export KILL_RUNNING_CHEF_UPDATE=false
-##             export EXIT_IF_PING_FAIL=true
+##             export EXIT_NODE_CONNECT_FAIL=true
 ##             export CHEF_BINARY_CMD=chef-client
 ##             export CODE_SH="/root/mydevops/misc/git_update.sh"
 ##             export START_COMMAND="ssh root@172.17.0.1 docker start kitchen-cluster-node1 kitchen-cluster-node2"
@@ -62,7 +62,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3801543898"
+bash /var/lib/devops/refresh_common_library.sh "568033707"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function init_cluster() {
@@ -125,7 +125,7 @@ echo "server_list: ${server_list}"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
 [ -n "$KILL_RUNNING_CHEF_UPDATE" ] || KILL_RUNNING_CHEF_UPDATE=false
-[ -n "$EXIT_IF_PING_FAIL" ] || EXIT_IF_PING_FAIL=true
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=true
 [ -n "$code_dir" ] || code_dir="/root/test"
 # TODO: use chef-zero, instead of chef-solo
 #[ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-client
@@ -148,8 +148,9 @@ fi
 
 # Input parameters check
 check_list_fields "IP:TCP_PORT" "$server_list"
-enforce_ip_ping_check "$EXIT_IF_PING_FAIL" "chef_json" "$chef_json"
-enforce_ip_ping_check "$EXIT_IF_PING_FAIL" "server_list" "$server_list"
+enforce_ip_ping_check "$EXIT_NODE_CONNECT_FAIL" "chef_json" "$chef_json"
+enforce_ip_ping_check "$EXIT_NODE_CONNECT_FAIL" "server_list" "$server_list"
+enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$server_list" "$ssh_key_file"
 
 ################################################################################
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
