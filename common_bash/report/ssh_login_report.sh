@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-10 08:28:14>
+## Updated: Time-stamp: <2016-06-10 16:57:33>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -243,13 +243,12 @@ source_string "$env_parameters"
 
 # Input Parameters check
 check_list_fields "IP:TCP_PORT:STRING" "$ssh_server"
+enforce_ssh_check "true" "$ssh_server" "$ssh_key_file"
 
 server_split=(${ssh_server//:/ })
 server_ip=${server_split[0]}
 server_port=${server_split[1]}
 ssh_username=${server_split[2]}
-
-[ -n "$ssh_username" ] || ssh_username="root"
 
 SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 
