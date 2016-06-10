@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-10 10:48:44>
+## Updated: Time-stamp: <2016-06-10 13:44:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -38,6 +38,7 @@
 ##          export KEEP_DAY=7
 ##          export SERVER_REMOTE_COPY="104.236.159.226:22:root/data/backup/server1"
 ##          export JENKINS_BASEURL="http://123.57.240.189:58080"
+##          export EXIT_NODE_CONNECT_FAIL=false
 ##
 ################################################################################################
 . /etc/profile
@@ -173,6 +174,7 @@ ensure_variable_isset "ERROR wrong parameter: JOB_NAME can't be empty" "$JOB_NAM
 
 collect_time=$(date +'%Y%m%d-%H%M%S')
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=false
 
 server_list=$(string_strip_comments "$server_list")
 server_list=$(string_strip_whitespace "$server_list")
@@ -181,7 +183,7 @@ file_list=$(string_strip_comments "$file_list")
 file_list=$(string_strip_whitespace "$file_list")
 # Input Parameters check
 check_list_fields "STRING:TCP_PORT:STRING" "$server_list"
-enforce_ssh_check "false" "$server_list" "$ssh_key_file"
+enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$server_list" "$ssh_key_file"
 
 # Set default value
 [ -n "$KEEP_DAY" ] || KEEP_DAY="7"

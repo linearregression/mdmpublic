@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-10 10:48:34>
+## Updated: Time-stamp: <2016-06-10 13:44:51>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,7 +21,8 @@
 ##        ls /opt/
 ##
 ##       env_parameters:
-##         export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+##          export EXIT_NODE_CONNECT_FAIL=false
 ################################################################################################
 . /etc/profile
 
@@ -48,6 +49,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
 
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=false
 
 server_list=$(string_strip_comments "$server_list")
 server_list=$(string_strip_whitespace "$server_list")
@@ -55,7 +57,7 @@ command=$(string_strip_comments "$command")
 
 # Input Parameters check
 check_list_fields "STRING:TCP_PORT" "$server_list"
-enforce_ssh_check "false" "$server_list" "$ssh_key_file"
+enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$server_list" "$ssh_key_file"
 
 failed_servers=""
 # Dump bash command to scripts

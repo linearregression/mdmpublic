@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-10 10:48:56>
+## Updated: Time-stamp: <2016-06-10 13:44:59>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -20,9 +20,10 @@
 ##         /etc/hosts
 ##         /etc/profile.d
 ##      env_parameters:
-##           export mark_previous_as_true=false
-##           export start_inotifywait_when_stopped=true
-##           export BACKUP_OLD_DIR=/root/monitor_backup
+##          export mark_previous_as_true=false
+##          export start_inotifywait_when_stopped=true
+##          export BACKUP_OLD_DIR=/root/monitor_backup
+##          export EXIT_NODE_CONNECT_FAIL=false
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -90,6 +91,7 @@ source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
 [ -n "$BACKUP_OLD_DIR" ] || BACKUP_OLD_DIR=/root/monitor_backup
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=false
 
 log_file="/root/monitor_server_filechanges.log"
 server_list=$(string_strip_comments "$server_list")
@@ -100,7 +102,7 @@ file_list=$(string_strip_whitespace "$file_list")
 
 # Input Parameters check
 check_list_fields "IP:TCP_PORT" "$server_list"
-enforce_ssh_check "false" "$server_list" "$ssh_key_file"
+enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$server_list" "$ssh_key_file"
 
 has_error="0"
 

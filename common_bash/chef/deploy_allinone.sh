@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-10 10:45:21>
+## Updated: Time-stamp: <2016-06-10 13:44:26>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -35,6 +35,7 @@
 ##             export POST_START_COMMAND="sleep 5; service apache2 start; true"
 ##             export PRE_STOP_COMMAND="service apache2 stop; true"
 ##             export STOP_COMMAND="docker stop longrun-aio"
+##             export EXIT_NODE_CONNECT_FAIL=true
 ##             export CODE_SH=""
 ##             export SSH_SERVER_PORT=22
 ##             export CHEF_BINARY_CMD=chef-client
@@ -88,6 +89,7 @@ log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CO
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$code_dir" ] || code_dir="/root/test"
 [ -n "$SSH_SERVER_PORT" ] || SSH_SERVER_PORT=22
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=true
 
 kill_chef_command="killall -9 $CHEF_BINARY_CMD || true"
 
@@ -98,7 +100,7 @@ fi
 # Input Parameters check
 check_list_fields "IP" "$ssh_server_ip"
 check_list_fields "TCP_PORT" "$ssh_port"
-enforce_ssh_check "true" "$ssh_server_ip:$ssh_port" "$ssh_key_file"
+enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$ssh_server_ip:$ssh_port" "$ssh_key_file"
 
 if [ -z "$chef_client_rb" ]; then
     git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
