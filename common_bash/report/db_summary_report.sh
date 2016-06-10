@@ -1,11 +1,11 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
-## File : dump_db_summary.sh
+## File : db_summary_report.sh
 ## Author : Manley <daywbdb@qq.com>
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-05 18:47:33>
+## Updated: Time-stamp: <2016-06-10 08:28:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "470245388"
+bash /var/lib/devops/refresh_common_library.sh "3801543898"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -193,5 +193,6 @@ if ! type -t "$func_name" | grep -wi function > /dev/null; then
     usage
     exit 1
 fi
+
 ${func_name} "$@"
-## File : dump_db_summary.sh ends
+## File : db_summary_report.sh ends
