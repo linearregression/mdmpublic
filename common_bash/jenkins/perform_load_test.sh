@@ -17,7 +17,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3275045307"
+bash /var/lib/devops/refresh_common_library.sh "3174616237"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 jmeter_testplan="$workspace_path/jmeter_testplan.jmx"
