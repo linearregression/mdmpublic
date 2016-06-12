@@ -10,7 +10,7 @@
 ##
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-10 17:16:06>
+## Updated: Time-stamp: <2016-06-12 08:02:21>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -26,7 +26,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3174616237"
+bash /var/lib/devops/refresh_common_library.sh "1352904353"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function generate_package_log_file() {
@@ -63,7 +63,7 @@ function show_package_report() {
     local action_log_file=${1?}
     local entry_num=${2?}
     ssh_command="tail -n $entry_num $action_log_file"
-    echo $ssh_command
+    echo "$ssh_command"
     $SSH_CONNECT "$ssh_command"
 }
 
