@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-10 17:15:59>
+## Updated: Time-stamp: <2016-06-12 15:09:33>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -30,8 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-# export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3377842358"
+bash /var/lib/devops/refresh_common_library.sh "2315423718"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function compare_two_timestamp() {

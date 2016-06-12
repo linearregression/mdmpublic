@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-12 10:39:00>
+## Updated: Time-stamp: <2016-06-12 15:08:49>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -47,8 +47,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-# export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3377842358"
+bash /var/lib/devops/refresh_common_library.sh "2315423718"
 . /var/lib/devops/devops_common_library.sh
 ############################## Function Start ##################################################
 function data_retention() {

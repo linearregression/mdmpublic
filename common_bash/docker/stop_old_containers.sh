@@ -10,7 +10,7 @@
 ## Description : Stop old long-run docker containers, to save OS resource
 ## --
 ## Created : <2015-12-03>
-## Updated: Time-stamp: <2016-06-10 08:28:16>
+## Updated: Time-stamp: <2016-06-12 15:08:46>
 ##-------------------------------------------------------------------
 ################################################################################################
 # * By Jenkins config
@@ -28,8 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-# export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3377842358"
+bash /var/lib/devops/refresh_common_library.sh "2315423718"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 # TODO: Code quality of this file is low, need to refine or even re-write

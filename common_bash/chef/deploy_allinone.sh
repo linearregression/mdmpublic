@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-10 13:44:26>
+## Updated: Time-stamp: <2016-06-12 15:08:31>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,8 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-# export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "3377842358"
+bash /var/lib/devops/refresh_common_library.sh "2315423718"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
