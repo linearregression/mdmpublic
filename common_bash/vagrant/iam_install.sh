@@ -18,7 +18,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
 # export AVOID_REFRESH_LIBRARY=true
-bash /var/lib/devops/refresh_common_library.sh "1352904353"
+bash /var/lib/devops/refresh_common_library.sh "3301728672"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function start_docker_daemon() {
