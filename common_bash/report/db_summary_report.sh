@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-12 10:42:51>
+## Updated: Time-stamp: <2016-06-12 10:59:46>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -40,6 +40,9 @@ if [ ! -f "$dump_db_summary_sh" ] || [ "$REFRESH_BASH" = "true" ]; then
     wget -O "$dump_db_summary_sh" \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/dump_db_summary/dump_db_summary.sh
 fi
+
+[ -d "$CFG_DIR" ] || sudo mkdir -p "$CFG_DIR"; sudo chmod 777 "$CFG_DIR"
+[ -d "$DATA_OUT_DIR" ] || sudo mkdir -p "$DATA_OUT_DIR"; sudo chmod 777 "$DATA_OUT_DIR"
 
 bash -e "$dump_db_summary_sh" "$STDOUT_SHOW_DATA_OUT" "$cfg_dir" "$data_out_dir"
 ## File : db_summary_report.sh ends
