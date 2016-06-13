@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-12>
-## Updated: Time-stamp: <2016-06-13 17:22:02>
+## Updated: Time-stamp: <2016-06-13 17:33:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -77,7 +77,6 @@ $SSH_CONNECT1 "$command"
 echo "=============== On $ssh_server2, run: $command"
 $SSH_CONNECT2 "$command"
 
-echo "=============== Download $OUTPUT_DIR to local"
 download_dir1="${server_ip1}-${server_port1}"
 download_dir2="${server_ip2}-${server_port2}"
 rm -rf "$TRANSFER_DST_PATH"/*
@@ -96,6 +95,10 @@ cd "$TRANSFER_DST_PATH"
 diff_command="diff -rq $download_dir1 $download_dir2"
 echo "=============== $diff_command"
 diff -rq "$download_dir1" "$download_dir2" || true
+
+command="diff ${download_dir1}/os.txt ${download_dir2}/os.txt || true"
+echo "=============== $command"
+eval "$command"
 
 # Print download link at the bottom
 if [ -n "$JENKINS_BASEURL" ]; then

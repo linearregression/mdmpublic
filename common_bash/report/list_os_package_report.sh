@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-13 17:22:13>
+## Updated: Time-stamp: <2016-06-13 17:31:14>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -58,7 +58,6 @@ command="bash -e $bash_sh $CHECK_SCENARIO $OUTPUT_DIR"
 echo "=============== On $ssh_server, run: $command"
 $SSH_CONNECT "$command"
 
-echo "=============== Download $OUTPUT_DIR to local"
 download_dir="${server_ip}-${server_port}"
 rm -rf "$TRANSFER_DST_PATH"/*
 cd "$TRANSFER_DST_PATH"
@@ -67,6 +66,10 @@ mkdir -p "$download_dir"
 scp_command="scp -P $server_port -r -i $ssh_key_file -o StrictHostKeyChecking=no $ssh_username@$server_ip:${OUTPUT_DIR}/* $TRANSFER_DST_PATH/${download_dir}/"
 echo "=============== $scp_command"
 $scp_command
+
+command="cat $TRANSFER_DST_PATH/${download_dir}/os.txt"
+echo "=============== $command"
+eval "$command"
 
 # Print download link at the bottom
 if [ -n "$JENKINS_BASEURL" ]; then
