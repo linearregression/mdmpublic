@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-12 15:09:26>
+## Updated: Time-stamp: <2016-06-12 20:18:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,14 +34,15 @@ source_string "$env_parameters"
 [ -n "$REFRESH_BASH" ] || REFRESH_BASH=false
 
 # TODO: better way to update below script
-dump_db_summary_sh="/var/lib/devops/dump_db_summary.sh"
-if [ ! -f "$dump_db_summary_sh" ] || [ "$REFRESH_BASH" = "true" ]; then
-    wget -O "$dump_db_summary_sh" \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/dump_db_summary/dump_db_summary.sh
+bash_sh="/var/lib/devops/dump_db_summary.sh"
+if [ ! -f "$bash_sh" ] || [ "$REFRESH_BASH" = "true" ]; then
+    wget -O "$bash_sh" \
+         https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/dump_db_summary/dump_db_summary.sh \
+         1>/dev/null 2>&1
 fi
 
 [ -d "$CFG_DIR" ] || sudo mkdir -p "$CFG_DIR"; sudo chmod 777 "$CFG_DIR"
 [ -d "$DATA_OUT_DIR" ] || sudo mkdir -p "$DATA_OUT_DIR"; sudo chmod 777 "$DATA_OUT_DIR"
 
-bash -e "$dump_db_summary_sh" "$STDOUT_SHOW_DATA_OUT" "$cfg_dir" "$data_out_dir"
+bash -e "$bash_sh" "$STDOUT_SHOW_DATA_OUT" "$cfg_dir" "$data_out_dir"
 ## File : db_summary_report.sh ends
