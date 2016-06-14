@@ -31,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "574434721"
+bash /var/lib/devops/refresh_common_library.sh "2825049404"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function monitor_server_filechanges() {

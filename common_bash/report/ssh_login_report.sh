@@ -13,7 +13,7 @@
 ##              sometimes no client ip tracked in auth.log
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-12 15:09:33>
+## Updated: Time-stamp: <2016-06-14 11:16:44>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -30,7 +30,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "574434721"
+bash /var/lib/devops/refresh_common_library.sh "2825049404"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function compare_two_timestamp() {
@@ -225,7 +225,6 @@ function ssh_login_events() {
 
 function shell_exit() {
     errcode=$?
-    tmp_file="/tmp/ssh_login_report_$$"
     rm -rf "$tmp_file"
     exit $errcode
 }
