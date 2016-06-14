@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-14 14:47:12>
+## Updated: Time-stamp: <2016-06-14 14:59:52>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -74,8 +74,9 @@ function ssh_latency() {
 check_method=\${1?}
 server_list=\${2?}
 ssh_key_file=\${3:-""}
-output_file=\${4:-"/tmp/_check_latency.log"}
-echo "\$check_method below servers" > "\$output_file"
+output_file=\${4:-"/tmp/check_latency.log"}
+eth0_ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
+echo "\$check_method below servers from \$eth0_ip" > "\$output_file"
 IFS=\$'\n'
 for server in \${server_list}; do
     unset IFS
