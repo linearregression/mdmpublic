@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-14 15:05:28>
+## Updated: Time-stamp: <2016-06-14 16:28:24>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1896802815"
+bash /var/lib/devops/refresh_common_library.sh "4235938678"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function upload_check_script() {
@@ -50,11 +50,17 @@ function ping_latency() {
         echo "ERROR: \$latency"
     fi
 }
+
 function ssh_latency() {
     local ssh_ip=\${1?}
     local ssh_port=\${2?}
     local ssh_username=\${3?}
     local ssh_key_file=\${4?}
+
+    if [ ! -f "\$ssh_key_file" ]; then
+       echo "ERROR: Wrong ssh keyfile. \$ssh_key_file doesn't exist"
+       exit 1
+    fi
 
     ssh_connecttimeout=8
     start_timestamp=\$(date +%s%3N)
@@ -96,7 +102,7 @@ for server in \${server_list}; do
     esac
     echo "\$ssh_server_ip:\$ssh_port \$latency" >> "\$output_file"
 done
-echo -e "\n==========Show Report: \$(cat \$output_file)"
+echo -e "\n========== Show Latency Report: \$(cat \$output_file)"
 EOF
     scp -i "$ssh_key_file" -P "$server_port" -o StrictHostKeyChecking=no "$tmp_file" \
         "$ssh_username@$server_ip:$tmp_file"
@@ -117,6 +123,7 @@ target_server_list=$(string_strip_whitespace "$target_server_list")
 # TODO: defensive coding for $connect_key_file
 
 # Input Parameters check
+verify_comon_jenkins_parameters
 check_list_fields "IP:TCP_PORT:STRING" "$from_ssh_server"
 check_list_fields "IP:TCP_PORT:STRING" "$target_server_list"
 enforce_ssh_check "true" "$from_ssh_server" "$ssh_key_file"

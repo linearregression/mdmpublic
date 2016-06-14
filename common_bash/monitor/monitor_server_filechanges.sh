@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-12 15:09:23>
+## Updated: Time-stamp: <2016-06-14 16:18:15>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -31,7 +31,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1896802815"
+bash /var/lib/devops/refresh_common_library.sh "4235938678"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function monitor_server_filechanges() {
@@ -87,10 +87,10 @@ source_string "$env_parameters"
 
 # fail_unless_os "ubuntu/redhat/centos"
 
-[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$ssh_key_file" ] || export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || export EXIT_NODE_CONNECT_FAIL=false
 [ -n "$start_inotifywait_when_stopped" ] || start_inotifywait_when_stopped=true
 [ -n "$BACKUP_OLD_DIR" ] || BACKUP_OLD_DIR=/root/monitor_backup
-[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=false
 
 log_file="/root/monitor_server_filechanges.log"
 server_list=$(string_strip_comments "$server_list")
@@ -100,8 +100,7 @@ file_list=$(string_strip_comments "$file_list")
 file_list=$(string_strip_whitespace "$file_list")
 
 # Input Parameters check
-check_list_fields "IP:TCP_PORT" "$server_list"
-enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$server_list" "$ssh_key_file"
+verify_comon_jenkins_parameters
 
 has_error="0"
 

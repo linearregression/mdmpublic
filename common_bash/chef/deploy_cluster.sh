@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-12 15:08:33>
+## Updated: Time-stamp: <2016-06-14 16:17:43>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -61,7 +61,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1896802815"
+bash /var/lib/devops/refresh_common_library.sh "4235938678"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function init_cluster() {
@@ -122,9 +122,9 @@ server_list=$(string_strip_comments "$server_list")
 server_list=$(string_strip_whitespace "$server_list")
 echo "server_list: ${server_list}"
 
-[ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
-[ -n "$KILL_RUNNING_CHEF_UPDATE" ] || KILL_RUNNING_CHEF_UPDATE=false
-[ -n "$EXIT_NODE_CONNECT_FAIL" ] || EXIT_NODE_CONNECT_FAIL=true
+[ -n "$ssh_key_file" ] || export ssh_key_file="/var/lib/jenkins/.ssh/ci_id_rsa"
+[ -n "$KILL_RUNNING_CHEF_UPDATE" ] || export KILL_RUNNING_CHEF_UPDATE=false
+[ -n "$EXIT_NODE_CONNECT_FAIL" ] || export EXIT_NODE_CONNECT_FAIL=true
 [ -n "$code_dir" ] || code_dir="/root/test"
 # TODO: use chef-zero, instead of chef-solo
 #[ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-client
@@ -146,10 +146,8 @@ if [ -n "$CODE_SH" ]; then
 fi
 
 # Input parameters check
-check_list_fields "IP:TCP_PORT" "$server_list"
+verify_comon_jenkins_parameters
 enforce_ip_ping_check "$EXIT_NODE_CONNECT_FAIL" "chef_json" "$chef_json"
-enforce_ip_ping_check "$EXIT_NODE_CONNECT_FAIL" "server_list" "$server_list"
-enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$server_list" "$ssh_key_file"
 
 ################################################################################
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
