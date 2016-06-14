@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-14 14:59:52>
+## Updated: Time-stamp: <2016-06-14 15:05:28>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -61,9 +61,8 @@ function ssh_latency() {
     command="ssh -o BatchMode=yes -o ConnectTimeout=\$ssh_connecttimeout -o StrictHostKeyChecking=no -i \$ssh_key_file -p \$ssh_port \$ssh_username@\$ssh_ip echo ok 2>&1"
     output=\$(eval "\$command")
     if [ \$? -eq 0 ]; then
-        end_timestamp=\$(date  +%s%3N)
-        diff_timestamp=\$(echo "(\$end_timestamp - \$start_timestamp)" | bc)
-        latency=\$(python -c "print(\$diff_timestamp/1000.0)")
+        end_timestamp=\$(date +%s%3N)
+        latency=\$(echo "(\$end_timestamp - \$start_timestamp)" | bc)
         echo "\$latency ms"
     else
         latency=\$(echo "\$output" | tail -n1)
