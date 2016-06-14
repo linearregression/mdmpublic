@@ -27,7 +27,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1309341070"
+bash /var/lib/devops/refresh_common_library.sh "2727918430"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
