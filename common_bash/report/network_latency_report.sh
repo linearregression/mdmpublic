@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-14 14:36:46>
+## Updated: Time-stamp: <2016-06-14 14:47:12>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -106,7 +106,7 @@ EOF
 source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$CHECK_METHOD" ] || CHECK_METHOD="ssh"
-tmp_file="/tmp/network_latency_report.sh"
+tmp_file="/tmp/network_latency.sh"
 
 from_ssh_server=$(string_strip_whitespace "$from_ssh_server")
 from_ssh_server=$(string_strip_whitespace "$from_ssh_server")
