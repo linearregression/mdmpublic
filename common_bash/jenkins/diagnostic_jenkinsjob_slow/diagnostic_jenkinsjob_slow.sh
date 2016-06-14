@@ -26,7 +26,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "2315423718"
+bash /var/lib/devops/refresh_common_library.sh "2361792088"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function install_sqlite() {

@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-12 20:18:38>
+## Updated: Time-stamp: <2016-06-13 20:59:39>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -24,7 +24,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "2315423718"
+bash /var/lib/devops/refresh_common_library.sh "2361792088"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 source_string "$env_parameters"
@@ -44,5 +44,5 @@ fi
 [ -d "$CFG_DIR" ] || sudo mkdir -p "$CFG_DIR"; sudo chmod 777 "$CFG_DIR"
 [ -d "$DATA_OUT_DIR" ] || sudo mkdir -p "$DATA_OUT_DIR"; sudo chmod 777 "$DATA_OUT_DIR"
 
-bash -e "$bash_sh" "$STDOUT_SHOW_DATA_OUT" "$cfg_dir" "$data_out_dir"
+bash -e "$bash_sh" "$STDOUT_SHOW_DATA_OUT" "$CFG_DIR" "$DATA_OUT_DIR"
 ## File : db_summary_report.sh ends

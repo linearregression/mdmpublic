@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-13 17:31:14>
+## Updated: Time-stamp: <2016-06-13 20:58:34>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,7 +25,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "2315423718"
+bash /var/lib/devops/refresh_common_library.sh "2361792088"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 source_string "$env_parameters"
@@ -59,7 +59,7 @@ echo "=============== On $ssh_server, run: $command"
 $SSH_CONNECT "$command"
 
 download_dir="${server_ip}-${server_port}"
-rm -rf "$TRANSFER_DST_PATH"/*
+rm -rf "${TRANSFER_DST_PATH:?}"/*
 cd "$TRANSFER_DST_PATH"
 mkdir -p "$download_dir"
 
