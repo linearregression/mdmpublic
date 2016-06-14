@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-14 12:47:27>
+## Updated: Time-stamp: <2016-06-14 14:36:46>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -107,6 +107,12 @@ source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$CHECK_METHOD" ] || CHECK_METHOD="ssh"
 tmp_file="/tmp/network_latency_report.sh"
+
+from_ssh_server=$(string_strip_whitespace "$from_ssh_server")
+from_ssh_server=$(string_strip_whitespace "$from_ssh_server")
+
+target_server_list=$(string_strip_comments "$target_server_list")
+target_server_list=$(string_strip_whitespace "$target_server_list")
 
 # TODO: defensive coding for $connect_key_file
 
