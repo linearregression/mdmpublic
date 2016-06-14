@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-06-14 16:41:27>
+## Updated: Time-stamp: <2016-06-14 16:43:11>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -27,7 +27,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "2196306341"
+bash /var/lib/devops/refresh_common_library.sh "397373182"
 . /var/lib/devops/devops_common_library.sh
 
 fail_unless_os "ubuntu|redhat/centos/osx"
@@ -135,7 +135,7 @@ end
 $test_spec
 EOF
 
-echo "Perform serverspec check"
+echo "Perform serverspec check: $working_dir/spec/localhost/sample_spec.rb"
 rake spec -v
 
 # # TODO: integrate below bash section into serverspec
