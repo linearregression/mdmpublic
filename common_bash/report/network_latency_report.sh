@@ -4,8 +4,8 @@
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
-## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-14 16:28:24>
+## Created : <2016-06-14>
+## Updated: Time-stamp: <2016-06-15 08:52:20>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -16,6 +16,7 @@
 ##           192.168.1.4:2704:root
 ##      env_parameters:
 ##          export CHECK_METHOD="ssh"
+##          export TIMEOUT_THRESHOLD_MS="600"
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export connect_key_file="/root/.ssh/test_id_rsa"
 ################################################################################################
@@ -44,8 +45,12 @@ function ping_latency() {
     output=\$(eval "\$command")
     if [ \$? -eq 0 ]; then
         latency=\$(echo "\$output" | grep 'round-trip' | awk -F'=' '{print \$2}' | awk -F'/' '{print \$2}')
-        echo "\$latency ms"
+        echo "\${latency}ms"
+        if [ "\$latency" -gt "\$timeout_threshold_ms" ]; then
+            has_error=true
+        fi
     else
+        has_error=true
         latency=\$(echo "\$output" | tail -n1)
         echo "ERROR: \$latency"
     fi
@@ -69,17 +74,25 @@ function ssh_latency() {
     if [ \$? -eq 0 ]; then
         end_timestamp=\$(date +%s%3N)
         latency=\$(echo "(\$end_timestamp - \$start_timestamp)" | bc)
-        echo "\$latency ms"
+        echo "\${latency}ms"
+        if [ "\$latency" -gt "\$timeout_threshold_ms" ]; then
+            has_error=true
+        fi
     else
+        has_error=true
         latency=\$(echo "\$output" | tail -n1)
         echo "ERROR: \$latency"
     fi
 }
+
 ################################################################################
 check_method=\${1?}
 server_list=\${2?}
 ssh_key_file=\${3:-""}
 output_file=\${4:-"/tmp/check_latency.log"}
+timeout_threshold_ms=\${5:-"600"}
+
+has_error=false
 eth0_ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
 echo "\$check_method below servers from \$eth0_ip" > "\$output_file"
 IFS=\$'\n'
@@ -103,6 +116,11 @@ for server in \${server_list}; do
     echo "\$ssh_server_ip:\$ssh_port \$latency" >> "\$output_file"
 done
 echo -e "\n========== Show Latency Report: \$(cat \$output_file)"
+
+if ! \$has_error; then
+   echo "ERROR: Some requests took more than \${timeout_threshold_ms}ms"
+   exit 1
+fi
 EOF
     scp -i "$ssh_key_file" -P "$server_port" -o StrictHostKeyChecking=no "$tmp_file" \
         "$ssh_username@$server_ip:$tmp_file"
@@ -112,6 +130,7 @@ EOF
 source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 [ -n "$CHECK_METHOD" ] || CHECK_METHOD="ssh"
+[ -n "$TIMEOUT_THRESHOLD_MS" ] || TIMEOUT_THRESHOLD_MS="600"
 tmp_file="/tmp/network_latency.sh"
 
 from_ssh_server=$(string_strip_whitespace "$from_ssh_server")
@@ -138,7 +157,7 @@ ssh_username=${server_split[2]}
 upload_check_script "$server_ip" "$server_port" "$ssh_username" "$ssh_key_file" "$tmp_file"
 SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 
-command="bash $tmp_file \"$CHECK_METHOD\" \"$target_server_list\" \"$connect_key_file\""
+command="bash $tmp_file \"$CHECK_METHOD\" \"$target_server_list\" \"$connect_key_file\" \"$TIMEOUT_THRESHOLD_MS\""
 echo "Run $CHECK_METHOD check from $server_ip:$server_port"
 
 $SSH_CONNECT "$command"
