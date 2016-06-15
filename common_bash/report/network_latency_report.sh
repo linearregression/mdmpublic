@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-15 08:52:20>
+## Updated: Time-stamp: <2016-06-15 09:16:36>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -45,12 +45,8 @@ function ping_latency() {
     output=\$(eval "\$command")
     if [ \$? -eq 0 ]; then
         latency=\$(echo "\$output" | grep 'round-trip' | awk -F'=' '{print \$2}' | awk -F'/' '{print \$2}')
-        echo "\${latency}ms"
-        if [ "\$latency" -gt "\$timeout_threshold_ms" ]; then
-            has_error=true
-        fi
+        echo "\$latency"
     else
-        has_error=true
         latency=\$(echo "\$output" | tail -n1)
         echo "ERROR: \$latency"
     fi
@@ -74,12 +70,8 @@ function ssh_latency() {
     if [ \$? -eq 0 ]; then
         end_timestamp=\$(date +%s%3N)
         latency=\$(echo "(\$end_timestamp - \$start_timestamp)" | bc)
-        echo "\${latency}ms"
-        if [ "\$latency" -gt "\$timeout_threshold_ms" ]; then
-            has_error=true
-        fi
+        echo "\$latency"
     else
-        has_error=true
         latency=\$(echo "\$output" | tail -n1)
         echo "ERROR: \$latency"
     fi
@@ -88,9 +80,9 @@ function ssh_latency() {
 ################################################################################
 check_method=\${1?}
 server_list=\${2?}
-ssh_key_file=\${3:-""}
-output_file=\${4:-"/tmp/check_latency.log"}
-timeout_threshold_ms=\${5:-"600"}
+timeout_threshold_ms=\${3?}
+ssh_key_file=\${4:-""}
+output_file=\${5:-"/tmp/latency_report.log"}
 
 has_error=false
 eth0_ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
@@ -113,11 +105,20 @@ for server in \${server_list}; do
             exit 1
             ;;
     esac
+    # Update result
+    if echo "\$latency" | grep "ERROR: " 1>/dev/null 2>&1; then
+        has_error=true
+    else
+        if [ "\$latency" -gt "\$timeout_threshold_ms" ]; then
+            has_error=true
+        fi
+        latency="\${latency}ms"
+    fi
     echo "\$ssh_server_ip:\$ssh_port \$latency" >> "\$output_file"
 done
 echo -e "\n========== Show Latency Report: \$(cat \$output_file)"
 
-if ! \$has_error; then
+if \$has_error; then
    echo "ERROR: Some requests took more than \${timeout_threshold_ms}ms"
    exit 1
 fi
@@ -157,7 +158,7 @@ ssh_username=${server_split[2]}
 upload_check_script "$server_ip" "$server_port" "$ssh_username" "$ssh_key_file" "$tmp_file"
 SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 
-command="bash $tmp_file \"$CHECK_METHOD\" \"$target_server_list\" \"$connect_key_file\" \"$TIMEOUT_THRESHOLD_MS\""
+command="bash -e $tmp_file \"$CHECK_METHOD\" \"$target_server_list\" \"$TIMEOUT_THRESHOLD_MS\" \"$connect_key_file\""
 echo "Run $CHECK_METHOD check from $server_ip:$server_port"
 
 $SSH_CONNECT "$command"
