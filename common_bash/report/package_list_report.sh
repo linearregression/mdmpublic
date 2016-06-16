@@ -1,11 +1,11 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
-## File : list_os_package_report.sh
+## File : package_list_report.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-13 20:58:34>
+## Updated: Time-stamp: <2016-06-16 17:59:07>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -75,4 +75,4 @@ eval "$command"
 if [ -n "$JENKINS_BASEURL" ]; then
     echo -e "=============== Download link:\n${JENKINS_BASEURL}/job/${JOB_NAME}/ws/"
 fi
-## File : list_os_package_report.sh ends
+## File : package_list_report.sh ends
