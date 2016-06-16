@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-12 15:08:54>
+## Updated: Time-stamp: <2016-06-16 15:46:53>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,7 +34,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "403156311"
+bash /var/lib/devops/refresh_common_library.sh "684252554"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_log() {
@@ -109,7 +109,7 @@ function shell_exit() {
 
 ########################################################################
 # Build Repo
-git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+git_repo=$(parse_git_repo "$git_repo_url")
 code_dir=$working_dir/$branch_name/$git_repo
 
 trap shell_exit SIGHUP SIGINT SIGTERM 0

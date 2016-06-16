@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-14 16:17:43>
+## Updated: Time-stamp: <2016-06-16 15:46:54>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -61,7 +61,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "403156311"
+bash /var/lib/devops/refresh_common_library.sh "684252554"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function init_cluster() {
@@ -129,7 +129,7 @@ echo "server_list: ${server_list}"
 # TODO: use chef-zero, instead of chef-solo
 #[ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-client
 [ -n "$CHEF_BINARY_CMD" ] || CHEF_BINARY_CMD=chef-solo
-git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+git_repo=$(parse_git_repo "$git_repo_url")
 
 export common_ssh_options="-i $ssh_key_file -o StrictHostKeyChecking=no "
 if [ -z "$chef_client_rb" ]; then

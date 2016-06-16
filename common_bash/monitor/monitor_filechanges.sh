@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-12 15:09:16>
+## Updated: Time-stamp: <2016-06-16 16:19:17>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,7 +34,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "403156311"
+bash /var/lib/devops/refresh_common_library.sh "684252554"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function git_changed_filelist() {
@@ -87,7 +87,7 @@ function git_http_compare_link() {
     #       str: gitlabcn.dennyzhang.com:customer
     #       group_name: devops
     #       git_repo: mydevops
-    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    git_repo=$(parse_git_repo "$git_repo_url")
     str=${git_repo_url%.git}
     str=${str#git@}
     str=${str%/*}
@@ -104,7 +104,7 @@ source_string "$env_parameters"
 
 log "env variables. CLEAN_START: $CLEAN_START"
 
-git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+git_repo=$(parse_git_repo "$git_repo_url")
 code_dir=$working_dir/$branch_name/$git_repo
 
 filelist_to_monitor=$(string_strip_comments "$filelist_to_monitor")
@@ -136,11 +136,9 @@ fi
 # Update code
 git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 code_dir="$working_dir/$branch_name/$git_repo"
-cd "$code_dir"
-
 changed_file_list=""
-cd "$code_dir"
 
+cd "$code_dir"
 new_sha=$(current_git_sha "$code_dir")
 
 if [ -z "$old_sha" ] || [ "$old_sha" = "$new_sha" ]; then

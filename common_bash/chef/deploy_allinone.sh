@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-12 15:08:31>
+## Updated: Time-stamp: <2016-06-16 15:46:54>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "403156311"
+bash /var/lib/devops/refresh_common_library.sh "684252554"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -102,7 +102,7 @@ check_list_fields "TCP_PORT" "$ssh_port"
 enforce_ssh_check "$EXIT_NODE_CONNECT_FAIL" "$ssh_server_ip:$ssh_port" "$ssh_key_file"
 
 if [ -z "$chef_client_rb" ]; then
-    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    git_repo=$(parse_git_repo "$git_repo_url")
     chef_client_rb="cookbook_path [\"$code_dir/$devops_branch_name/$git_repo/cookbooks\",\"$code_dir/$devops_branch_name/$git_repo/community_cookbooks\"]"
 else
     chef_client_rb=$(echo "$chef_client_rb" | sed -e "s/ +/ /g")
@@ -132,7 +132,7 @@ fi
 
 if [ -n "$CODE_SH" ]; then
     log "Update git codes"
-    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    git_repo=$(parse_git_repo "$git_repo_url")
     # ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip $CODE_SH $code_dir $git_repo_url $git_repo $devops_branch_name
     # TODO: remove this line and replace to above
     ssh -i $ssh_key_file -p "$ssh_port" -o StrictHostKeyChecking=no "root@$ssh_server_ip" "$CODE_SH" "$code_dir" "$git_repo_url" "$devops_branch_name" "all-in-one"

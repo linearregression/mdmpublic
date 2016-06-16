@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-12 15:09:04>
+## Updated: Time-stamp: <2016-06-16 15:46:53>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -29,7 +29,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "403156311"
+bash /var/lib/devops/refresh_common_library.sh "684252554"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function shell_exit() {
@@ -67,7 +67,7 @@ function git_update_dst_repo() {
     local git_repo_url=${3?}
 
     local git_repo
-    git_repo=$(echo "${git_repo_url%.git}" | awk -F '/' '{print $2}')
+    git_repo=$(parse_git_repo "$git_repo_url")
 
     local code_dir="$working_dir/$branch_name/$git_repo"
     echo "Git update code for $git_repo_url to $code_dir"
