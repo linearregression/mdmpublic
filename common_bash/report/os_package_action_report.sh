@@ -10,7 +10,7 @@
 ##
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-17 09:38:00>
+## Updated: Time-stamp: <2016-06-17 11:00:24>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -84,7 +84,15 @@ function safe_package_list() {
     local os_version=${1?}
     case "$os_version" in
         ubuntu-14.04)
-            package_list="apt apt-utils base-files bc bsdutils build-essential coreutils cpio curl dpkg e2fslibs e2fsprogs gcc-4.8 gcc-4.9-base git git-core gnupg gpgv htop ifupdown initramfs-tools initramfs-tools-bin inotify-tools libapt-inst1.5 libapt-pkg4.12 libblkid1 libc-bin libc6 libcgmanager0 libcomerr2 libcurl3 libdrm2 libgcc1 libgcrypt11 libgnutls-openssl27 libgnutls26 libmount1 libpython3.4-minimal libpython3.4-stdlib libss2 libssl1.0.0 libtasn1-6 libudev1 libuuid1 lsb-release lsof mount multiarch-support netcat ntpdate openssh-client openssh-server openssl python3.4 python3.4-minimal rsyslog strace sudo sysstat tar tcpdump telnet tmux tree tzdata udev unzip util-linux vim wget zip";;
+            package_list="apt apt-utils base-files bc bsdutils build-essential \
+coreutils cpio curl dpkg e2fslibs e2fsprogs gcc-4.8 gcc-4.9-base git git-core \
+gnupg gpgv htop ifupdown initramfs-tools initramfs-tools-bin inotify-tools \
+libapt-inst1.5 libapt-pkg4.12 libblkid1 libc-bin libc6 libcgmanager0 libcomerr2 \
+libcurl3 libdrm2 libgcc1 libgcrypt11 libgnutls-openssl27 libgnutls26 libmount1 \
+libpython3.4-minimal libpython3.4-stdlib libss2 libssl1.0.0 libtasn1-6 libudev1 \
+libuuid1 lsb-release lsof mount multiarch-support netcat ntpdate openssh-client \
+openssh-server openssl python3.4 python3.4-minimal rsyslog strace sudo sysstat \
+tar tcpdump telnet tmux tree tzdata udev unzip util-linux vim wget zip";;
         *)
             echo "ERROR: Not supported OS: $os_versoin"
             exit 1
@@ -152,7 +160,6 @@ source_string "$env_parameters"
 [ -n "$HAS_INIT_ANALYSIS" ] || HAS_INIT_ANALYSIS=false
 [ -n "$WORKING_DIR" ] || WORKING_DIR=/tmp/package_log
 [ -n "$OS_VERSION" ] || OS_VERSION="ubuntu-14.04"
-
 
 ACTION_LOG_FILE="$WORKING_DIR/package_action.log"
 
