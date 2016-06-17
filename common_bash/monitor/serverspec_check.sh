@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-06-17 10:11:12>
+## Updated: Time-stamp: <2016-06-17 10:37:48>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -105,6 +105,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 #####################################################
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
+
 mkdir -p "$working_dir/spec/localhost"
 cd "$working_dir"
 

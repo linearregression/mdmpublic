@@ -10,7 +10,7 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/BashCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-16 15:46:54>
+## Updated: Time-stamp: <2016-06-17 10:37:48>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -123,7 +123,6 @@ function shell_exit() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 source_string "$env_parameters"
-
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/codestyle"
 [ -n "$SHELLCHECK_IGNORE_FILE" ] || SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"
 
