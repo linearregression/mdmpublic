@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-16 16:19:17>
+## Updated: Time-stamp: <2016-06-17 10:01:02>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -101,6 +101,7 @@ function git_http_compare_link() {
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
 
 log "env variables. CLEAN_START: $CLEAN_START"
 

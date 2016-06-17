@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-06-16 15:46:45>
+## Updated: Time-stamp: <2016-06-17 10:01:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -48,7 +48,8 @@ function get_effort_summary() {
     done
     echo -e "$result"
 }
-
+################################################################################################
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
 if [ -z "$start_weekday" ]; then
     start_weekday=$(date -d 'last Monday' '+%Y-%m-%d')
 fi

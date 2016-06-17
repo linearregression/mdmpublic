@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-16 17:15:18>
+## Updated: Time-stamp: <2016-06-17 10:01:06>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -66,6 +66,7 @@ function shell_exit() {
 ########################################################################
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 source_string "$env_parameters"
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
 
 git_repo=$(parse_git_repo "$git_repo_url")
 code_dir="$working_dir/$branch_name/$git_repo"

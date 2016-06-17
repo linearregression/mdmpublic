@@ -10,7 +10,7 @@
 ##
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-17 07:28:58>
+## Updated: Time-stamp: <2016-06-17 09:38:00>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -18,6 +18,7 @@
 ##     env_parameters:
 ##         export HAS_INIT_ANALYSIS=false
 ##         export PARSE_MAXIMUM_ENTRIES="500"
+##         export OS_VERSION="ubuntu-14.04"
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -150,6 +151,8 @@ source_string "$env_parameters"
 [ -n "$PARSE_MAXIMUM_ENTRIES" ] || PARSE_MAXIMUM_ENTRIES="500"
 [ -n "$HAS_INIT_ANALYSIS" ] || HAS_INIT_ANALYSIS=false
 [ -n "$WORKING_DIR" ] || WORKING_DIR=/tmp/package_log
+[ -n "$OS_VERSION" ] || OS_VERSION="ubuntu-14.04"
+
 
 ACTION_LOG_FILE="$WORKING_DIR/package_action.log"
 
@@ -173,12 +176,10 @@ fi
 echo -e "\n========== Package Installation Log:"
 show_package_report "$ACTION_LOG_FILE" "$PARSE_MAXIMUM_ENTRIES"
 
-# TODO: get os version from ssh command
-os_version="ubuntu-14.04"
-output=$(get_current_package_list "$os_version")
+output=$(get_current_package_list "$OS_VERSION")
 if echo -e "$output" | grep "ERROR: "; then
     "Skip detecting what new packages installed since pure OS installation"
 else
-    detect_new_installed_packages "$os_version"
+    detect_new_installed_packages "$OS_VERSION"
 fi
 ## File : os_package_action_report.sh ends

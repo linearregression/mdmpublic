@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-16 15:46:53>
+## Updated: Time-stamp: <2016-06-17 10:00:47>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -100,6 +100,7 @@ EOF
 
 ################################################################################################
 source_string "$env_parameters"
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
 
 git_repo=$(parse_git_repo "$git_repo_url")
 code_dir=$working_dir/$branch_name/$git_repo

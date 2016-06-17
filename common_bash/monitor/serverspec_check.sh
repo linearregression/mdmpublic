@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-06-14 16:43:11>
+## Updated: Time-stamp: <2016-06-17 10:01:18>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -106,9 +106,7 @@ function shell_exit() {
 trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 #####################################################
-if [ -z "$working_dir" ]; then
-    working_dir="/var/lib/jenkins/serverspec"
-fi
+[ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
 mkdir -p $working_dir/spec/localhost
 cd $working_dir
 
