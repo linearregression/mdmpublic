@@ -9,12 +9,10 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-17 10:01:02>
+## Updated: Time-stamp: <2016-06-17 10:09:02>
 ##-------------------------------------------------------------------
-
 ################################################################################################
 ## env variables:
-##      working_dir: /var/lib/jenkins/code/monitorfile
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
 ##      filelist_to_monitor:
 ##          account/src/main/resources/XXX.properties
@@ -26,7 +24,7 @@
 ##      env_parameters:
 ##         export mark_previous_fixed=false
 ##         export CLEAN_START=false
-##
+##         export working_dir=/var/lib/jenkins/code/monitorfile
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

@@ -9,14 +9,11 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-17 10:00:55>
+## Updated: Time-stamp: <2016-06-17 10:07:08>
 ##-------------------------------------------------------------------
-
 ################################################################################################
 ## env variables:
-##      working_dir: /var/lib/jenkins/code
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
-##      branch_name: dev
 ##      branch_name: dev
 ##      files_to_copy: gateway/war/build/libs/gateway-war-1.0-SNAPSHOT.war oauth2/rest-service/build/libs/oauth2-rest-1.0-SNAPSHOT.war
 ##      env_parameters:
@@ -25,6 +22,7 @@
 ##           export SKIP_COPY=false
 ##           export IS_PACK_FILE=false
 ##           export IS_GENERATE_SHA1SUM=false
+##           export working_dir=/var/lib/jenkins/code/build
 ##      build_command: make
 ################################################################################################
 . /etc/profile

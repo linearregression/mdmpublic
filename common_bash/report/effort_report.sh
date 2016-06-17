@@ -9,14 +9,13 @@
 ## Description :
 ## --
 ## Created : <2015-10-13>
-## Updated: Time-stamp: <2016-06-17 10:01:38>
+## Updated: Time-stamp: <2016-06-17 10:09:56>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables: working_dir, git_repo_url, branch_nae, start_weekday
 ##
 ## Example:
-##      working_dir: /var/lib/jenkins/weekly_report
 ##      git_repo_url:"git@bitbucket.org:authright/devops_effort.git"
 ##      branch_name: master
 ##      start_weekday:"2015-10-12"

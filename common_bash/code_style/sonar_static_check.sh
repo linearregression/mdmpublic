@@ -9,11 +9,10 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-17 10:00:47>
+## Updated: Time-stamp: <2016-06-17 10:05:59>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
-##      working_dir: /var/lib/jenkins/code
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
 ##      branch_name: dev
 ##      env_parameters:
@@ -24,6 +23,7 @@
 ##         export SONAR_PROJECTNAME=
 ##         export REFRESH_SONAR_CONF=true
 ##         export SONAR_LANGUAGE=java
+##         export working_dir=/var/lib/jenkins/code/sonar
 ################################################################################################
 . /etc/profile
 ################################################################################################

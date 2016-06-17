@@ -9,17 +9,15 @@
 ## Description :
 ## --
 ## Created : <2015-07-29>
-## Updated: Time-stamp: <2016-06-17 10:01:18>
+## Updated: Time-stamp: <2016-06-17 10:11:12>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
-##      working_dir: /var/lib/jenkins/serverspec
 ##      test_spec:
 ##          describe service('apache2') do
 ##           it { should be_running }
 ##          end
-##
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
@@ -107,15 +105,15 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 #####################################################
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
-mkdir -p $working_dir/spec/localhost
-cd $working_dir
+mkdir -p "$working_dir/spec/localhost"
+cd "$working_dir"
 
 # sudo /usr/sbin/locale-gen --lang en_US.UTF-8
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 install_serverspec
-setup_serverspec $working_dir
+setup_serverspec "$working_dir"
 
 cat > spec/localhost/sample_spec.rb <<EOF
 require 'spec_helper'

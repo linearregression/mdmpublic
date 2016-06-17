@@ -9,13 +9,12 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-17 10:00:24>
+## Updated: Time-stamp: <2016-06-17 10:05:43>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
 ##      branch_name: dev
-##      working_dir: /var/lib/jenkins/code/dockerfeature
 ##      test_command: curl -L https://raw.githubusercontent.com/DennyZhang/data/master/jenkins/kitchen_raw_test.sh | bash
 ##      cookbook_list: gateway-auth oauth2-auth account-auth audit-auth mfa-auth message-auth platformportal-auth ssoportal-auth tenantadmin-auth
 ##      skip_cookbook_list: sandbox-test
@@ -29,6 +28,8 @@
 ##         export TEST_KITCHEN_YAML=
 ##               To test for *kitchen*.yml, set TEST_KITCHEN_YAML as ALL
 ##         export TEST_KITCHEN_YAML_BLACKLIST=".kitchen.vagrant.yml,.kitchen.digitalocean.yml"
+##         export working_dir=/var/lib/jenkins/code/dockerfeature
+
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
