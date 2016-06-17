@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-17 10:37:16>
+## Updated: Time-stamp: <2016-06-17 10:44:32>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -146,8 +146,8 @@ source_string "$env_parameters"
 [ -n "$TEST_KITCHEN_YAML" ] || TEST_KITCHEN_YAML=".kitchen.yml"
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
 
-code_dir=$working_dir/$branch_name/$git_repo
 git_repo=$(parse_git_repo "$git_repo_url")
+code_dir="$working_dir/$branch_name/$git_repo"
 
 if [ -n "$CLEAN_START" ] && $CLEAN_START; then
     [ ! -d "$code_dir" ] || sudo rm -rf "$code_dir"
