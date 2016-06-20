@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-21 07:09:56>
+## Updated: Time-stamp: <2016-06-21 07:15:46>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -22,7 +22,7 @@
 ##          gateway/protection/src/main/resources/config/routes/XXX.json
 ##      branch_name: dev
 ##      env_parameters:
-##         export mark_previous_fixed=false
+##         export MARK_PREVIOUS_FIXED=false
 ##         export CLEAN_START=false
 ##         export working_dir=/var/lib/jenkins/code/monitorfile
 ################################################################################################
@@ -107,7 +107,7 @@ git_repo=$(parse_git_repo "$git_repo_url")
 code_dir=$working_dir/$branch_name/$git_repo
 
 filelist_to_monitor=$(string_strip_comments "$filelist_to_monitor")
-if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
+if [ -n "$MARK_PREVIOUS_FIXED" ] && $MARK_PREVIOUS_FIXED; then
     rm -rf "$flag_file"
 fi
 

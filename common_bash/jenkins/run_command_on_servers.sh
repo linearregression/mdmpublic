@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-17 11:40:51>
+## Updated: Time-stamp: <2016-06-21 07:18:01>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -21,8 +21,8 @@
 ##        ls /opt/
 ##
 ##       env_parameters:
-##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export EXIT_NODE_CONNECT_FAIL=false
+##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
 

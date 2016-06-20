@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-14 16:17:58>
+## Updated: Time-stamp: <2016-06-21 07:17:02>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -39,7 +39,6 @@
 ##          export SERVER_REMOTE_COPY="104.236.159.226:22:root/data/backup/server1"
 ##          export JENKINS_BASEURL="http://123.57.240.189:58080"
 ##          export EXIT_NODE_CONNECT_FAIL=false
-##
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

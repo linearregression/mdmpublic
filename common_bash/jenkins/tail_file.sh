@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-21 07:05:44>
+## Updated: Time-stamp: <2016-06-21 07:18:08>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -27,8 +27,8 @@
 ##         eval: find /var/opt/gitlab/backups -name *.tar | head -n 1
 ##
 ##      env_parameters:
-##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export TAIL_LINE_COUNT=200
+##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

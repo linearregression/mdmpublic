@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-06-12 15:08:47>
+## Updated: Time-stamp: <2016-06-21 07:16:57>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -20,7 +20,6 @@
 ##
 ##      env_parameters:
 ##          export REMOVE_TMP_FILES=true
-##
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

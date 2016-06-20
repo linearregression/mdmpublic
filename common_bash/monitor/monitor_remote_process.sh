@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-02>
-## Updated: Time-stamp: <2016-06-12 15:09:22>
+## Updated: Time-stamp: <2016-06-21 07:18:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -20,7 +20,6 @@
 ##      env_parameters:
 ##         export UPDATE_SERVER_SCRIPT=true
 ##         export HISTORY_DIR="/opt/monitor_process/"
-##
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

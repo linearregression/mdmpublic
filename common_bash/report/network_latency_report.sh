@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-15 09:16:36>
+## Updated: Time-stamp: <2016-06-21 07:18:43>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -17,8 +17,8 @@
 ##      env_parameters:
 ##          export CHECK_METHOD="ssh"
 ##          export TIMEOUT_THRESHOLD_MS="600"
-##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export connect_key_file="/root/.ssh/test_id_rsa"
+##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

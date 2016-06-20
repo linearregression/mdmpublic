@@ -10,7 +10,7 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/BashCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-17 10:37:48>
+## Updated: Time-stamp: <2016-06-21 07:16:49>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -18,11 +18,11 @@
 ##           git@github.com:DennyZhang/devops_public.git,master
 ##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,master
 ##      env_parameters:
-##           export working_dir="/var/lib/jenkins/code/codestyle"
 ##           export EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001"
 ##           export SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"
 ##               ##  Use SHELLCHECK_IGNORE_FILE to skip checks for certain files
 ##               ##  The logic is similar like .gitignore for git
+##           export working_dir="/var/lib/jenkins/code/codestyle"
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then

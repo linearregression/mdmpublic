@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-17 10:09:13>
+## Updated: Time-stamp: <2016-06-21 07:16:06>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -17,7 +17,7 @@
 ##      branch_name: dev
 ##      activesprint_branch_pattern: ^sprint-[0-9]+$
 ##      env_parameters:
-##         export mark_previous_fixed=false
+##         export MARK_PREVIOUS_FIXED=false
 ##         export CLEAN_START=false
 ##         export working_dir=/var/lib/jenkins/code/monitorfile
 ################################################################################################
@@ -71,7 +71,7 @@ source_string "$env_parameters"
 git_repo=$(parse_git_repo "$git_repo_url")
 code_dir="$working_dir/$branch_name/$git_repo"
 
-if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
+if [ -n "$MARK_PREVIOUS_FIXED" ] && $MARK_PREVIOUS_FIXED; then
     rm -rf "$flag_file"
 fi
 
@@ -100,7 +100,7 @@ git_update_code "$branch_name" "$working_dir" "$git_repo_url"
 matched_branch_list=$(detect_matched_branch "$code_dir" "$activesprint_branch_pattern")
 echo -e "Potential Matched ActiveSprint List: \n$matched_branch_list"
 
-if [ -n "$mark_previous_fixed" ] && $mark_previous_fixed; then
+if [ -n "$MARK_PREVIOUS_FIXED" ] && $MARK_PREVIOUS_FIXED; then
     echo "$matched_branch_list" > "$previous_activesprint_file"
     exit 0
 fi

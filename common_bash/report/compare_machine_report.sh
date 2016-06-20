@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-12>
-## Updated: Time-stamp: <2016-06-13 20:58:30>
+## Updated: Time-stamp: <2016-06-21 07:18:27>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -17,8 +17,8 @@
 ##      env_parameters:
 ##          export CHECK_SCENARIO="all"
 ##          export OUTPUT_DIR="/root/version.d"
-##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ##          export JENKINS_BASEURL="http://123.57.240.189:58080"
+##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
