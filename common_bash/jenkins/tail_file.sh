@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-20 10:39:22>
+## Updated: Time-stamp: <2016-06-21 07:05:44>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -41,7 +41,7 @@ bash /var/lib/devops/refresh_common_library.sh "1457168676"
 ########################################################################
 function tail_files() {
     local ssh_server_ip=${1?}
-    local server_port=${2?}
+    local ssh_port=${2?}
     local ssh_username=${3?}
     local file_list=${4?}
 

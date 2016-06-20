@@ -4,12 +4,12 @@
 ## Licensed under MIT
 ##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
 ##
-## File : monitor_filechanges.sh
+## File : monitor_git_filechanges.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2015-08-05>
-## Updated: Time-stamp: <2016-06-17 10:09:02>
+## Updated: Time-stamp: <2016-06-21 07:09:56>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -151,4 +151,4 @@ else
         exit 1
     fi
 fi
-## File : monitor_filechanges.sh ends
+## File : monitor_git_filechanges.sh ends
