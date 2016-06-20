@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-04-14>
-## Updated: Time-stamp: <2016-06-20 10:29:22>
+## Updated: Time-stamp: <2016-06-20 10:39:22>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -66,7 +66,7 @@ function tail_files() {
         else
             # remove tailing /: /opt/devops/ --> /opt/devops
             t_file=${t_file%/}
-            echo "========= tail -n $TAIL_LINE_COUNT $t_file"
+            echo -e "\n========= tail -n $TAIL_LINE_COUNT $t_file"
             ssh_result=$($ssh_connect test -r "$t_file" && echo yes || echo no)
             if [ "x$ssh_result" == "xno" ]; then
                 echo "Warning: file [$t_file] not readable"
