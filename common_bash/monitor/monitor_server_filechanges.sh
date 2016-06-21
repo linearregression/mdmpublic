@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-21 07:10:40>
+## Updated: Time-stamp: <2016-06-21 10:07:37>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -38,7 +38,7 @@ function install_inotifywait_package() {
     local ssh_connect=${1?}
 
     echo "Check whether inotify utility is installed"
-    if ! $ssh_connect which inotifywait 2>/dev/null 2>&1; then
+    if ! $ssh_connect which inotifywait 1>/dev/null 2>&1; then
         echo "Warning: inotify utility is not installed. Install it"
         $ssh_connect apt-get install -y inotify-tools
     fi
@@ -72,7 +72,7 @@ function start_remote_inotify_process() {
     local ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
     if $ssh_connect ps -ef | grep -v grep | grep inotifywait; then
         if [ "$should_restart_process" = "true" ]; then
-            echo "kill existing inotify process"
+            echo "Kill existing inotify process"
             command="killall inotifywait"
             $ssh_connect "$command"
         else
@@ -98,10 +98,10 @@ function check_server_filechanges() {
     file_size=$($ssh_connect stat -c %s "$log_file")
     if [ "$file_size" != "0" ]; then
         echo "ERROR: $log_file is not empty, which indicates files changed"
-        echo -e "\n============== File change list =============="
+        echo -e "\n============== File Change List =============="
         $ssh_connect cat "$log_file"
-        show_changeset
-        copy_files "$ssh_connect" "$file_list" "$BACKUP_OLD_DIR"
+        show_detail_changeset "$ssh_connect" "$file_list" "$BACKUP_OLD_DIR"
+        copy_files "$ssh_connect" "$file_list" "$CURRENT_BACKUP_DIR"
         echo -e "\n=============================================="
         has_error="1"
     fi
@@ -110,21 +110,40 @@ function check_server_filechanges() {
 function copy_files(){
     local ssh_connect=${1?}
     local file_list=${2?}
-    local target_dir=${3?}
-    $ssh_connect "mkdir -p $target_dir"
-    echo "Copy files to $target_dir"
+    local current_backup_dir=${3?}
+    $ssh_connect "mkdir -p $current_backup_dir"
+    echo -e "\nCopy files to $current_backup_dir"
     IFS=$'\n'
     for t_file in ${file_list[*]}; do
         unset IFS
         if $ssh_connect [ -f "$t_file" -o -d "$t_file" ]; then
-            $ssh_connect "cp -Lr $t_file $target_dir/"
+            # copy files while keeping directory hierarchy
+            dir_name=$(dirname "$t_file")
+            $ssh_connect "mkdir -p $current_backup_dir/$dir_name/"
+            $ssh_connect "cp -Lr $t_file $current_backup_dir/$dir_name/"
         fi
     done
 }
 
-function show_changeset() {
-    # TODO
-    echo "TODO"
+function show_detail_changeset() {
+    local ssh_connect=${1?}
+    local file_list=${2?}
+    local target_dir=${3?}
+
+    # TODO: defensive coding
+    previous_backup_dir=$($ssh_connect "ls -1t $target_dir  | head -n1")
+    echo -e "\n============== Show Detail ChangeSet =============="
+    IFS=$'\n'
+    for t_file in ${file_list[*]}; do
+        unset IFS
+        if $ssh_connect [ -f "$t_file" -o -d "$t_file" ]; then
+            dir_name=$(dirname "$t_file")
+            command="diff -r $t_file $target_dir/$previous_backup_dir/$t_file"
+            if ! output=$($ssh_connect "$command"); then
+                echo -e "${command}\n${output}"
+            fi
+        fi
+    done
 }
 
 previous_filelist_file="/var/lib/jenkins/previous_filelist_$JOB_NAME.flag"
@@ -146,7 +165,7 @@ source_string "$env_parameters"
 [ -n "$MARK_PREVIOUS_AS_TRUE" ] || export MARK_PREVIOUS_AS_TRUE=false
 [ -n "$FORCE_RESTART_INOTIFY_PROCESS" ] || export FORCE_RESTART_INOTIFY_PROCESS=false
 
-BACKUP_OLD_DIR="$BACKUP_OLD_DIR/$(date +'%Y-%m-%d_%H-%M-%S')"
+CURRENT_BACKUP_DIR="$BACKUP_OLD_DIR/$(date +'%Y-%m-%d_%H-%M-%S')"
 export has_error="0"
 log_file="/root/monitor_server_filechanges.log"
 
@@ -193,10 +212,6 @@ for server in ${server_list}; do
     start_remote_inotify_process "$ssh_connect" "$FORCE_RESTART_INOTIFY_PROCESS"
     check_server_filechanges "$ssh_connect"
 done
-
-# TODO: backup changed files
-
-# TODO: show diff
 
 # quit with exit code restored
 if [ "$has_error" = "1" ]; then

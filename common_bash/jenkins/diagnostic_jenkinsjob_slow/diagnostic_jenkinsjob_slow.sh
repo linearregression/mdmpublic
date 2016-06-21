@@ -6,7 +6,7 @@
 ##        Note: To run the job, make sure target jenkins run has timestamper plugin properly enabled
 ## --
 ## Created : <2016-01-06>
-## Updated: Time-stamp: <2016-06-12 15:08:52>
+## Updated: Time-stamp: <2016-06-21 07:22:25>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -18,7 +18,6 @@
 ##           export TOP_COUNT=40
 ##           export CONSOLE_FILE="/tmp/console.log"
 ##           export SQLITE_FILE="/tmp/console.sqlite"
-##           export context_count=0
 ################################################################################################
 . /etc/profile
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
