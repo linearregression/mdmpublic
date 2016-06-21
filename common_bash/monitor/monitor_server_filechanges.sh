@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-21 10:25:48>
+## Updated: Time-stamp: <2016-06-21 13:41:50>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -46,6 +46,9 @@ function install_inotifywait_package() {
 }
 
 function get_inotifywait_command() {
+    # Sample:
+    # /usr/bin/inotifywait -d -m --timefmt '%Y-%m-%d %H:%M:%S' --format '%T %w %e %f' -e modify -r /etc/apt/sources.list.d /etc/hosts /tmp/hosts --outfile /root/monitor_server_filechanges.log
+    # /usr/bin/inotifywait -m --timefmt '%Y-%m-%d %H:%M:%S' --format '%T %w %e %f' -e modify -r /etc/apt/sources.list.d /etc/hosts /tmp/hosts
     local ssh_connect=${1?}
     local file_list=${2?}
     local inotifywait_command="/usr/bin/inotifywait -d -m --timefmt '%Y-%m-%d %H:%M:%S' --format '%T %w %e %f' -e modify -r "
@@ -60,7 +63,7 @@ function get_inotifywait_command() {
     if [ "$monitor_directories" = "" ]; then
         echo "ERROR: No qualified files to be monitored in $ssh_server_ip"
         has_error="1"
-        return
+        return 1
     fi
 
     echo "$inotifywait_command $monitor_directories"
@@ -71,7 +74,8 @@ function start_remote_inotify_process() {
     local should_restart_process=${2?}
 
     local ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
-    if $ssh_connect ps -ef | grep -v grep | grep inotifywait; then
+    if $ssh_connect ps -ef | grep -v grep | grep inotifywait 1>/dev/null 2>&1; then
+        echo "inotifywait process is already running"
         if [ "$should_restart_process" = "true" ]; then
             echo "Kill existing inotify process"
             command="killall inotifywait"
@@ -91,21 +95,19 @@ function start_remote_inotify_process() {
 function check_server_filechanges() {
     local ssh_connect=${1?}
 
-    echo "Check whether new file changes have happened"
-    if [ "$MARK_PREVIOUS_AS_TRUE" = "true" ]; then
-        $ssh_connect truncate --size=0 "$log_file"
-    fi
-
+    echo "Check whether monitored files  have been changed"
     file_size=$($ssh_connect stat -c %s "$log_file")
     if [ "$file_size" != "0" ]; then
         echo "ERROR: $log_file is not empty, which indicates files changed"
         echo -e "\n============== File Change List =============="
         $ssh_connect cat "$log_file"
-        show_detail_changeset "$ssh_connect" "$file_list" "$BACKUP_OLD_DIR"
-        copy_files "$ssh_connect" "$file_list" "$CURRENT_BACKUP_DIR"
-        echo -e "\n=============================================="
         has_error="1"
+    else
+        echo "No monitored file has been changed so far"
     fi
+
+    show_detail_changeset "$ssh_connect" "$file_list" "$BACKUP_OLD_DIR"
+    echo -e "\n=============================================="
 }
 
 function copy_files(){
@@ -133,15 +135,16 @@ function show_detail_changeset() {
 
     # TODO: defensive coding
     previous_backup_dir=$($ssh_connect "ls -1t $target_dir  | head -n1")
-    echo -e "\n============== Show Detail ChangeSet =============="
+    msg="\n============== Show Detail ChangeSet ==============\n"
     IFS=$'\n'
     for t_file in ${file_list[*]}; do
         unset IFS
         if $ssh_connect [ -f "$t_file" -o -d "$t_file" ]; then
             dir_name=$(dirname "$t_file")
-            command="diff -r $t_file $target_dir/$previous_backup_dir/$t_file"
+            command="diff -r $t_file $target_dir/${previous_backup_dir}$t_file"
             if ! output=$($ssh_connect "$command"); then
-                echo -e "${command}\n${output}"
+                echo -e "${msg}${command}\n${output}\n"
+                msg=""
             fi
         fi
     done
@@ -201,7 +204,6 @@ if [ "$CLEAN_START" = "true" ]; then
         ssh_server_ip=${server_split[0]}
         ssh_port=${server_split[1]}
         ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
-        $ssh_connect truncate --size=0 "$log_file"
         $ssh_connect rm -rf "$BACKUP_OLD_DIR"
     done
 fi
@@ -227,7 +229,12 @@ for server in ${server_list}; do
     ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
     install_inotifywait_package  "$ssh_connect"
     start_remote_inotify_process "$ssh_connect" "$FORCE_RESTART_INOTIFY_PROCESS"
-    check_server_filechanges "$ssh_connect"
+    if [ "$MARK_PREVIOUS_AS_TRUE" = "true" ]; then
+        $ssh_connect truncate --size=0 "$log_file"
+        copy_files "$ssh_connect" "$file_list" "$CURRENT_BACKUP_DIR"
+    else
+        check_server_filechanges "$ssh_connect"        
+    fi
 done
 
 # quit with exit code restored
