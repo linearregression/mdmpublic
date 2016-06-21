@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-21 10:07:37>
+## Updated: Time-stamp: <2016-06-21 10:25:48>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -22,6 +22,7 @@
 ##      env_parameters:
 ##          export MARK_PREVIOUS_AS_TRUE=false
 ##          export FORCE_RESTART_INOTIFY_PROCESS=false
+##          export CLEAN_START=false
 ##          export BACKUP_OLD_DIR=/root/monitor_backup
 ##          export EXIT_NODE_CONNECT_FAIL=false
 ################################################################################################
@@ -112,15 +113,15 @@ function copy_files(){
     local file_list=${2?}
     local current_backup_dir=${3?}
     $ssh_connect "mkdir -p $current_backup_dir"
-    echo -e "\nCopy files to $current_backup_dir"
+    echo "Copy files to $current_backup_dir"
     IFS=$'\n'
     for t_file in ${file_list[*]}; do
         unset IFS
         if $ssh_connect [ -f "$t_file" -o -d "$t_file" ]; then
             # copy files while keeping directory hierarchy
             dir_name=$(dirname "$t_file")
-            $ssh_connect "mkdir -p $current_backup_dir/$dir_name/"
-            $ssh_connect "cp -Lr $t_file $current_backup_dir/$dir_name/"
+            $ssh_connect "mkdir -p ${current_backup_dir}${dir_name}/"
+            $ssh_connect "cp -Lr $t_file ${current_backup_dir}${dir_name}/"
         fi
     done
 }
@@ -163,6 +164,7 @@ source_string "$env_parameters"
 [ -n "$EXIT_NODE_CONNECT_FAIL" ] || export EXIT_NODE_CONNECT_FAIL=false
 [ -n "$BACKUP_OLD_DIR" ] || export BACKUP_OLD_DIR=/root/monitor_backup
 [ -n "$MARK_PREVIOUS_AS_TRUE" ] || export MARK_PREVIOUS_AS_TRUE=false
+[ -n "$CLEAN_START" ] || export CLEAN_START=false
 [ -n "$FORCE_RESTART_INOTIFY_PROCESS" ] || export FORCE_RESTART_INOTIFY_PROCESS=false
 
 CURRENT_BACKUP_DIR="$BACKUP_OLD_DIR/$(date +'%Y-%m-%d_%H-%M-%S')"
@@ -189,6 +191,21 @@ fi
 
 has_error="0"
 
+if [ "$CLEAN_START" = "true" ]; then
+    echo "Clean up files to have a clean start"
+    MARK_PREVIOUS_AS_TRUE=true
+    FORCE_RESTART_INOTIFY_PROCESS=true
+    rm -rf "$previous_filelist_file"
+    for server in ${server_list}; do
+        server_split=(${server//:/ })
+        ssh_server_ip=${server_split[0]}
+        ssh_port=${server_split[1]}
+        ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
+        $ssh_connect truncate --size=0 "$log_file"
+        $ssh_connect rm -rf "$BACKUP_OLD_DIR"
+    done
+fi
+
 # make initial backup
 for server in ${server_list}; do
     server_split=(${server//:/ })
@@ -196,8 +213,8 @@ for server in ${server_list}; do
     ssh_port=${server_split[1]}
     ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
     if [ "$FORCE_RESTART_INOTIFY_PROCESS" = "true" ] || $ssh_connect [ ! -f "$log_file" ]; then
-        echo "Make Initial Backup on $server"
-        copy_files "$ssh_connect" "$file_list" "$BACKUP_OLD_DIR"
+        echo -e "\nMake Initial Backup on $server"
+        copy_files "$ssh_connect" "$file_list" "$CURRENT_BACKUP_DIR"
     fi
 done
 
