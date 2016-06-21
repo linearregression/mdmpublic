@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-21 13:41:50>
+## Updated: Time-stamp: <2016-06-21 13:50:04>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -214,7 +214,7 @@ for server in ${server_list}; do
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
     ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
-    if [ "$FORCE_RESTART_INOTIFY_PROCESS" = "true" ] || $ssh_connect [ ! -f "$log_file" ]; then
+    if $ssh_connect [ ! -f "$log_file" ]; then
         echo -e "\nMake Initial Backup on $server"
         copy_files "$ssh_connect" "$file_list" "$CURRENT_BACKUP_DIR"
     fi
