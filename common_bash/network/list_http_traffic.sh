@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-22 21:47:01>
+## Updated: Time-stamp: <2016-06-22 22:02:05>
 ##-------------------------------------------------------------------
 ## env variables:
 ##      server_list:
@@ -75,7 +75,7 @@ source_string "$env_parameters"
 [ -n "$TRAFFIC_LOG_FILE" ] || TRAFFIC_LOG_FILE="/root/justniffer.log"
 [ -n "$TAIL_COUNT" ] || TAIL_COUNT="500"
 
-start_command="nohup /usr/bin/justniffer -i eth0 -l '%request.timestamp(%T %D) %request.header.host - %response.code - %response.time' >> $TRAFFIC_LOG_FILE 2>&1 &"
+start_command="nohup /usr/bin/justniffer -i eth0 -l '%request.timestamp(%T %D) %request.header.host - %response.time' >> $TRAFFIC_LOG_FILE 2>&1 &"
 
 server_list=$(string_strip_comments "$server_list")
 server_list=$(string_strip_whitespace "$server_list")
