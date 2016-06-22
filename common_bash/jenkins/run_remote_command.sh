@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-14 16:15:12>
+## Updated: Time-stamp: <2016-06-22 07:39:49>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1457168676"
+bash /var/lib/devops/refresh_common_library.sh "1306610065"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 source_string "$env_parameters"
@@ -36,7 +36,7 @@ source_string "$env_parameters"
 [ -n "$ssh_key_file" ] || export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 
 command_list=$(string_strip_comments "$command_list")
-
+# TODO: verify command_list is valid, in case users have wrong input
 # Input Parameters check
 verify_comon_jenkins_parameters
 check_list_fields "STRING:TCP_PORT:STRING:STRING" "$command_list"

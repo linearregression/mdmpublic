@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-21 13:50:04>
+## Updated: Time-stamp: <2016-06-22 07:38:56>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -32,7 +32,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1457168676"
+bash /var/lib/devops/refresh_common_library.sh "1306610065"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function install_inotifywait_package() {
@@ -182,6 +182,8 @@ file_list=$(string_strip_whitespace "$file_list")
 
 # Input Parameters check
 verify_comon_jenkins_parameters
+
+# TODO: From our test, inotifywait may fail to monitor files, which has been changed by vim
 
 # restart inotify process, if file list has been changed
 if [ -f "$previous_filelist_file" ]; then
