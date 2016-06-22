@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-22 22:02:05>
+## Updated: Time-stamp: <2016-06-22 22:08:06>
 ##-------------------------------------------------------------------
 ## env variables:
 ##      server_list:
@@ -52,9 +52,9 @@ function shell_exit() {
         [ -n "$ssh_username" ] || ssh_username="root"
 
         ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
-        command="grep -v '^-' $TRAFFIC_LOG_FILE | tail -n$TAIL_COUNT"
+        command="grep -v '^-' $TRAFFIC_LOG_FILE | grep -v ' - - ' | tail -n$TAIL_COUNT"
         # tolerant for no matched entries
-        echo -e "\n========== Show network traffic report on $server: $command" && $ssh_connect "$command || true"
+        echo -e "\n========== Show network traffic report on $server\nRun: $command" && $ssh_connect "$command || true"
 
         if [ "$STOP_JUSTNIFFER_PROCESS" = "true" ]; then
             remote_stop_process "$SSH_CONNECT"
