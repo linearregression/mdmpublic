@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-22 20:52:53>
+## Updated: Time-stamp: <2016-06-22 21:07:52>
 ##-------------------------------------------------------------------
 ## env variables:
 ##      ssh_server: 192.168.1.2:2704:root
@@ -21,7 +21,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "1834839343"
+bash /var/lib/devops/refresh_common_library.sh "538135635"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function remote_install_justniffer() {
@@ -41,9 +41,8 @@ function remote_install_justniffer() {
 
 function remote_list_network_traffic() {
     log_file=${1?}
-    tail_count=${2?}
-    command="tail -n $tail_count $log_file"
-    echo "$command" && $SSH_CONNECT "$command"
+    command="cat $log_file"
+    echo -e "\n========== Show network traffic report: $command" && $SSH_CONNECT "$command"
 }
 
 function shell_exit() {
@@ -64,7 +63,6 @@ source_string "$env_parameters"
 [ -n "$FORCE_RESTART_JUSTNIFFER_PROCESS" ] || FORCE_RESTART_JUSTNIFFER_PROCESS=false
 [ -n "$STOP_JUSTNIFFER_PROCESS" ] || STOP_JUSTNIFFER_PROCESS=false
 [ -n "$TRAFFIC_LOG_FILE" ] || TRAFFIC_LOG_FILE="/root/justniffer.log"
-[ -n "$TAIL_COUNT" ] || TAIL_COUNT="500"
 
 # Input Parameters check
 check_list_fields "IP:TCP_PORT:STRING" "$ssh_server"
@@ -86,5 +84,5 @@ fi
 start_command="nohup /usr/bin/justniffer -i eth0 -l '%request.timestamp(%T %%D) - %request.header.host - %response.code - %response.time' > $TRAFFIC_LOG_FILE 2>&1 &"
 
 remote_start_process "$SSH_CONNECT" "justniffer" "$start_command"
-remote_list_network_traffic "$TRAFFIC_LOG_FILE" "$TAIL_COUNT"
+remote_list_network_traffic "$TRAFFIC_LOG_FILE"
 ## File : list_network_traffic.sh ends
