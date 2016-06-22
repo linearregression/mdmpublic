@@ -1,11 +1,11 @@
 #!/bin/bash -e
 ##-------------------------------------------------------------------
-## File : list_network_traffic.sh
+## File : list_http_traffic.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-22 21:43:32>
+## Updated: Time-stamp: <2016-06-22 21:47:01>
 ##-------------------------------------------------------------------
 ## env variables:
 ##      server_list:
@@ -100,4 +100,4 @@ for server in ${server_list}; do
     fi
     remote_start_process "$ssh_connect" "justniffer" "$start_command"
 done
-## File : list_network_traffic.sh ends
+## File : list_http_traffic.sh ends
