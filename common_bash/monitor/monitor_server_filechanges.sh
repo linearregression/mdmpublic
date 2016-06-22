@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-03>
-## Updated: Time-stamp: <2016-06-22 07:38:56>
+## Updated: Time-stamp: <2016-06-22 21:25:25>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -32,7 +32,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "538135635"
+bash /var/lib/devops/refresh_common_library.sh "3543853840"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function install_inotifywait_package() {
@@ -73,7 +73,6 @@ function start_remote_inotify_process() {
     local ssh_connect=${1?}
     local should_restart_process=${2?}
 
-    local ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
     if $ssh_connect ps -ef | grep -v grep | grep inotifywait 1>/dev/null 2>&1; then
         echo "inotifywait process is already running"
         if [ "$should_restart_process" = "true" ]; then
@@ -205,7 +204,9 @@ if [ "$CLEAN_START" = "true" ]; then
         server_split=(${server//:/ })
         ssh_server_ip=${server_split[0]}
         ssh_port=${server_split[1]}
-        ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
+        ssh_username=${server_split[2]}
+        [ -n "$ssh_username" ] || ssh_username="root"
+        ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
         $ssh_connect rm -rf "$BACKUP_OLD_DIR"
     done
 fi
@@ -215,7 +216,10 @@ for server in ${server_list}; do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
-    ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
+    ssh_username=${server_split[2]}
+    [ -n "$ssh_username" ] || ssh_username="root"
+
+    ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
     if $ssh_connect [ ! -f "$log_file" ]; then
         echo -e "\nMake Initial Backup on $server"
         copy_files "$ssh_connect" "$file_list" "$CURRENT_BACKUP_DIR"
@@ -227,8 +231,11 @@ for server in ${server_list}; do
     server_split=(${server//:/ })
     ssh_server_ip=${server_split[0]}
     ssh_port=${server_split[1]}
+    ssh_username=${server_split[2]}
+    [ -n "$ssh_username" ] || ssh_username="root"
+
     echo -e "\n============== Check Node ${ssh_server_ip}:${ssh_port} for file changes =============="
-    ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no root@$ssh_server_ip"
+    ssh_connect="ssh -i $ssh_key_file -p $ssh_port -o StrictHostKeyChecking=no $ssh_username@$ssh_server_ip"
     install_inotifywait_package  "$ssh_connect"
     start_remote_inotify_process "$ssh_connect" "$FORCE_RESTART_INOTIFY_PROCESS"
     if [ "$MARK_PREVIOUS_AS_TRUE" = "true" ]; then

@@ -5,10 +5,12 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-22 21:07:52>
+## Updated: Time-stamp: <2016-06-22 21:43:32>
 ##-------------------------------------------------------------------
 ## env variables:
-##      ssh_server: 192.168.1.2:2704:root
+##      server_list:
+##         192.168.1.2:2703
+##         192.168.1.3:2704
 ##      env_parameters:
 ##          export FORCE_RESTART_JUSTNIFFER_PROCESS=false
 ##          export STOP_JUSTNIFFER_PROCESS=false
@@ -21,35 +23,43 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "538135635"
+bash /var/lib/devops/refresh_common_library.sh "3543853840"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function remote_install_justniffer() {
-    if $SSH_CONNECT "! which justniffer 1>/dev/null 2>&1"; then
+    local ssh_connect=${1?}
+    if $ssh_connect "! which justniffer 1>/dev/null 2>&1"; then
         echo "========== install justniffer"
 
         command="add-apt-repository -y ppa:oreste-notelli/ppa"
-        echo "$command" && $SSH_CONNECT "$command"
+        echo "$command" && $ssh_connect "$command"
 
         command="apt-get -y update"
-        echo "$command" && $SSH_CONNECT "$command"
+        echo "$command" && $ssh_connect "$command"
 
         command="apt-get install -y justniffer"
-        echo "$command" && $SSH_CONNECT "$command"
+        echo "$command" && $ssh_connect "$command"
     fi
-}
-
-function remote_list_network_traffic() {
-    log_file=${1?}
-    command="cat $log_file"
-    echo -e "\n========== Show network traffic report: $command" && $SSH_CONNECT "$command"
 }
 
 function shell_exit() {
     errcode=$?
-    if [ "$STOP_JUSTNIFFER_PROCESS" = "true" ]; then
-        remote_stop_process "$SSH_CONNECT"
-    fi
+    for server in ${server_list}; do
+        server_split=(${server//:/ })
+        server_ip=${server_split[0]}
+        server_port=${server_split[1]}
+        ssh_username=${server_split[2]}
+        [ -n "$ssh_username" ] || ssh_username="root"
+
+        ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
+        command="grep -v '^-' $TRAFFIC_LOG_FILE | tail -n$TAIL_COUNT"
+        # tolerant for no matched entries
+        echo -e "\n========== Show network traffic report on $server: $command" && $ssh_connect "$command || true"
+
+        if [ "$STOP_JUSTNIFFER_PROCESS" = "true" ]; then
+            remote_stop_process "$SSH_CONNECT"
+        fi
+    done
     exit $errcode
 }
 
@@ -63,26 +73,31 @@ source_string "$env_parameters"
 [ -n "$FORCE_RESTART_JUSTNIFFER_PROCESS" ] || FORCE_RESTART_JUSTNIFFER_PROCESS=false
 [ -n "$STOP_JUSTNIFFER_PROCESS" ] || STOP_JUSTNIFFER_PROCESS=false
 [ -n "$TRAFFIC_LOG_FILE" ] || TRAFFIC_LOG_FILE="/root/justniffer.log"
+[ -n "$TAIL_COUNT" ] || TAIL_COUNT="500"
+
+start_command="nohup /usr/bin/justniffer -i eth0 -l '%request.timestamp(%T %D) %request.header.host - %response.code - %response.time' >> $TRAFFIC_LOG_FILE 2>&1 &"
+
+server_list=$(string_strip_comments "$server_list")
+server_list=$(string_strip_whitespace "$server_list")
 
 # Input Parameters check
-check_list_fields "IP:TCP_PORT:STRING" "$ssh_server"
-enforce_ssh_check "true" "$ssh_server" "$ssh_key_file"
+verify_comon_jenkins_parameters
 
-server_split=(${ssh_server//:/ })
-server_ip=${server_split[0]}
-server_port=${server_split[1]}
-ssh_username=${server_split[2]}
-[ -n "$ssh_username" ] || ssh_username="root"
+# TODO: reduce code duplication in this loop
+for server in ${server_list}; do
+    server_split=(${server//:/ })
+    server_ip=${server_split[0]}
+    server_port=${server_split[1]}
+    ssh_username=${server_split[2]}
+    [ -n "$ssh_username" ] || ssh_username="root"
+    ssh_connect="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
 
-export SSH_CONNECT="ssh -i $ssh_key_file -p $server_port -o StrictHostKeyChecking=no $ssh_username@$server_ip"
-
-remote_install_justniffer
-if [ "$FORCE_RESTART_JUSTNIFFER_PROCESS" = "true" ]; then
-    remote_stop_process "$SSH_CONNECT" "justniffer"
-fi
-
-start_command="nohup /usr/bin/justniffer -i eth0 -l '%request.timestamp(%T %%D) - %request.header.host - %response.code - %response.time' > $TRAFFIC_LOG_FILE 2>&1 &"
-
-remote_start_process "$SSH_CONNECT" "justniffer" "$start_command"
-remote_list_network_traffic "$TRAFFIC_LOG_FILE"
+    echo "========== Setup on $server"
+    remote_install_justniffer "$ssh_connect"
+    if [ "$FORCE_RESTART_JUSTNIFFER_PROCESS" = "true" ]; then
+        $ssh_connect "rm -rf $TRAFFIC_LOG_FILE"
+        remote_stop_process "$ssh_connect" "justniffer"
+    fi
+    remote_start_process "$ssh_connect" "justniffer" "$start_command"
+done
 ## File : list_network_traffic.sh ends

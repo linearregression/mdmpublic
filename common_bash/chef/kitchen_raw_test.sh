@@ -28,7 +28,7 @@ if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     wget -O /var/lib/devops/refresh_common_library.sh \
          https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
 fi
-bash /var/lib/devops/refresh_common_library.sh "538135635"
+bash /var/lib/devops/refresh_common_library.sh "3543853840"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 function exec_kitchen_cmd() {
