@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-14>
-## Updated: Time-stamp: <2016-06-22 22:08:06>
+## Updated: Time-stamp: <2016-06-23 07:52:35>
 ##-------------------------------------------------------------------
 ## env variables:
 ##      server_list:
@@ -57,7 +57,7 @@ function shell_exit() {
         echo -e "\n========== Show network traffic report on $server\nRun: $command" && $ssh_connect "$command || true"
 
         if [ "$STOP_JUSTNIFFER_PROCESS" = "true" ]; then
-            remote_stop_process "$SSH_CONNECT"
+            remote_stop_process "$ssh_connect"
         fi
     done
     exit $errcode

@@ -10,7 +10,7 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/BashCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-21 07:16:49>
+## Updated: Time-stamp: <2016-06-23 15:39:04>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -18,7 +18,7 @@
 ##           git@github.com:DennyZhang/devops_public.git,master
 ##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,master
 ##      env_parameters:
-##           export EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001"
+##           export EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001,SC2002"
 ##           export SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"
 ##               ##  Use SHELLCHECK_IGNORE_FILE to skip checks for certain files
 ##               ##  The logic is similar like .gitignore for git
@@ -127,7 +127,7 @@ source_string "$env_parameters"
 [ -n "$SHELLCHECK_IGNORE_FILE" ] || SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"
 
 # http://github.com/koalaman/shellcheck/wiki/SC1091
-[ -n "$EXCLUDE_CODE_LIST" ] || EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001"
+[ -n "$EXCLUDE_CODE_LIST" ] || EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001,SC2002"
 
 failed_git_repos=""
 install_shellcheck
