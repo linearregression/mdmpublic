@@ -2,14 +2,14 @@
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
 ## Licensed under MIT
-##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/2016-06-23/LICENSE
 ##
 ## File : docker_destroy.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-01-02>
-## Updated: Time-stamp: <2016-05-06 14:08:55>
+## Updated: Time-stamp: <2016-06-24 09:02:51>
 ##-------------------------------------------------------------------
 # TODO: move the script to devops_public/docker/docker_destroy.sh
 if ! which docker 2>/dev/null 1>/dev/null; then

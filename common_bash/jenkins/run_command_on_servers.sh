@@ -2,14 +2,14 @@
 ##-------------------------------------------------------------------
 ## @copyright 2016 DennyZhang.com
 ## Licensed under MIT
-##   https://raw.githubusercontent.com/DennyZhang/devops_public/master/LICENSE
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/2016-06-23/LICENSE
 ##
 ## File : run_command_on_servers.sh
 ## Author : DennyZhang.com <denny@dennyzhang.com>
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-24 07:58:24>
+## Updated: Time-stamp: <2016-06-24 09:02:50>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -25,7 +25,7 @@
 ##          export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
-[ -n "$DOWNLOAD_PREFIX" ] || DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/master"
+[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/master"
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh "$DOWNLOAD_PREFIX/common_library/refresh_common_library.sh"
