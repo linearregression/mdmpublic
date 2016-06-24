@@ -9,13 +9,13 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-24 09:02:51>
+## Updated: Time-stamp: <2016-06-24 09:26:49>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
 ##      git_pull_list:
-##               /var/lib/jenkins/code/bash_dir/,git@XXX:XXX/XXX.git,master
+##               /var/lib/jenkins/code/bash_dir/,git@XXX:XXX/XXX.git,dev
 ##               /var/lib/jenkins/code/dockerfeaturemustpass/,git@XXX:XXX/XXX.git,dev
 ##               /var/lib/jenkins/code/dockerbasicmustpass/,git@XXX:XXX/XXX.git,dev
 ##               /var/lib/jenkins/code/dockerallinonemustpass/,git@XXX:XXX/XXX.git,dev

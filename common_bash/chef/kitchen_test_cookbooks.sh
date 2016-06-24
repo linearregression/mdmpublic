@@ -9,13 +9,13 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-24 09:02:52>
+## Updated: Time-stamp: <2016-06-24 09:24:41>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      git_repo_url: git@bitbucket.org:XXX/XXX.git
 ##      branch_name: dev
-##      test_command: curl -L https://raw.githubusercontent.com/DennyZhang/data/master/jenkins/kitchen_raw_test.sh | bash
+##      test_command: curl -L https://raw.githubusercontent.com/XXX/XXX/chef/kitchen_raw_test.sh | bash
 ##      cookbook_list: gateway-auth oauth2-auth account-auth audit-auth mfa-auth message-auth platformportal-auth ssoportal-auth tenantadmin-auth
 ##      skip_cookbook_list: sandbox-test
 ##      must_cookbook_list: gateway-auth

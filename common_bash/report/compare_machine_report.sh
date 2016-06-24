@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-06-12>
-## Updated: Time-stamp: <2016-06-24 08:56:27>
+## Updated: Time-stamp: <2016-06-24 09:35:38>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -62,12 +62,10 @@ SSH_CONNECT2="ssh -i $ssh_key_file -p $server_port2 -o StrictHostKeyChecking=no 
 
 # TODO: better way to update below script
 bash_sh="/root/list_os_packages.sh"
-$SSH_CONNECT1 wget -O "$bash_sh" \
-              https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/list_os_packages/list_os_packages.sh \
+$SSH_CONNECT1 wget -O "$bash_sh" "${DOWNLOAD_PREFIX}/bash/list_os_packages/list_os_packages.sh" \
               1>/dev/null 2>&1
 
-$SSH_CONNECT2 wget -O "$bash_sh" \
-              https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/list_os_packages/list_os_packages.sh \
+$SSH_CONNECT2 wget -O "$bash_sh" "${DOWNLOAD_PREFIX}/bash/list_os_packages/list_os_packages.sh" \
               1>/dev/null 2>&1
 
 command="bash -e $bash_sh $CHECK_SCENARIO $OUTPUT_DIR"

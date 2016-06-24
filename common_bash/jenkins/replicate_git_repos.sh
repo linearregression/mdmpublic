@@ -9,14 +9,14 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-24 09:02:51>
+## Updated: Time-stamp: <2016-06-24 09:28:19>
 ##-------------------------------------------------------------------
 
 ################################################################################################
 ## env variables:
 ##      repo_list:
-##        git@github.com:TEST/test.git,master,git@gitlabcn.dennyzhang.com:customer/mdmdevops-test.git,master
-##        git@git.test.com:TEST/mytest.git,master,git@gitlabcn.dennyzhang.com:customer/mdmdevops-mytest.git,master
+##        git@github.com:TEST/test.git,dev,git@gitlabcn.dennyzhang.com:customer/mdmdevops-test.git,dev
+##        git@git.test.com:TEST/mytest.git,dev,git@gitlabcn.dennyzhang.com:customer/mdmdevops-mytest.git,dev
 ##
 ##       env_parameters:
 ##             export CLEAN_START=false

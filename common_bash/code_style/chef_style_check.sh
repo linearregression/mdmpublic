@@ -10,13 +10,13 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/ChefCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-24 09:02:52>
+## Updated: Time-stamp: <2016-06-24 09:24:50>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      git_list:
-##           git@github.com:DennyZhang/devops_public.git,master
-##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,master
+##           git@github.com:DennyZhang/devops_public.git,dev
+##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,dev
 ##      env_parameters:
 ##           export working_dir="/var/lib/jenkins/code/codestyle"
 ################################################################################################

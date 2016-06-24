@@ -10,13 +10,13 @@
 ##      Demo: http://jenkinscn.dennyzhang.com:18088/job/BashCodeQualityCheck/
 ## --
 ## Created : <2016-04-25>
-## Updated: Time-stamp: <2016-06-24 09:02:52>
+## Updated: Time-stamp: <2016-06-24 09:25:06>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
 ##      git_list:
-##           git@github.com:DennyZhang/devops_public.git,master
-##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,master
+##           git@github.com:DennyZhang/devops_public.git,dev
+##           git@gitlabcn.dennyzhang.com:devops/devops_scripts.git,dev
 ##      env_parameters:
 ##           export EXCLUDE_CODE_LIST="SC1090,SC1091,SC2154,SC2001,SC2002"
 ##           export SHELLCHECK_IGNORE_FILE=".shellcheck_ignore"

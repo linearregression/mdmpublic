@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2016-02-23>
-## Updated: Time-stamp: <2016-06-24 08:56:26>
+## Updated: Time-stamp: <2016-06-24 09:36:21>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -34,11 +34,9 @@ source_string "$env_parameters"
 [ -n "$DATA_OUT_DIR" ] || DATA_OUT_DIR="/opt/devops/dump_db_summary/data_out"
 [ -n "$REFRESH_BASH" ] || REFRESH_BASH=false
 
-# TODO: better way to update below script
 bash_sh="/var/lib/devops/dump_db_summary.sh"
 if [ ! -f "$bash_sh" ] || [ "$REFRESH_BASH" = "true" ]; then
-    wget -O "$bash_sh" \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/bash/dump_db_summary/dump_db_summary.sh \
+    wget -O "$bash_sh" "${DOWNLOAD_PREFIX}/bash/dump_db_summary/dump_db_summary.sh" \
          1>/dev/null 2>&1
 fi
 

@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-24 09:02:52>
+## Updated: Time-stamp: <2016-06-24 09:22:44>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -40,7 +40,7 @@
 ##      }
 ##
 ##       check_command: enforce_all_nagios_check.sh "check_.*_log|check_.*_cpu"
-##       devops_branch_name: master
+##       devops_branch_name: dev
 ##       ssh_private_key: XXX
 ##           # ssh id_rsa private key to login servers without password
 ##       env_parameters:

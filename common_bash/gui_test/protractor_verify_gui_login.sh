@@ -9,7 +9,7 @@
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-06-24 09:02:51>
+## Updated: Time-stamp: <2016-06-24 09:25:59>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -61,7 +61,7 @@ cat > "$tmp_file" <<EOF
 $protractor_testcase_js
 EOF
 
-# How to run protractor REST API server: https://github.com/DennyZhang/devops_public/tree/master/protractor 
+# How to run protractor REST API server: https://github.com/DennyZhang/devops_public/tree/2016-06-23/protractor
 echo "============ Run Protractor Test by API"
 echo "curl -F conf_js=@$tmp_conf_file -F protractor_js=@$tmp_file http://$protractor_rest_server/protractor_request"
 output=$(curl -F "conf_js=@$tmp_conf_file" -F "protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")

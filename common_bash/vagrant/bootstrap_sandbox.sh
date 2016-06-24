@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-06-24 09:02:49>
+## Updated: Time-stamp: <2016-06-24 09:34:10>
 ##-------------------------------------------------------------------
 ################################################################################################
 . /etc/profile
@@ -149,8 +149,7 @@ log "prepare shared directory for docker"
 mkdir -p /root/docker/
 
 log "Install autostart script for /etc/init.d/docker_sandbox"
-curl -o /etc/init.d/docker_sandbox \
-     https://raw.githubusercontent.com/DennyZhang/data/master/vagrant/docker_sandbox.sh
+curl -o /etc/init.d/docker_sandbox "${DOWNLOAD_PREFIX}/bash/docker_facility/docker_sandbox.sh"
 chmod 755 /etc/init.d/docker_sandbox
 config_auto_start "docker_sandbox"
 
