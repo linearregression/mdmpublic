@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2015-12-29 16:27:44>
+## Updated: Time-stamp: <2016-06-24 09:20:53>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -132,7 +132,10 @@ mkdir -p /root/docker/
 remove_vagrant_user_from_root
 
 log "Install autostart script for /etc/init.d/mdm_sandbox"
-curl -o /etc/init.d/mdm_sandbox https://raw.githubusercontent.com/TOTVS/mdmpublic/master/test/mdm_sandbox.sh
+
+[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/TOTVS/mdmpublic/master"
+curl -o /etc/init.d/mdm_sandbox "${DOWNLOAD_PREFIX}/test/mdm_sandbox.sh"
+
 chmod 755 /etc/init.d/mdm_sandbox
 update-rc.d mdm_sandbox defaults
 update-rc.d mdm_sandbox enable

@@ -1,2 +1,2 @@
 # mdmpublic
-Master Data Management Public Repository
+MDM Public Repository
