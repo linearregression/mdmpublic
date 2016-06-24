@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-04-13>
-## Updated: Time-stamp: <2016-06-22 07:39:49>
+## Updated: Time-stamp: <2016-06-24 07:58:27>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,13 +22,13 @@
 ##         export ssh_key_file="/var/lib/jenkins/.ssh/id_rsa"
 ################################################################################################
 . /etc/profile
-
+[ -n "$DOWNLOAD_PREFIX" ] || DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/master"
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
-    wget -O /var/lib/devops/refresh_common_library.sh \
-         https://raw.githubusercontent.com/DennyZhang/devops_public/master/common_library/refresh_common_library.sh
+    wget -O /var/lib/devops/refresh_common_library.sh "$DOWNLOAD_PREFIX/common_library/refresh_common_library.sh"
 fi
-bash /var/lib/devops/refresh_common_library.sh "3543853840"
+bash /var/lib/devops/refresh_common_library.sh "1523631277" "/var/lib/devops/devops_common_library.sh" \
+     "${DOWNLOAD_PREFIX}/common_library/devops_common_library.sh"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
 source_string "$env_parameters"
