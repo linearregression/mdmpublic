@@ -2,14 +2,14 @@
 ################################################################################################
 ## @copyright 2016 DennyZhang.com
 ## Licensed under MIT
-##   https://raw.githubusercontent.com/DennyZhang/devops_public/2016-06-23/LICENSE
+##   https://raw.githubusercontent.com/DennyZhang/devops_public/tag_v1/LICENSE
 ##
 ## File : protractor_verify_gui_login.sh
 ## Author : Denny <denny@dennyzhang.com>
 ## Description : collect the files across servers, and transfer to specific destination
 ## --
 ## Created : <2016-05-29>
-## Updated: Time-stamp: <2016-06-24 09:25:59>
+## Updated: Time-stamp: <2016-06-24 16:47:39>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,12 +22,12 @@
 ##          export REMOVE_TMP_FILES=true
 ################################################################################################
 . /etc/profile
-[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/master"
+[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/tag_v1"
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh "$DOWNLOAD_PREFIX/common_library/refresh_common_library.sh"
 fi
-bash /var/lib/devops/refresh_common_library.sh "1523631277" "/var/lib/devops/devops_common_library.sh" \
+bash /var/lib/devops/refresh_common_library.sh "3278792373" "/var/lib/devops/devops_common_library.sh" \
      "${DOWNLOAD_PREFIX}/common_library/devops_common_library.sh"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
@@ -61,7 +61,7 @@ cat > "$tmp_file" <<EOF
 $protractor_testcase_js
 EOF
 
-# How to run protractor REST API server: https://github.com/DennyZhang/devops_public/tree/2016-06-23/protractor
+# How to run protractor REST API server: https://github.com/DennyZhang/devops_public/tree/tag_v1/protractor
 echo "============ Run Protractor Test by API"
 echo "curl -F conf_js=@$tmp_conf_file -F protractor_js=@$tmp_file http://$protractor_rest_server/protractor_request"
 output=$(curl -F "conf_js=@$tmp_conf_file" -F "protractor_js=@$tmp_file" "http://${protractor_rest_server}/protractor_request")
