@@ -40,7 +40,7 @@ ls /opt/</defaultValue>
       <command>#!/bin/bash
 export ssh_key_file=&quot;/var/lib/jenkins/.ssh/ci_id_rsa&quot;
 
-curl -o /tmp/run_command_on_servers.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/master/common_bash/jenkins/run_command_on_servers.sh
+curl -o /tmp/run_command_on_servers.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/2016-06-24/common_bash/jenkins/run_command_on_servers.sh
 bash -e /tmp/run_command_on_servers.sh</command>
     </hudson.tasks.Shell>
   </builders>

@@ -50,7 +50,7 @@ export start_inotifywait_when_stopped=true</defaultValue>
       <command>#!/bin/bash
 export ssh_key_file=&quot;/var/lib/jenkins/.ssh/ci_id_rsa&quot;
 
-curl -o /tmp/monitor_server_filechanges.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/master/common_bash/monitor/monitor_server_filechanges.sh
+curl -o /tmp/monitor_server_filechanges.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/2016-06-24/common_bash/monitor/monitor_server_filechanges.sh
 bash -e /tmp/monitor_server_filechanges.sh</command>
     </hudson.tasks.Shell>
   </builders>

@@ -50,7 +50,7 @@ eval: find /var/lib/jenkins/jobs -name config.xml
       <command>#!/bin/bash
 export ssh_key_file=&quot;/var/lib/jenkins/.ssh/ci_id_rsa&quot;
 
-curl -o /tmp/collect_files.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/master/common_bash/jenkins/collect_files.sh
+curl -o /tmp/collect_files.sh https://raw.githubusercontent.com/TOTVS/mdmpublic/2016-06-24/common_bash/jenkins/collect_files.sh
 bash -e /tmp/collect_files.sh</command>
     </hudson.tasks.Shell>
   </builders>
