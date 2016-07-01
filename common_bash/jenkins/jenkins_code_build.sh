@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2015-07-03>
-## Updated: Time-stamp: <2016-06-24 16:47:39>
+## Updated: Time-stamp: <2016-06-30 09:36:58>
 ##-------------------------------------------------------------------
 ################################################################################################
 ## env variables:
@@ -22,16 +22,18 @@
 ##           export SKIP_COPY=false
 ##           export IS_PACK_FILE=false
 ##           export IS_GENERATE_SHA1SUM=false
+##           export repo_dir=/var/www/repo
 ##           export working_dir=/var/lib/jenkins/code/build
 ##      build_command: make
 ################################################################################################
 . /etc/profile
-[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/tag_v1"
+[ -n "$DOWNLOAD_TAG_NAME" ] || export DOWNLOAD_TAG_NAME="tag_v1"
+export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/${DOWNLOAD_TAG_NAME}"
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh "$DOWNLOAD_PREFIX/common_library/refresh_common_library.sh"
 fi
-bash /var/lib/devops/refresh_common_library.sh "3278792373" "/var/lib/devops/devops_common_library.sh" \
+bash /var/lib/devops/refresh_common_library.sh "1597538024" "/var/lib/devops/devops_common_library.sh" \
      "${DOWNLOAD_PREFIX}/common_library/devops_common_library.sh"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
@@ -107,7 +109,8 @@ function shell_exit() {
 
 ########################################################################
 [ -n "$working_dir" ] || working_dir="/var/lib/jenkins/code/$JOB_NAME"
-
+# $GIT_BRANCH environment variable override $branch_name
+[ -z "$GIT_BRANCH" ] || branch_name="$GIT_BRANCH"
 # Build Repo
 git_repo=$(parse_git_repo "$git_repo_url")
 code_dir=$working_dir/$branch_name/$git_repo

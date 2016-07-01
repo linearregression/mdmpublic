@@ -9,7 +9,7 @@
 ## Description :
 ## --
 ## Created : <2016-05-02>
-## Updated: Time-stamp: <2016-06-24 16:47:38>
+## Updated: Time-stamp: <2016-06-24 20:27:46>
 ##-------------------------------------------------------------------
 
 ################################################################################################
@@ -22,12 +22,13 @@
 ##         export HISTORY_DIR="/opt/monitor_process/"
 ################################################################################################
 . /etc/profile
-[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/tag_v1"
+[ -n "$DOWNLOAD_TAG_NAME" ] || export DOWNLOAD_TAG_NAME="tag_v1"
+export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/DennyZhang/devops_public/${DOWNLOAD_TAG_NAME}"
 if [ ! -f /var/lib/devops/refresh_common_library.sh ]; then
     [ -d /var/lib/devops/ ] || (sudo mkdir -p  /var/lib/devops/ && sudo chmod 777 /var/lib/devops)
     wget -O /var/lib/devops/refresh_common_library.sh "$DOWNLOAD_PREFIX/common_library/refresh_common_library.sh"
 fi
-bash /var/lib/devops/refresh_common_library.sh "3278792373" "/var/lib/devops/devops_common_library.sh" \
+bash /var/lib/devops/refresh_common_library.sh "1597538024" "/var/lib/devops/devops_common_library.sh" \
      "${DOWNLOAD_PREFIX}/common_library/devops_common_library.sh"
 . /var/lib/devops/devops_common_library.sh
 ################################################################################################
@@ -111,11 +112,11 @@ source_string "$env_parameters"
 [ -n "$SHOW_OS_UTILIZATION" ] || SHOW_OS_UTILIZATION=true
 [ -n "$UPDATE_SERVER_SCRIPT" ] || UPDATE_SERVER_SCRIPT=true
 
-# Input Parameters check
-check_list_fields "IP:TCP_PORT:STRING:STRING:STRING" "$process_list"
-
 process_list=$(string_strip_comments "$process_list")
 monitor_process_path="/tmp/monitor_process.sh"
+
+# Input Parameters check
+check_list_fields "IP:TCP_PORT:STRING:STRING:STRING" "$process_list"
 
 generate_monitor_script
 IFS=$'\n'
