@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 ################################################################################
 # Configurable Parameters
-VM_MEMORY_MB = 6144 # 6GB
+VM_MEMORY_MB = 8192 # 8GB
 VM_CPU_CORES = 3
 # When empty, disable folder share.
 FOLDER_SHARE = 'local_code_share'
