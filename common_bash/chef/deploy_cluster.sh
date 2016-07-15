@@ -149,7 +149,7 @@ fi
 
 # Input parameters check
 verify_comon_jenkins_parameters
-enforce_ip_ping_check "$EXIT_NODE_CONNECT_FAIL" "chef_json" "$chef_json"
+#enforce_ip_ping_check "$EXIT_NODE_CONNECT_FAIL" "chef_json" "$chef_json"
 
 ################################################################################
 log "env variables. KILL_RUNNING_CHEF_UPDATE: $KILL_RUNNING_CHEF_UPDATE, STOP_CONTAINER: $STOP_CONTAINER"
