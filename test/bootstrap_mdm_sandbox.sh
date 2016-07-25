@@ -181,7 +181,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8080-8092:8080-8092 -p 8443:8443 -p 9200:9200 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8080-8092:8080-8092 -p 8443:8443 -p 9200:9200 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
