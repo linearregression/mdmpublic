@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-07-26 07:24:18>
+## Updated: Time-stamp: <2016-07-26 14:09:40>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -181,7 +181,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
