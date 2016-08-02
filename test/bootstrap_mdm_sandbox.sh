@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-07-26 14:09:40>
+## Updated: Time-stamp: <2016-08-03 07:07:03>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -115,6 +115,7 @@ trap shell_exit SIGHUP SIGINT SIGTERM 0
 
 # set PATH, just in case binary like chmod can't be found
 PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+LOG_FILE="/var/log/bootstrap_mdm_sandbox.log"
 
 log "Install docker"
 install_docker
