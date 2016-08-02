@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-03 07:07:03>
+## Updated: Time-stamp: <2016-08-03 07:43:32>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -147,9 +147,10 @@ tag_name=${2:-"latest"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
-if [ -n "SKIP_DOCKER_PULL" ]; then
+if [ -n "$SKIP_DOCKER_PULL" ]; then
     image_has_new_version="no"
 else
+    log "pull docker image: $image_name"
     docker_pull_image $image_repo_name $image_name $flag_file
     image_has_new_version=`cat $flag_file`
 fi
