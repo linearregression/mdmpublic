@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-03 07:43:32>
+## Updated: Time-stamp: <2016-08-10 14:03:05>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -25,6 +25,16 @@ function ensure_is_root() {
 }
 
 ################################################################################################
+function update_docker_daemon() {
+    local docker_opts=${1?}
+    if ! grep "$docker_opts" /etc/default/docker; then
+        echo "Update docker daemon opts: $docker_opts, then restart docker"
+        echo "DOCKER_OPTS=\"$docker_opts\"" >> /etc/default/docker
+        service docker stop
+        service docker start
+    fi
+}
+
 function install_docker() {
     if ! which docker 1>/dev/null 2>/dev/null; then
         log "Install docker: wget -qO- https://get.docker.com/ | sh"
@@ -106,6 +116,12 @@ function shell_exit() {
 }
 
 ################################################################################################
+image_repo_name=${1?"docker image repo name"}
+tag_name=${2:-"latest"}
+docker_opts=${3:-"--iptables=false"}
+image_name="${image_repo_name}:$tag_name"
+flag_file="image.txt"
+
 START=$(date +%s)
 ensure_is_root
 
@@ -121,6 +137,7 @@ log "Install docker"
 install_docker
 
 create_enough_loop_device
+update_docker_daemon "$docker_opts"
 
 if ! service docker status 1>/dev/null 2>/dev/null; then
     service docker start
@@ -142,11 +159,6 @@ update-rc.d mdm_sandbox defaults
 update-rc.d mdm_sandbox enable
 
 log "Start docker of mdm-jenkins"
-image_repo_name=${1?"docker image repo name"}
-tag_name=${2:-"latest"}
-image_name="${image_repo_name}:$tag_name"
-flag_file="image.txt"
-
 if [ -n "$SKIP_DOCKER_PULL" ]; then
     image_has_new_version="no"
 else
