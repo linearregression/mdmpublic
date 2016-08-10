@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-10 09:45:56>
+## Updated: Time-stamp: <2016-08-03 07:43:32>
 ##-------------------------------------------------------------------
 function log() {
     local msg=${1?}
@@ -166,7 +166,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ -h $container_hostname --name $container_name -p 127.0.0.1:5022:22 -p 127.0.0.1:18000:18000 -p 127.0.0.1:18080:18080 $image_name /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ -h $container_hostname --name $container_name -p 5022:22 -p 18000:18000 -p 18080:18080 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
@@ -183,7 +183,7 @@ if [ $container_status = "running" ] && [ "$image_has_new_version" = "yes" ]; th
 fi
 
 if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 127.0.0.1:8080-8180:8080-8180 -p 127.0.0.1:8443:8443 -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -p 127.0.0.1:9400:9400 -p 127.0.0.1:9500:9500 -p 127.0.0.1:80:80 -p 127.0.0.1:443:443 -p 127.0.0.1:6022:22 $image_name /usr/sbin/sshd -D
+    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 $image_name /usr/sbin/sshd -D
 elif [ $container_status = "dead" ]; then 
     docker start $container_name    
 fi
