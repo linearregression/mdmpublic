@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-10 14:09:01>
+## Updated: Time-stamp: <2016-08-10 14:11:52>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -206,7 +206,7 @@ service mdm_sandbox start
 
 for d in /root/docker/*; do
     if [ -d "$d" ]; then
-        rm -rf "$d/*"
+        rm -rf "$d"/*
     fi
 done
 
