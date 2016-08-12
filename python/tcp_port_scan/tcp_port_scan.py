@@ -7,7 +7,7 @@
 ## Description :
 ## --
 ## Created : <2016-01-15>
-## Updated: Time-stamp: <2016-08-12 09:17:36>
+## Updated: Time-stamp: <2016-08-12 09:39:40>
 ##-------------------------------------------------------------------
 import argparse
 import subprocess
@@ -79,8 +79,8 @@ def nmap_check(server_ip, ports):
 
 def get_portlist_by_nmap_output(nmap_output, server_ip):
     opt_list = ["Starting Nmap ", "Nmap scan report for ", "Host is ", \
-                "Not shown: ", " STATE ", " closed ", \
-                " filtered unknown", "Nmap done: "]
+                "Not shown: ", " STATE ", " closed ports", \
+                " filtered unknown", "Nmap done: ", " scanned ports on "]
     output = string_remove_patterns(nmap_output, opt_list)
     output = string_remove_extra_whitespace(output)
     output = strip_remove_emptylines(output)
@@ -107,7 +107,7 @@ def tcp_port_scan(server_list, white_list, extra_port_list):
     # TODO: change to multi-threading
     extra_ports = ",".join(extra_port_list)
     if extra_ports != "":
-        print output_prefix, "Run extra checks for given ports: extra_ports"
+        print "%s Run extra checks for given ports: %s" % (output_prefix, extra_ports)
         for server_ip in server_list:
             nmap_output = nmap_check(server_ip, "T:%s" % (extra_ports))
             nmap_port_list = get_portlist_by_nmap_output(nmap_output, server_ip)
