@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-10 14:39:31>
+## Updated: Time-stamp: <2016-08-13 07:59:42>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -120,7 +120,7 @@ function shell_exit() {
 ################################################################################################
 image_repo_name=${1?"docker image repo name"}
 tag_name=${2:-"latest"}
-docker_opts=${3:-"--iptables=false"}
+docker_opts=${3:-"--dns 8.8.8.8 --dns 8.8.4.4 --iptables=false"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
