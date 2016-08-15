@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-15 17:12:54>
+## Updated: Time-stamp: <2016-08-15 18:31:14>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -30,7 +30,7 @@ function ensure_is_root() {
 function update_docker_daemon() {
     local docker_opts=${1?}
     # TODO: don't overwrite existing customization of docker opts
-    if ! grep "$docker_opts" /etc/default/docker; then
+    if ! grep -e "$docker_opts" /etc/default/docker; then
         echo "Update docker daemon opts: $docker_opts, then restart docker"
         echo "DOCKER_OPTS=\"$docker_opts\"" >> /etc/default/docker
         service docker stop
