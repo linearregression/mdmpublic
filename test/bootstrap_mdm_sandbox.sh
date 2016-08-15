@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-15 16:43:59>
+## Updated: Time-stamp: <2016-08-15 17:12:54>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -170,14 +170,15 @@ chmod 755 /etc/init.d/mdm_sandbox
 update-rc.d mdm_sandbox defaults
 update-rc.d mdm_sandbox enable
 
+if [ -n "$docker_username" ]; then
+    docker_login "$docker_username" "$docker_passwd"
+fi
+
 log "Start docker of mdm-jenkins"
 if [ -n "$SKIP_DOCKER_PULL" ]; then
     image_has_new_version="no"
 else
     log "pull docker image: $image_name"
-    if [ -n "$docker_username" ]; then
-        docker_login "$docker_username" "$docker_passwd"
-    fi
     docker_pull_image "$image_repo_name" "$image_name" "$flag_file"
     image_has_new_version=$(cat "$flag_file")
 fi
