@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-13 07:59:42>
+## Updated: Time-stamp: <2016-08-15 16:43:59>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -57,8 +57,16 @@ function create_enough_loop_device() {
     done
 }
 
+function docker_login() {
+    local docker_username=${1?}
+    local docker_passwd=${2?}
+    local docker_email="devops@tovs.com" # docker login will remove this parameter soon.
+    echo "docker login with $docker_username"
+    docker login -u "$docker_username" -p "$docker_passwd" -e "$docker_email"
+}
+
 function docker_pull_image() {
-    local image_repo_name=${1?}    
+    local image_repo_name=${1?}
     local image_name=${2?}
     local flag_file=${3?}
 
@@ -120,7 +128,9 @@ function shell_exit() {
 ################################################################################################
 image_repo_name=${1?"docker image repo name"}
 tag_name=${2:-"latest"}
-docker_opts=${3:-"--dns 8.8.8.8 --dns 8.8.4.4 --iptables=false"}
+docker_username=${3:-""}
+docker_passwd=${4:-""}
+docker_opts=${5:-"--dns 8.8.8.8 --dns 8.8.4.4 --iptables=false"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
@@ -165,6 +175,9 @@ if [ -n "$SKIP_DOCKER_PULL" ]; then
     image_has_new_version="no"
 else
     log "pull docker image: $image_name"
+    if [ -n "$docker_username" ]; then
+        docker_login "$docker_username" "$docker_passwd"
+    fi
     docker_pull_image "$image_repo_name" "$image_name" "$flag_file"
     image_has_new_version=$(cat "$flag_file")
 fi
@@ -181,8 +194,8 @@ fi
 
 if [ $container_status = "none" ]; then
     docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ -h "$container_hostname" --name "$container_name" -p 5022:22 -p 18000:18000 -p 18080:18080 "$image_name" /usr/sbin/sshd -D
-elif [ $container_status = "dead" ]; then 
-    docker start $container_name    
+elif [ $container_status = "dead" ]; then
+    docker start $container_name
 fi
 
 log "Start docker of mdm-all-in-one"
@@ -198,8 +211,8 @@ fi
 
 if [ $container_status = "none" ]; then
     docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h "$container_hostname" --name "$container_name" -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 "$image_name" /usr/sbin/sshd -D
-elif [ $container_status = "dead" ]; then 
-    docker start $container_name    
+elif [ $container_status = "dead" ]; then
+    docker start $container_name
 fi
 
 log "Start services inside docker"
@@ -213,7 +226,7 @@ done
 
 chmod 777 -R /root/docker/
 
-log "Check docker containers: docker ps" 
+log "Check docker containers: docker ps"
 docker ps
 
 ## File : bootstrap_mdm_sandbox.sh ends
