@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-16 15:24:32>
+## Updated: Time-stamp: <2016-08-16 16:04:16>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -237,8 +237,8 @@ start_jenkins_contianer
 start_mdmaio_contianer
 
 log "Start services inside docker"
-service mdm_sandbox start
 service_autostart
+service mdm_sandbox start
 
 log "Check docker containers: docker ps"
 docker ps
