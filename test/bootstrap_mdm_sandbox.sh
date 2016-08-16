@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-15 18:31:14>
+## Updated: Time-stamp: <2016-08-16 15:24:32>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -55,6 +55,15 @@ function create_enough_loop_device() {
             mknod -m0660 /dev/loop$i b 7 $i
         fi
     done
+}
+
+function start_docker() {
+    local docker_opts=${1?}
+    create_enough_loop_device
+    update_docker_daemon "$docker_opts"
+    if ! service docker status 1>/dev/null 2>/dev/null; then
+        service docker start
+    fi
 }
 
 function docker_login() {
@@ -126,6 +135,68 @@ function shell_exit() {
 }
 
 ################################################################################################
+function start_jenkins_contianer() {
+    mkdir -p /root/docker/
+    chmod 777 -R /root/docker/
+    log "cleanup for /root/docker"
+    for d in /root/docker/*; do
+        if [ -d "$d" ]; then
+            rm -rf "$d"/*
+        fi
+    done
+
+    log "Start docker of mdm-jenkins"
+    container_name="mdm-jenkins"
+    container_hostname="jenkins"
+    container_status=$(is_container_running $container_name)
+    if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; then
+        log "$image_name has new version, stop old running container: $container_name"
+        docker stop "$container_name"
+        docker rm "$container_name"
+        container_status="none"
+    fi
+
+    if [ $container_status = "none" ]; then
+        docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ -h "$container_hostname" --name "$container_name" -p 5022:22 -p 18000:18000 -p 18080:18080 "$image_name" /usr/sbin/sshd -D
+    elif [ $container_status = "dead" ]; then
+        docker start $container_name
+    fi
+}
+
+function start_mdmaio_contianer() {
+    log "prepare shared directory for docker"
+    rm -rf /root/couchbase/* && mkdir -p /root/couchbase
+    log "Start docker of mdm-all-in-one"
+    container_name="mdm-all-in-one"
+    container_hostname="aio"
+    container_status=$(is_container_running $container_name)
+    if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; then
+        log "$image_name has new version, stop old running container: $container_name"
+        docker stop $container_name
+        docker rm $container_name
+        container_status="none"
+    fi
+
+    if [ $container_status = "none" ]; then
+        docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h "$container_hostname" --name "$container_name" -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 "$image_name" /usr/sbin/sshd -D
+    elif [ $container_status = "dead" ]; then
+        docker start $container_name
+    fi
+}
+
+function service_autostart() {
+    log "Install autostart script for /etc/init.d/mdm_sandbox"
+
+    [ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/TOTVS/mdmpublic/master"
+    curl -o /etc/init.d/mdm_sandbox "${DOWNLOAD_PREFIX}/test/mdm_sandbox.sh"
+
+    chmod 755 /etc/init.d/mdm_sandbox
+    update-rc.d mdm_sandbox defaults
+    update-rc.d mdm_sandbox enable
+}
+################################################################################################
+trap shell_exit SIGHUP SIGINT SIGTERM 0
+
 image_repo_name=${1?"docker image repo name"}
 tag_name=${2:-"latest"}
 docker_username=${3:-""}
@@ -138,43 +209,22 @@ START=$(date +%s)
 ensure_is_root
 
 apt-get -y install bc
-
-trap shell_exit SIGHUP SIGINT SIGTERM 0
-
 # set PATH, just in case binary like chmod can't be found
 PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 LOG_FILE="/var/log/bootstrap_mdm_sandbox.log"
 
 log "Install docker"
 install_docker
+start_docker "$docker_opts"
 
-create_enough_loop_device
-update_docker_daemon "$docker_opts"
-
-if ! service docker status 1>/dev/null 2>/dev/null; then
-    service docker start
-fi
-
-log "prepare shared directory for docker"
-rm -rf /root/couchbase/* && mkdir -p /root/couchbase
-mkdir -p /root/docker/
-
+# security improvement: avoid vagrant OS user
 remove_vagrant_user_from_root
-
-log "Install autostart script for /etc/init.d/mdm_sandbox"
-
-[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/TOTVS/mdmpublic/master"
-curl -o /etc/init.d/mdm_sandbox "${DOWNLOAD_PREFIX}/test/mdm_sandbox.sh"
-
-chmod 755 /etc/init.d/mdm_sandbox
-update-rc.d mdm_sandbox defaults
-update-rc.d mdm_sandbox enable
 
 if [ -n "$docker_username" ]; then
     docker_login "$docker_username" "$docker_passwd"
 fi
 
-log "Start docker of mdm-jenkins"
+# Update docker image
 if [ -n "$SKIP_DOCKER_PULL" ]; then
     image_has_new_version="no"
 else
@@ -183,51 +233,13 @@ else
     image_has_new_version=$(cat "$flag_file")
 fi
 
-container_name="mdm-jenkins"
-container_hostname="jenkins"
-container_status=$(is_container_running $container_name)
-if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; then
-    log "$image_name has new version, stop old running container: $container_name"
-    docker stop "$container_name"
-    docker rm "$container_name"
-    container_status="none"
-fi
-
-if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/docker/:/var/lib/jenkins/code/ -h "$container_hostname" --name "$container_name" -p 5022:22 -p 18000:18000 -p 18080:18080 "$image_name" /usr/sbin/sshd -D
-elif [ $container_status = "dead" ]; then
-    docker start $container_name
-fi
-
-log "Start docker of mdm-all-in-one"
-container_name="mdm-all-in-one"
-container_hostname="aio"
-container_status=$(is_container_running $container_name)
-if [ "$container_status" = "running" ] && [ "$image_has_new_version" = "yes" ]; then
-    log "$image_name has new version, stop old running container: $container_name"
-    docker stop $container_name
-    docker rm $container_name
-    container_status="none"
-fi
-
-if [ $container_status = "none" ]; then
-    docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h "$container_hostname" --name "$container_name" -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 "$image_name" /usr/sbin/sshd -D
-elif [ $container_status = "dead" ]; then
-    docker start $container_name
-fi
+start_jenkins_contianer
+start_mdmaio_contianer
 
 log "Start services inside docker"
 service mdm_sandbox start
-
-for d in /root/docker/*; do
-    if [ -d "$d" ]; then
-        rm -rf "$d"/*
-    fi
-done
-
-chmod 777 -R /root/docker/
+service_autostart
 
 log "Check docker containers: docker ps"
 docker ps
-
 ## File : bootstrap_mdm_sandbox.sh ends
