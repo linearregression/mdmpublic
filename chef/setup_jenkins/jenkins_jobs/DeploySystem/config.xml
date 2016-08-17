@@ -30,17 +30,17 @@
         <hudson.model.StringParameterDefinition>
           <name>app_branch_name</name>
           <description></description>
-          <defaultValue>sprint-32</defaultValue>
+          <defaultValue>sprint-38</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>framework_branch_name</name>
           <description></description>
-          <defaultValue>sprint-32</defaultValue>
+          <defaultValue>sprint-38</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>devops_branch_name</name>
           <description></description>
-          <defaultValue>sprint-32</defaultValue>
+          <defaultValue>sprint-38</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>elasticsearch_clustername</name>
@@ -62,6 +62,7 @@
         &quot;couchbase_hosts&quot;:[&quot;kitchen-cluster-node1&quot;, &quot;kitchen-cluster-node2&quot;],
         &quot;elasticsearch_hosts&quot;:[&quot;kitchen-cluster-node1&quot;, &quot;kitchen-cluster-node2&quot;],
         &quot;mdm_hosts&quot;:[&quot;kitchen-cluster-node2&quot;, &quot;kitchen-cluster-node3&quot;],
+        &quot;mdmbackup_hosts&quot;:[&quot;kitchen-cluster-node2&quot;, &quot;kitchen-cluster-node3&quot;],
         &quot;haproxy_hosts&quot;:[&quot;kitchen-cluster-node1&quot;,&quot;kitchen-cluster-node2&quot;],
         &quot;nagios_server&quot;:&quot;kitchen-cluster-node3&quot;,
 
@@ -78,7 +79,7 @@
         &quot;app_https_port&quot;:&quot;8443&quot;
        },
  &quot;couchbase_mdm&quot;:
-        {&quot;memory_quota_mb&quot;:&quot;16384&quot;},
+        {&quot;memory_quota_mb&quot;:&quot;2048&quot;},
  &quot;elasticsearch_mdm&quot;:
         {&quot;allocated_memory_mb&quot;:&quot;16384&quot;,
         &quot;audit_allocated_memory_mb&quot;:&quot;1024&quot;,
@@ -92,21 +93,21 @@
         &quot;cb_bucket_retries&quot;:&quot;10&quot;,
         &quot;cb_bucket_retryinterval&quot;:&quot;10000&quot;,
         &quot;cb_bucket_timeout&quot;:&quot;100000&quot;,
-        &quot;cb_replicas_count&quot;:&quot;2&quot;,
-        &quot;elasticsearch_replicas_count&quot;:&quot;2&quot;,
-        &quot;elasticsearch_shards_count&quot;:&quot;2&quot;,
-        &quot;elasticsearch_audit_replicas_count&quot;:&quot;2&quot;,
-        &quot;elasticsearch_audit_shards_count&quot;:&quot;2&quot;,
+        &quot;cb_replicas_count&quot;:&quot;0&quot;,
+        &quot;elasticsearch_replicas_count&quot;:&quot;0&quot;,
+        &quot;elasticsearch_shards_count&quot;:&quot;1&quot;,
+        &quot;elasticsearch_audit_replicas_count&quot;:&quot;0&quot;,
+        &quot;elasticsearch_audit_shards_count&quot;:&quot;1&quot;,
         &quot;enable_slack_sync&quot;:&quot;false&quot;,
         &quot;slack_user&quot;:&quot;Production Server&quot;,
         &quot;log_slack_token&quot;:&quot;xoxb-21659697588-UoM7CMPyjmlN19oGt6fZUeAj&quot;,
         &quot;log_slack_channel&quot;:&quot;mdm-logs&quot;,
         &quot;session_bucket_quota_in_mb&quot;:&quot;1024&quot;,
         &quot;staging_bucket_quota_in_mb&quot;:&quot;2048&quot;,
-        &quot;master_bucket_quota_in_mb&quot;:&quot;10240&quot;,
+        &quot;master_bucket_quota_in_mb&quot;:&quot;2048&quot;,
         &quot;mgmt_timeout&quot;:&quot;900000&quot;,
         &quot;max_timeout&quot;:&quot;960000&quot;,
-        &quot;mdm_java_opts&quot;:&quot;-Xms10240m -Xmx10240m&quot;,
+        &quot;mdm_java_opts&quot;:&quot;-Xms2048m -Xmx2048m&quot;,
         &quot;mincomputationpoolsize&quot;:&quot;16&quot;,
         &quot;whether_flushdatabaseonconnect&quot;:&quot;$whether_flushdatabaseonconnect&quot;,
         &quot;whether_populatefakedata&quot;:&quot;false&quot;,
