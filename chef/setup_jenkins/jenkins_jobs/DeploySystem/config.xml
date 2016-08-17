@@ -113,9 +113,13 @@
         &quot;whether_populatefakedata&quot;:&quot;false&quot;,
         &quot;whether_populaterealdata&quot;:&quot;false&quot;,
         &quot;whether_populategenerateddata&quot;:&quot;false&quot;,
-        &quot;enable_backup_redo&quot;:&quot;false&quot;,
-        &quot;backupConfig_redoLog&quot;:&quot;false&quot;, 
-        &quot;backupConfig_backupStagingData&quot;:&quot;false&quot;
+        &quot;backupConfig_backupStagingData&quot;:&quot;true&quot;,
+        &quot;backupConfig_redoLog&quot;:&quot;false&quot;,
+        &quot;logback_remotehost&quot;:&quot;127.0.0.1&quot;,
+        # pass to mdm.yml
+        &quot;backupConfig_backupServerUrl&quot;:&quot;https://localhost:8084/backup/api/v1/plugins/backupServer/&quot;,
+        # pass to backupserver.yml
+        &quot;backupConfig_mdmUrl&quot;:&quot;https://localhost:8443/api/v1/&quot;
         }
 }</defaultValue>
         </hudson.model.TextParameterDefinition>
