@@ -23,7 +23,7 @@
       <insensitiveSearch>false</insensitiveSearch>
     </hudson.search.UserSearchProperty>
     <hudson.security.HudsonPrivateSecurityRealm_-Details>
-      <passwordHash>#jbcrypt:$2a$10$v0Pk/xCY7kNfAfnVuutxZeFGG3fc2osJTQW1ialkRpVYN1nCFTZRW</passwordHash>
+      <passwordHash>#jbcrypt:$2a$10$rWfJt3QmA.EVTHxf4N51XuPf/6RDusRUwxvvzpMx3gVfWtFcklRue</passwordHash>
     </hudson.security.HudsonPrivateSecurityRealm_-Details>
     <jenkins.security.LastGrantedAuthoritiesProperty>
       <roles>
