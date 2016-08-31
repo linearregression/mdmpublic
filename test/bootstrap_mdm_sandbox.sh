@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-16 16:04:16>
+## Updated: Time-stamp: <2016-08-31 10:29:28>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -187,9 +187,7 @@ function start_mdmaio_contianer() {
 function service_autostart() {
     log "Install autostart script for /etc/init.d/mdm_sandbox"
 
-    [ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/TOTVS/mdmpublic/master"
     curl -o /etc/init.d/mdm_sandbox "${DOWNLOAD_PREFIX}/test/mdm_sandbox.sh"
-
     chmod 755 /etc/init.d/mdm_sandbox
     update-rc.d mdm_sandbox defaults
     update-rc.d mdm_sandbox enable
@@ -205,6 +203,8 @@ docker_opts=${5:-"--dns 8.8.8.8 --dns 8.8.4.4 --iptables=false"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
+[ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/TOTVS/mdmpublic/master"
+
 START=$(date +%s)
 ensure_is_root
 
@@ -212,6 +212,9 @@ apt-get -y install bc
 # set PATH, just in case binary like chmod can't be found
 PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 LOG_FILE="/var/log/bootstrap_mdm_sandbox.log"
+
+# download ufw setup tool
+curl -o /root/enable_ufw.sh "${DOWNLOAD_PREFIX}/master/bash/enable_ufw/enable_ufw.sh"
 
 log "Install docker"
 install_docker
