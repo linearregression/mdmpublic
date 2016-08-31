@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-31 10:29:28>
+## Updated: Time-stamp: <2016-08-31 13:55:29>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -214,7 +214,7 @@ PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 LOG_FILE="/var/log/bootstrap_mdm_sandbox.log"
 
 # download ufw setup tool
-curl -o /root/enable_ufw.sh "${DOWNLOAD_PREFIX}/master/bash/enable_ufw/enable_ufw.sh"
+curl -o /root/enable_ufw.sh "${DOWNLOAD_PREFIX}/bash/enable_ufw/enable_ufw.sh"
 
 log "Install docker"
 install_docker
