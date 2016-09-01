@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-08-31 13:55:29>
+## Updated: Time-stamp: <2016-09-01 21:54:41>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -42,6 +42,10 @@ function install_docker() {
     if ! which docker 1>/dev/null 2>/dev/null; then
         log "Install docker: wget -qO- https://get.docker.com/ | sh"
         wget -qO- https://get.docker.com/ | sh
+        # install docker 1.11.2
+        apt-get install -y docker-engine=1.11.2-0~trusty
+        # prevent upgrade on sys upgrade
+        apt-mark hold docker-engine
     else
         log "docker service exists, skip installation"
     fi
