@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-01 21:54:41>
+## Updated: Time-stamp: <2016-09-02 09:19:23>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -203,7 +203,7 @@ image_repo_name=${1?"docker image repo name"}
 tag_name=${2:-"latest"}
 docker_username=${3:-""}
 docker_passwd=${4:-""}
-docker_opts=${5:-"--dns 8.8.8.8 --dns 8.8.4.4 --iptables=false"}
+docker_opts=${5:-"--iptables=false --dns 8.8.8.8 --dns 8.8.4.4"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
