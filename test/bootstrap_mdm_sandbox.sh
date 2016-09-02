@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-02 09:19:23>
+## Updated: Time-stamp: <2016-09-02 09:29:59>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -33,7 +33,7 @@ function update_docker_daemon() {
     if ! grep -e "$docker_opts" /etc/default/docker; then
         echo "Update docker daemon opts: $docker_opts, then restart docker"
         echo "DOCKER_OPTS=\"$docker_opts\"" >> /etc/default/docker
-        service docker stop
+        service docker stop || true
         service docker start
     fi
 }
