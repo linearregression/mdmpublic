@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-02 09:29:59>
+## Updated: Time-stamp: <2016-09-02 09:30:57>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -73,9 +73,8 @@ function start_docker() {
 function docker_login() {
     local docker_username=${1?}
     local docker_passwd=${2?}
-    local docker_email="devops@tovs.com" # docker login will remove this parameter soon.
     echo "docker login with $docker_username"
-    docker login -u "$docker_username" -p "$docker_passwd" -e "$docker_email"
+    docker login -u "$docker_username" -p "$docker_passwd"
 }
 
 function docker_pull_image() {
