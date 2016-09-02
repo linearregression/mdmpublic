@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-02 11:34:40>
+## Updated: Time-stamp: <2016-09-02 11:36:03>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -119,12 +119,6 @@ function is_container_running(){
     fi
 }
 
-function remove_vagrant_user_from_root() {
-    [ ! -f /etc/sudoers.d/vagrant ] || rm -rf /etc/sudoers.d/vagrant
-    mkdir -p /root/.ssh/
-    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBFs/3IWqXacrS+uq2bshz5CROPvIoZTFtxArD17Vvl3RNd6IQR513GAULriF4JrXPNqy+D4B6SCGVCAsyl29zHspyFBSmBtP45Rp7oS1jX0FaS3hP1kFAgcUfmcVKTSaDmEe5YSLY0OTrRpHDKPigXGpHOxeJi8fY6X+wnIPqS1taORJu0qoQ0jisZtiw1Hl6GgpcJXjuWs2/uiOE8ieY1uvYGAtHnyrxWabYJriZESQObRQYvixaTeOzL6RxROgl1yo69G6M/qxr0lcyfGJAuOzrZLBa6TDuTM3vTmoJPQA4gHdJoOlrsFUKDf5HEsgjd8i/C3JRRpNn/ut+HLXT ssh.login@totvs.com" >> /root/.ssh/authorized_keys
-}
-
 function shell_exit() {
     exit_code=$?
     END=$(date +%s)
@@ -223,9 +217,6 @@ curl -o /root/enable_ufw.sh "${DOWNLOAD_PREFIX}/bash/enable_ufw/enable_ufw.sh"
 log "Install docker"
 install_docker
 start_docker "$docker_opts"
-
-# security improvement: avoid vagrant OS user
-remove_vagrant_user_from_root
 
 if [ -n "$docker_username" ]; then
     docker_login "$docker_username" "$docker_passwd"
