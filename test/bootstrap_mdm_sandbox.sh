@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-02 09:25:21>
+## Updated: Time-stamp: <2016-09-02 09:19:23>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -65,8 +65,9 @@ function start_docker() {
     local docker_opts=${1?}
     create_enough_loop_device
     update_docker_daemon "$docker_opts"
-    service docker stop || true
-    service docker start
+    if ! service docker status 1>/dev/null 2>/dev/null; then
+        service docker start
+    fi
 }
 
 function docker_login() {
