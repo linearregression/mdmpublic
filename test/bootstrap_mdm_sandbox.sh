@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-02 09:30:57>
+## Updated: Time-stamp: <2016-09-02 09:37:15>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -43,7 +43,7 @@ function install_docker() {
         log "Install docker: wget -qO- https://get.docker.com/ | sh"
         wget -qO- https://get.docker.com/ | sh
         # install docker 1.11.2
-        apt-get install -y docker-engine=1.11.2-0~trusty
+        apt-get install -y --force-yes docker-engine=1.11.2-0~trusty
         # prevent upgrade on sys upgrade
         apt-mark hold docker-engine
     else
