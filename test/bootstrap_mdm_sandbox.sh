@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-02 11:36:03>
+## Updated: Time-stamp: <2016-09-06 22:32:46>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -35,6 +35,7 @@ function update_docker_daemon() {
         echo "DOCKER_OPTS=\"$docker_opts\"" >> /etc/default/docker
         service docker stop || true
         service docker start
+        wait_for.sh "service docker status" 10
     fi
 }
 
@@ -67,6 +68,7 @@ function start_docker() {
     update_docker_daemon "$docker_opts"
     if ! service docker status 1>/dev/null 2>/dev/null; then
         service docker start
+        wait_for.sh "service docker status" 10
     fi
 }
 
@@ -203,6 +205,10 @@ flag_file="image.txt"
 
 [ -n "$DOWNLOAD_PREFIX" ] || export DOWNLOAD_PREFIX="https://raw.githubusercontent.com/TOTVS/mdmpublic/master"
 
+if [ ! -f /usr/bin/wait_for.sh ]; then
+    wget -O /usr/bin/wait_for.sh https://raw.githubusercontent.com/DennyZhang/devops_public/tag_v2/bash/wait_for/wait_for.sh
+    chmod 755 /usr/bin/wait_for.sh
+fi
 START=$(date +%s)
 ensure_is_root
 
