@@ -6,36 +6,63 @@
   <mode>NORMAL</mode>
   <useSecurity>true</useSecurity>
   <authorizationStrategy class="hudson.security.ProjectMatrixAuthorizationStrategy">
-    <permission>hudson.model.Computer.Build:admin</permission>
-    <permission>hudson.model.Computer.Configure:admin</permission>
-    <permission>hudson.model.Computer.Connect:admin</permission>
-    <permission>hudson.model.Computer.Create:admin</permission>
-    <permission>hudson.model.Computer.Delete:admin</permission>
-    <permission>hudson.model.Computer.Disconnect:admin</permission>
-    <permission>hudson.model.Hudson.Administer:admin</permission>
-    <permission>hudson.model.Hudson.ConfigureUpdateCenter:admin</permission>
-    <permission>hudson.model.Hudson.Read:admin</permission>
+    <permission>hudson.model.Computer.Build:chefadmin</permission>
+    <permission>hudson.model.Computer.Build:mdmadmin</permission>
+    <permission>hudson.model.Computer.Configure:chefadmin</permission>
+    <permission>hudson.model.Computer.Configure:mdmadmin</permission>
+    <permission>hudson.model.Computer.Connect:chefadmin</permission>
+    <permission>hudson.model.Computer.Connect:mdmadmin</permission>
+    <permission>hudson.model.Computer.Create:chefadmin</permission>
+    <permission>hudson.model.Computer.Create:mdmadmin</permission>
+    <permission>hudson.model.Computer.Delete:chefadmin</permission>
+    <permission>hudson.model.Computer.Delete:mdmadmin</permission>
+    <permission>hudson.model.Computer.Disconnect:chefadmin</permission>
+    <permission>hudson.model.Computer.Disconnect:mdmadmin</permission>
+    <permission>hudson.model.Hudson.Administer:chefadmin</permission>
+    <permission>hudson.model.Hudson.Administer:mdmadmin</permission>
+    <permission>hudson.model.Hudson.ConfigureUpdateCenter:chefadmin</permission>
+    <permission>hudson.model.Hudson.ConfigureUpdateCenter:mdmadmin</permission>
+    <permission>hudson.model.Hudson.Read:chefadmin</permission>
     <permission>hudson.model.Hudson.Read:anonymous</permission>
-    <permission>hudson.model.Hudson.RunScripts:admin</permission>
-    <permission>hudson.model.Hudson.UploadPlugins:admin</permission>
-    <permission>hudson.model.Item.Build:admin</permission>
+    <permission>hudson.model.Hudson.Read:mdmadmin</permission>
+    <permission>hudson.model.Hudson.RunScripts:chefadmin</permission>
+    <permission>hudson.model.Hudson.RunScripts:mdmadmin</permission>
+    <permission>hudson.model.Hudson.UploadPlugins:chefadmin</permission>
+    <permission>hudson.model.Hudson.UploadPlugins:mdmadmin</permission>
+    <permission>hudson.model.Item.Build:chefadmin</permission>
     <permission>hudson.model.Item.Build:anonymous</permission>
-    <permission>hudson.model.Item.Cancel:admin</permission>
+    <permission>hudson.model.Item.Build:mdmadmin</permission>
+    <permission>hudson.model.Item.Cancel:chefadmin</permission>
     <permission>hudson.model.Item.Cancel:anonymous</permission>
-    <permission>hudson.model.Item.Configure:admin</permission>
-    <permission>hudson.model.Item.Create:admin</permission>
+    <permission>hudson.model.Item.Cancel:mdmadmin</permission>
+    <permission>hudson.model.Item.Configure:chefadmin</permission>
+    <permission>hudson.model.Item.Configure:mdmadmin</permission>
+    <permission>hudson.model.Item.Create:chefadmin</permission>
     <permission>hudson.model.Item.Create:anonymous</permission>
-    <permission>hudson.model.Item.Delete:admin</permission>
+    <permission>hudson.model.Item.Create:mdmadmin</permission>
+    <permission>hudson.model.Item.Delete:chefadmin</permission>
     <permission>hudson.model.Item.Delete:anonymous</permission>
-    <permission>hudson.model.Item.Discover:admin</permission>
-    <permission>hudson.model.Item.Read:admin</permission>
+    <permission>hudson.model.Item.Delete:mdmadmin</permission>
+    <permission>hudson.model.Item.Discover:chefadmin</permission>
+    <permission>hudson.model.Item.Discover:mdmadmin</permission>
+    <permission>hudson.model.Item.Read:chefadmin</permission>
     <permission>hudson.model.Item.Read:anonymous</permission>
-    <permission>hudson.model.Item.Workspace:admin</permission>
+    <permission>hudson.model.Item.Read:mdmadmin</permission>
+    <permission>hudson.model.Item.Workspace:chefadmin</permission>
     <permission>hudson.model.Item.Workspace:anonymous</permission>
-    <permission>hudson.model.View.Configure:admin</permission>
-    <permission>hudson.model.View.Create:admin</permission>
-    <permission>hudson.model.View.Delete:admin</permission>
-    <permission>hudson.model.View.Read:admin</permission>
+    <permission>hudson.model.Item.Workspace:mdmadmin</permission>
+    <permission>hudson.model.Run.Delete:chefadmin</permission>
+    <permission>hudson.model.Run.Delete:mdmadmin</permission>
+    <permission>hudson.model.Run.Update:chefadmin</permission>
+    <permission>hudson.model.Run.Update:mdmadmin</permission>
+    <permission>hudson.model.View.Configure:chefadmin</permission>
+    <permission>hudson.model.View.Configure:mdmadmin</permission>
+    <permission>hudson.model.View.Create:chefadmin</permission>
+    <permission>hudson.model.View.Create:mdmadmin</permission>
+    <permission>hudson.model.View.Delete:chefadmin</permission>
+    <permission>hudson.model.View.Delete:mdmadmin</permission>
+    <permission>hudson.model.View.Read:chefadmin</permission>
+    <permission>hudson.model.View.Read:mdmadmin</permission>
   </authorizationStrategy>
   <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
     <disableSignup>true</disableSignup>

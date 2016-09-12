@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <user>
-  <fullName>chefadmin</fullName>
+  <fullName>mdmadmin</fullName>
   <properties>
     <jenkins.security.ApiTokenProperty>
       <apiToken>xXtTbQx0eGdjb/99Ve0X52NltZTsaUgiA3K6LJD7d9m/xAu1idiKbbBHrS7lQUlS</apiToken>
@@ -23,7 +23,7 @@
       <insensitiveSearch>false</insensitiveSearch>
     </hudson.search.UserSearchProperty>
     <hudson.security.HudsonPrivateSecurityRealm_-Details>
-      <passwordHash>#jbcrypt:$2a$10$gxyjtONPBsRTO4UuMkErB.FxAGL2cljJFNQqv0A/DWMG4DnO.MDja</passwordHash>
+      <passwordHash>#jbcrypt:$2a$10$Ez6o1OVe6o3AnNmaMg12rev6f0WMGfgjFOBbe9p1QvT5beveEpnSi</passwordHash>
     </hudson.security.HudsonPrivateSecurityRealm_-Details>
     <jenkins.security.LastGrantedAuthoritiesProperty>
       <roles>
