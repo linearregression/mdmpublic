@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-16 15:40:02>
+## Updated: Time-stamp: <2016-09-16 20:41:23>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -27,18 +27,6 @@ function ensure_is_root() {
 }
 
 ################################################################################################
-function update_docker_daemon() {
-    local docker_opts=${1?}
-    # TODO: don't overwrite existing customization of docker opts
-    if ! grep -e "$docker_opts" /etc/default/docker; then
-        echo "Update docker daemon opts: $docker_opts, then restart docker"
-        echo "DOCKER_OPTS=\"$docker_opts\"" >> /etc/default/docker
-        service docker stop || true
-        service docker start
-        wait_for.sh "service docker status" 10
-    fi
-}
-
 function install_docker() {
     if ! which docker 1>/dev/null 2>/dev/null; then
         log "Install docker: wget -qO- https://get.docker.com/ | sh"
@@ -65,7 +53,6 @@ function create_enough_loop_device() {
 function start_docker() {
     local docker_opts=${1?}
     create_enough_loop_device
-    update_docker_daemon "$docker_opts"
     if ! service docker status 1>/dev/null 2>/dev/null; then
         service docker start
         wait_for.sh "service docker status" 10
@@ -178,7 +165,7 @@ function start_mdmaio_contianer() {
     fi
 
     if [ $container_status = "none" ]; then
-        docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h "$container_hostname" --name "$container_name" -p 8080-8180:8080-8180 -p 8443:8443 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500 -p 80:80 -p 443:443 -p 6022:22 "$image_name" /usr/sbin/sshd -D
+        docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h "$container_hostname" --name "$container_name" -p 8443:8443 -p 80:80 -p 443:443 -p 6022:22 "$aio_port_forwarding" "$image_name" /usr/sbin/sshd -D
     elif [ $container_status = "dead" ]; then
         docker start $container_name
     fi
@@ -199,7 +186,7 @@ image_repo_name=${1?"docker image repo name"}
 tag_name=${2:-"latest"}
 docker_username=${3:-""}
 docker_passwd=${4:-""}
-docker_opts=${5:-"--iptables=true --dns 8.8.8.8 --dns 8.8.4.4"}
+aio_port_forwarding=${5:-"-p 8080-8180:8080-8180 -p 9200:9200 -p 9300:9300 -p 9400:9400 -p 9500:9500"}
 image_name="${image_repo_name}:$tag_name"
 flag_file="image.txt"
 
