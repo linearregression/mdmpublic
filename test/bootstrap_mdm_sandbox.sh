@@ -5,7 +5,7 @@
 ## Description :
 ## --
 ## Created : <2015-05-28>
-## Updated: Time-stamp: <2016-09-16 20:41:23>
+## Updated: Time-stamp: <2016-09-16 21:04:48>
 ##-------------------------------------------------------------------
 function log() {
     # log message to both stdout and logfile on condition
@@ -165,7 +165,8 @@ function start_mdmaio_contianer() {
     fi
 
     if [ $container_status = "none" ]; then
-        docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h "$container_hostname" --name "$container_name" -p 8443:8443 -p 80:80 -p 443:443 -p 6022:22 "$aio_port_forwarding" "$image_name" /usr/sbin/sshd -D
+        command="docker run -d -t --privileged -v /root/couchbase/:/opt/couchbase/ -h $container_hostname --name $container_name -p 8443:8443 -p 80:80 -p 443:443 -p 6022:22 $aio_port_forwarding $image_name /usr/sbin/sshd -D"
+        eval "$command"
     elif [ $container_status = "dead" ]; then
         docker start $container_name
     fi
